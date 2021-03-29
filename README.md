@@ -1,6 +1,6 @@
 # KVM Syndication Toolbox for Organisations and Events
 
-This plugin is constructed out of differnt modules.
+This plugin is constructed out of different modules.
 
 There is the Base Module which contains helper classes and basic functionallity which is used by the different modules.
 
