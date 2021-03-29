@@ -34,7 +34,6 @@ Use get_module(..) to get a specific module.
 $mc = WPModuleConfiguration::get_instance();
 $eiInterface = $mc->get_module('wp-events-interface');
 ```
-
 Use get_root_module() to get the base module, this module is always enabled.
 
 ```php
