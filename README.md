@@ -2,25 +2,25 @@
 
 This plugin is constructed out of different modules.
 
-There is the Base Module which contains helper classes and basic functionallity which is used by the different modules.
+There is the Base module which contains helper classes and basic functionallity which is used by the different modules.
 
-Then there is the Events Interface Module. This module gives a common interface to different Calendar Plugins supported by Wordpress( The Events Manager, Events Calendar, All In One Events Calendar).
+Then there is the Events interface module. This module gives a common interface to different Calendar Plugins supported by Wordpress( The Events Manager, Events Calendar, All In One Events Calendar).
 
-Then we have the Events feed importer. The importer imports events from other websites to this website.
+Then we have the Events feed importer module. The importer imports events from other websites to this website.
 
-Then we have the Organisation Module. This Module makes it possible to register an Organisation.
+Then we have the Organisation module. This Module makes it possible to register an Organisation.
 
-Then we have the KVM Interface Module. This Module makes it possible to upload and download Organisations and Events to the Karte von Morgen.
+Then we have the KVM interface module. This Module makes it possible to upload and download Organisations and Events to the Karte von Morgen.
 
-Then we have the User Register Module. When this module is enabled, users can register themselves und their Organisation. So the Organisation Module must be enabled to use this Module.
+Then we have the User register module. When this module is enabled, users can register themselves und their Organisation. So the Organisation Module must be enabled to use this Module.
 
-Then we habe the Dashboard Posts Module. With this module it is possible to create custom messages on the Dashboard. Here we can show users that have logged in, what they can do in the admin area. 
+Then we habe the Dashboard items module. With this module it is possible to create custom messages on the Dashboard. Here we can show users that have logged in, what they can do in the admin area. 
 
-The Base Module can be find directly in the root of the plugin.
+The Base module can be find directly in the root of the plugin.
 
 The other modules are find under the modules directory.
 
-To get access to a Module the following code can be used:
+To get access to a module the following code can be used:
 
 Use is_module_enabled(..) to get a specific module.
 
