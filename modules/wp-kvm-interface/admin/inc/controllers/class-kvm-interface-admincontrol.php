@@ -33,9 +33,9 @@ class KVMInterfaceAdminControl implements WPModuleStarterIF
                                      'URL');
     $field->set_description('URL to the OpenFairDB database. ' .
                             'The Karte von Morgen is build on top of this database. ' . 
-                            'Default it is setted to the Development database: ' . 
+                            'Default it is setted to the development database: ' . 
                             'https://dev.ofdb.io/v0. ' . 
-                            'The productions database is: https://api.ofdb.io/v0/');
+                            'The production database is: https://api.ofdb.io/v0/');
     $field->set_defaultvalue('https://dev.ofdb.io/v0');
 
     $field = $section->add_textfield('kvm_access_token', 
