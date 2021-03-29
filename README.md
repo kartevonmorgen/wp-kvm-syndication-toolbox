@@ -16,6 +16,32 @@ Then we have the User Register Module. When this module is enabled, users can re
 
 Then we habe the Dashboard Posts Module. With this module it is possible to create custom messages on the Dashboard. Here we can show users that have logged in, what they can do in the admin area. 
 
+The Base Module can be find directly in the root of the plugin.
+
+The other modules are find under the modules directory.
+
+To get access to a Module the following code can be used:
+
+Use is_module_enabled(..) to get a specific module.
+
+```php
+$mc = WPModuleConfiguration::get_instance();
+$isEiInterfaceEnabled = $mc->is_module_enabled('wp-events-interface');
+```
+Use get_module(..) to get a specific module.
+
+```php
+$mc = WPModuleConfiguration::get_instance();
+$eiInterface = $mc->get_module('wp-events-interface');
+```
+
+Use get_root_module() to get the base module, this module is always enabled.
+
+```php
+$mc = WPModuleConfiguration::get_instance();
+$root = $mc->get_root_module();
+```
+
 ## Base Module
 
 This Base Module contains the following functionallity:

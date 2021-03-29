@@ -13,7 +13,7 @@ Added functionality:
 * Dashboard items module: Admins can show their own custom Dashboard to logged in users.
 * Events feed importer module, ICal
  * Better support for recurring events
- * Addresses can be direct resolved by OSM (Feed location free text format type)
+ * Addresses can be directly resolved by OSM Nominatim (Feed location free text format type). TODO: A location with the text "Online" will be resolved to a datacenter. We have to program that there is no location then.
  * Filtered tags: Only events with these tags will be imported
  * Include tags: Add this tags to events imported by this feed
 * User register module: 
