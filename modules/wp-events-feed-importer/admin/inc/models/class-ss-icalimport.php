@@ -203,29 +203,32 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
       $wpLocation->set_lon($lon);
     }
 
-    $location = $vEvent->get_location();
-    $length = strlen( 'http' );
-    if (substr( $location, 0, $length ) === 'http')
+    if($vEvent->is_location_online())
     {
-      // For the Heinrich Boll Stiftung gab es
-      // Online Veranstaltungen wo bei LOCATION
-      // der Link eingegeben war, wir erlauben
-      // das zu übernehmen wenn der noch nicht durch
-      // URL eingegeben ist.
-      if(empty($eiEvent->get_link()))
+      $link = $vEvent->get_location_onlinelink();
+      if(!empty($link))
       {
-        $eiEvent->set_link($location);
+        // Only allow to fill the link if
+        // it is not
+        if(empty($eiEvent->get_link()))
+        {
+          $eiEvent->set_link($link);
+        }
       }
     }
-    else if(empty($wpLocation))
+    else 
     {
-      if($this->is_feed_wplocation_freetextformat_type_local())
+      if(empty($wpLocation))
       {
-        $wpLocation = $wpLocH->create_from_freetextformat_local($location);
-      }
-      else if($this->is_feed_wplocation_freetextformat_type_osm())
-      {
-        $wpLocation = $wpLocH->create_from_freetextformat_osm($location);
+        $location = $vEvent->get_location();
+        if($this->is_feed_wplocation_freetextformat_type_local())
+        {
+          $wpLocation = $wpLocH->create_from_freetextformat_local($location);
+        }
+        else if($this->is_feed_wplocation_freetextformat_type_osm())
+        {
+          $wpLocation = $wpLocH->create_from_freetextformat_osm($location);
+        }
       }
     }
       

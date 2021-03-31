@@ -16,9 +16,11 @@ class ICalVEvent
   private $uid;
   private $summary;
   private $description;
-  private $location;
+  private $location = null;
   private $location_lat;
   private $location_lon;
+  private $location_online;
+  private $location_onlinelink = null;
   private $organizer_name;
   private $organizer_email;
   private $url;
@@ -162,6 +164,27 @@ class ICalVEvent
   {
     return $this->location_lon;
   }
+
+  function set_location_online($online)
+  {
+    $this->location_online = $online;
+  }
+
+  function is_location_online()
+  {
+    return $this->location_online;
+  }
+
+  function set_location_onlinelink($onlinelink)
+  {
+    $this->location_onlinelink = $onlinelink;
+  }
+
+  function get_location_onlinelink()
+  {
+    return $this->location_onlinelink;
+  }
+
 
   function set_organizer_name($organizer_name)
   {
@@ -308,7 +331,15 @@ class ICalVEvent
         $text = new ICalVEventLocation($this->get_logger(), 
                                        $vLine);
         $text->parse();
-        $this->set_location($text->getResult());
+        if($text->isOnline())
+        {
+          $this->set_location_online(true);
+          $this->set_location_onlinelink($text->getOnlineLink());
+        }
+        else
+        {
+          $this->set_location($text->getLocation());
+        }
         break;
       case 'GEO':
         $vEventGeo = new ICalVEventGeo($this->get_logger(), $vLine);

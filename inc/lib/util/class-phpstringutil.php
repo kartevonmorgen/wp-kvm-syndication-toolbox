@@ -109,5 +109,23 @@ class PHPStringUtil
     return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
   }
 
+  public function contains($string, $contains, $case_insensitive = false)
+  {
+
+    if($case_insensitive === false)
+    {
+      $result = strpos($string, $contains);
+    }
+    else
+    {
+      $result = strripos($string, $contains);
+    }
+    if($result === false)
+    {
+      return false;
+    }
+    return true;
+  }
+
 
 }
