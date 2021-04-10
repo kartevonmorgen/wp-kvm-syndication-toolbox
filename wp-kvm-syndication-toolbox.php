@@ -36,6 +36,7 @@ include_once( dirname( __FILE__ ) . '/modules/wp-kvm-interface/class-wp-kvm-inte
 include_once( dirname( __FILE__ ) . '/modules/wp-organisation/class-wp-organisation.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-dashboard-posts/class-wp-dashboard-posts.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-user-register/class-wp-user-register.php');
+include_once( dirname( __FILE__ ) . '/modules/wp-ess-event-calendar-client/class-wp-ess-event-calendar-client.php');
 
 class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
 {
@@ -84,6 +85,15 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $db_module->set_description('Das Modul ermöglich es über Beitrage ' .
                                 'für das Dashboard erzustellen ' .
                                 'und entfernt der Standard Wordpress Ansicht');
+    $ess_client_module = $ei_module->add_module(new WPESSEventCalendarClientModule('ESS Event Calendar client'));
+    $ess_client_module ->set_description('Das Modul kann auf ein client ' . 
+                                         'benutzt werden um Veranstaltungen ' .
+                                         'als ESS-Feed zur Verführung ' . 
+                                         'zu stellen. Die können dann auf ' .
+                                         'ein andere Webseite mit der ' .
+                                         'Events Syndication Server ' .
+                                         'importiedt werden über ESS');
+
   }
 
   public function setup_includes($loader)
