@@ -37,7 +37,7 @@ class WPModulesAdminControl implements WPModuleStarterIF
       $parent_module = $module->get_parent_module();
       if(!empty($parent_module))
       {
-        $section->add_description('Abhangig vom Modul: <b>' . 
+        $section->add_description('Abhängig vom Modul: <b>' . 
                                   $parent_module->get_name() . '</b>');
       }
       

@@ -45,8 +45,8 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
   public function setup_modules()
   {
     $ei_module = $this->add_module(new WPEventsInterfaceModule('Events interface'));
-    $ei_module->set_description('Die Events interface sorgt dafür das ' .
-                             'weitere Module eine eindeutige Schnitstelle ' .
+    $ei_module->set_description('Das Events interface sorgt dafür das ' .
+                             'weitere Module eine eindeutige Schnittstelle ' .
                              'haben um Veranstaltungen zu speichern ' .
                              'oder zu lesen ohne zu wissen welche ' .
                              'Wordpress Plugin für ' .
@@ -59,22 +59,22 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $ss_module->set_description('Der Events feed importer sorgt dafür das Veranstaltungen ' .
                              'über Feeds importiert werden können. ' .
                              'Das Events Interface Module wird benutzt um die Veranstaltungen ' .
-                             'abzuspeichern auf dem aktivierte Veranstaltungsplugin. ' .
-                             'Das Events Feed Importer Modul unterstutzt ESS Feeds und das iCal Feeds. ');
+                             'auf dem aktivierte Veranstaltungsplugin abzuspeichern. ' .
+                             'Das Events Feed Importer Modul unterstützt ESS Feeds und das iCal Feeds. ');
     
     $kvm_module = $ei_module->add_module(new WPKVMInterfaceModule('Karte von morgen'));
-    $kvm_module->set_description('Der Karte vno morgen Schnitstelle sorgt dafür das Veranstaltungen und ' .
-                                'Organisation zu der Karte von morgen hochgeladen werden ' .
-                                'Veranstatlungen werden über Der Events Interface geladen und weiter ' .
+    $kvm_module->set_description('Der Karte von morgen Schnittstelle sorgt dafür das Veranstaltungen und ' .
+                                'Organisation auf die Karte von morgen hochgeladen werden ' .
+                                'Veranstaltungen werden über Das Events interface geladen und weiter ' .
                                 'gegeben an der Karte von morgen. ' .
-                                'Die Initaitiven werden aus dem Initiatve-Modul geladen und weiter gegeben ' .
+                                'Die Initiativen werden aus dem Initiative-Modul geladen und weiter gegeben ' .
                                 'an der Karte von morgen. ');
     
     $i_module = $this->add_module(new WPOrganisationModule('Organisation'));
     $i_module->set_description('Das Organisation Modul ermöglich die Eingabe von Organisation ' .
                                'inklusiv Eingabe von Kontaktdaten und Kontaktperson ' .
                                'Wenn das Karte von morgen Modul aktiviert ist ' . 
-                               'wird der Organisation ' .
+                               'wird die Organisation ' .
                                'hochgeladen zu der Karte von morgen ');
     
     $user_module = $i_module->add_module(new WPUserRegisterModule('Benutzer registrieren'));
@@ -82,17 +82,17 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
                                'registrieren können. ');
 
     $db_module = $this->add_module(new WPDashboardPostsModule('Dashboard Beiträge'));
-    $db_module->set_description('Das Modul ermöglich es über Beitrage ' .
-                                'für das Dashboard erzustellen ' .
-                                'und entfernt der Standard Wordpress Ansicht');
+    $db_module->set_description('Das Modul ermöglicht es, Beitrage ' .
+                                'für das Dashboard zu erstellen ' .
+                                'und entfernt die Standard Wordpress Ansicht');
     $ess_client_module = $ei_module->add_module(new WPESSEventCalendarClientModule('ESS Event Calendar client'));
-    $ess_client_module ->set_description('Das Modul kann auf ein client ' . 
+    $ess_client_module ->set_description('Das Modul kann auf einem Client ' . 
                                          'benutzt werden um Veranstaltungen ' .
                                          'als ESS-Feed zur Verführung ' . 
                                          'zu stellen. Die können dann auf ' .
-                                         'ein andere Webseite mit der ' .
-                                         'Events Syndication Server ' .
-                                         'importiedt werden über ESS');
+                                         'eine andere Webseite mit dem ' .
+                                         'Events feed importer ' .
+                                         'importiert werden über ESS');
 
   }
 
@@ -284,7 +284,7 @@ $plugin = new WPKVMSyndicationToolboxPlugin('KVM Syndication Toolbox');
 $plugin->register( __FILE__ , 10);
 $plugin->set_description(
   'Dieses Modul hat verschiedenen Libraries die genutzt werden ' .
-  'durch die verschiedenen anderen Module. Das Modul hat basis Funktionalität, wie ' .
+  'um die verschiedenen Funktionen zu aktivieren. Dieses Modul hat immer basis Funktionalitäten, wie ' .
   ' z.B. OSM Nominatim, Media Einstellungen.');
 
 
