@@ -12,23 +12,23 @@ Added functionality:
 
 * Dashboard items module: Admins can show their own custom Dashboard to logged in users.
 * Events feed importer module, ICal
- * Better support for recurring events
- * Addresses can be directly resolved by OSM Nominatim (Feed location free text format type). TODO: A location with the text "Online" will be resolved to a datacenter. We have to program that there is no location then.
- * Filtered tags: Only events with these tags will be imported
- * Include tags: Add this tags to events imported by this feed
+  * Better support for recurring events
+  * Addresses can be directly resolved by OSM Nominatim (Feed location free text format type). TODO: A location with the text "Online" will be resolved to a datacenter. We have to program that there is no location then.
+  * Filtered tags: Only events with these tags will be imported
+  * Include tags: Add this tags to events imported by this feed
 * User register module: 
- * Address and contact data is moved to the organisation (initiative)
- * The fields of User Registration form can be setted up by admins 
- * The Email template send to registered users can be changed.
- * The Logo on the login and registration page can be changed.
+  * Address and contact data is moved to the organisation (initiative)
+  * The fields of User Registration form can be setted up by admins 
+  * The Email template send to registered users can be changed.
+  * The Logo on the login and registration page can be changed.
 * Organisation module: 
- * Initiative are renamed to Organisation 
- * Address and contact details are now on the Organisation and no longer on the user profile
- * In the Organisation settings you can enable a migration modus "Migrate User und Initiative to a Organisation". This show up the old Initiative and on the Initiative there is an action to migrate the Initiative and User to an Organisation.
+  * Initiative are renamed to Organisation 
+  * Address and contact details are now on the Organisation and no longer on the user profile
+  * In the Organisation settings you can enable a migration modus "Migrate User und Initiative to a Organisation". This show up the old Initiative and on the Initiative there is an action to migrate the Initiative and User to an Organisation.
  * It is possible to have multiple Organisations pro User (you have to enable the option: "Allow multiple Organisations pro User".
 * Karte von Morgen
- * Adding support for custom links and image_url for Organisations
- * Send back fields that are not filled by the module, so that they are not erased.
+  * Adding support for custom links and image_url for Organisations
+  * Send back fields that are not filled by the module, so that they are not erased.
 
 29 March 2021, Sjoerd Takken
 
