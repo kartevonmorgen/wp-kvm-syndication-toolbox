@@ -822,9 +822,11 @@ class EICalendarEvent
     }
     if(!empty($loc) && !$loc->equals($loc2))
     {
-      return LogResult::false_result('loc ' . 
-        $loc->get_name() . ' not equal to ' . 
-        $loc2->get_name());
+      return LogResult::false_result('loc latitude ' . 
+        $loc->get_lat() . ' not equal to ' . 
+        $loc2->get_lat() . ' or longitude ' .
+        $loc->get_lon() . ' not equal to ' . 
+        $loc2->get_lon() );
     }
 
     return LogResult::true_result('events are equal');

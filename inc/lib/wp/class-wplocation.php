@@ -163,12 +163,14 @@ class WPLocation
       return false;
     }
 
-    if($this->get_lon() !== $wpLocation->get_lon())
+    if(round($this->get_lon(), 2) !== 
+      round($wpLocation->get_lon(), 2))
     {
       return false;
     }
 
-    if($this->get_lat() !== $wpLocation->get_lat())
+    if(round($this->get_lat(), 2) !== 
+       round($wpLocation->get_lat(), 2))
     {
       return false;
     }
