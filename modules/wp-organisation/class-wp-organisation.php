@@ -22,6 +22,8 @@ class WPOrganisationModule extends WPAbstractModule
     $loader->add_include('/inc/lib/organisation/class-organisation-posttype.php');
     $loader->add_include('/inc/lib/organisation/class-organisation-search-behaviour.php');
     $loader->add_include('/inc/lib/organisation/class-organisation-menuactions.php');
+    $loader->add_include('/inc/lib/organisation/class-register-organisation-templates.php');
+    $loader->add_include('/inc/lib/organisation/class-organisation-template-helper.php');
     //$loader->add_include('inc/lib/organisation/class-widget-organisation-search.php');
 
     // Admin
@@ -32,6 +34,9 @@ class WPOrganisationModule extends WPAbstractModule
   public function setup($loader)
   {
     $this->init_organisation_types();
+
+    $templates = new RegisterOrganisationTemplates();
+    $templates->setup($loader);
 
     $searcher = new OrganisationSearchBehaviour();
     $searcher->setup($loader);
@@ -50,6 +55,7 @@ class WPOrganisationModule extends WPAbstractModule
 
     $menuActions = new OrganisationMenuActions($kvmUploader);
     $menuActions->setup($loader);
+    
 
     
     $loader->add_action( 'admin_menu', $this, 'remove_menus', 999 );
@@ -61,6 +67,8 @@ class WPOrganisationModule extends WPAbstractModule
 
     $loader->add_starter(new OrganisationPosttype());
     $loader->add_starter(new OrganisationAdminControl());
+
+    $loader->add_starter($templates);
   }
 
   public function module_activate()

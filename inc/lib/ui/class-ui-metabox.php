@@ -34,6 +34,15 @@ class UIMetabox
     }
   }
 
+  public function register_now()
+  {
+    if(is_admin())
+    {
+      $this->add_metabox();
+      add_action( 'save_post', array( $this, 'save_metabox' ) );
+    }
+  }
+
   public function add_field($field)
   {
     array_push($this->_fields, $field);
@@ -85,7 +94,6 @@ class UIMetabox
 
   public function save_metabox($post_id)
   {
-    // Check if our nonce is set.
     if ( ! isset( $_POST[$this->get_nonce_field_id()] ) )
     {
       return;

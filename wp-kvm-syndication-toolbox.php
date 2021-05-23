@@ -37,6 +37,8 @@ include_once( dirname( __FILE__ ) . '/modules/wp-organisation/class-wp-organisat
 include_once( dirname( __FILE__ ) . '/modules/wp-dashboard-posts/class-wp-dashboard-posts.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-user-register/class-wp-user-register.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-ess-event-calendar-client/class-wp-ess-event-calendar-client.php');
+// Future
+//include_once( dirname( __FILE__ ) . '/modules/wp-newsletter-interface/class-wp-newsletter-interface.php');
 
 class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
 {
@@ -94,6 +96,10 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
                                          'Events feed importer ' .
                                          'importiert werden über ESS');
 
+    // Future
+    // $ni_module = $ei_module->add_module(new WPNewsletterInterfaceModule('Newsletter Interface'));
+    // $ni_module ->set_description('Das Modul kann events in ein Newsletter importieren ' . 
+    //                              'und unterstützt mehrere Newsletter Plugins in Wordpress ');
   }
 
   public function setup_includes($loader)
