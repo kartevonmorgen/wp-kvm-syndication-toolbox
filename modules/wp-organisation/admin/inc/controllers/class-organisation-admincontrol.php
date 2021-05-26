@@ -7,12 +7,9 @@
  * @copyright  No Copyright.
  * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
  */
-class OrganisationAdminControl implements WPModuleStarterIF
+class OrganisationAdminControl extends UIAbstractAdminControl 
+                               implements WPModuleStarterIF
 {
-  public function __construct() 
-  {
-  }
-
   public function start() 
   {
     $mc = WPModuleConfiguration::get_instance();
@@ -25,8 +22,7 @@ class OrganisationAdminControl implements WPModuleStarterIF
     $section->set_description(
       '');
 
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-organisation');
+    $module = $this->get_current_module();
     if(empty($module))
     {
       return;

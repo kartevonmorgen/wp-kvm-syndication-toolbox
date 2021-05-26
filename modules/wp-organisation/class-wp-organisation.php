@@ -65,8 +65,8 @@ class WPOrganisationModule extends WPAbstractModule
       $loader->add_starter(new InitiativePosttype());
     }
 
-    $loader->add_starter(new OrganisationPosttype());
-    $loader->add_starter(new OrganisationAdminControl());
+    $loader->add_starter(new OrganisationPosttype($this));
+    $loader->add_starter(new OrganisationAdminControl($this));
 
     $loader->add_starter($templates);
   }

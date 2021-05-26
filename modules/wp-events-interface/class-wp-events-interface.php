@@ -34,7 +34,7 @@ class WPEventsInterfaceModule extends WPAbstractModule
   public function setup($loader)
   {
     $loader->add_starter( $this );
-    $loader->add_starter( new EIAdminControl());
+    $loader->add_starter( new EIAdminControl($this));
   }
 
   public function module_activate()
@@ -272,4 +272,15 @@ class WPEventsInterfaceModule extends WPAbstractModule
     }
     $feed->register_for_kartevonmorgen();
   }
+
+  public function the_output_list($user_id, $format, $format_footer)
+  {
+    $feed = $this->get_event_calendar_feed();
+    if(empty($feed))
+    {
+      return;
+    }
+    $feed->the_output_list($user_id, $format, $format_footer);
+  }
+
 }

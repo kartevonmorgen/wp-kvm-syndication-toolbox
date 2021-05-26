@@ -292,6 +292,10 @@ abstract class EICalendarFeed
     return in_array( $plugin, 
                      (array) get_option( 'active_plugins', array() ) );
   }
+
+  public function the_output_list($user_id, $format, $format_footer)
+  {
+  }
 }
 
 }

@@ -1,21 +1,10 @@
 <?php
 
-class OrganisationTemplateHelper
+class OrganisationTemplateHelper extends WPTemplateHelper
 {
-  private $organisations = array();
-  private $pointer = -1;
-  private $parent_elements = array();
-
-  public function load()
+  public function __construct()
   {
-    $this->organisations = get_posts(array('post_type' => 'organisation'));
-    $this->pointer = -1;
-  }
-
-  public function load_single($post)
-  {
-    $this->organisations = array( get_post($post));
-    $this->pointer = 0;
+    parent::__construct('organisation');
   }
 
   public function show()
@@ -28,7 +17,7 @@ class OrganisationTemplateHelper
       $this->the_excerpt();
       $this->the_permalink();
     }
-
+    $this->the_pagination();
   }
 
   public function show_single()
@@ -36,11 +25,29 @@ class OrganisationTemplateHelper
     if($this->has_current())
     {
       $this->the_content();
-      $this->the_subtitle('Kategorien');
-      $this->the_categories();
-      $this->the_subtitle('Schlagwörter');
-      $this->the_tags();
-      // -- Here you can show events --
+      if($this->has_categories())
+      {
+        $this->the_subtitle('Kategorien');
+        $this->the_categories();
+      }
+      if($this->has_tags())
+      {
+        $this->the_subtitle('Schlagwörter');
+        $this->the_tags();
+      }
+      if($this->has_events())
+      {
+        $this->the_subtitle('Veranstaltungen');
+        $this->the_events();
+        $this->the_linebreak();
+      }
+      if($this->has_kvm())
+      {
+        $this->the_subtitle('Karte');
+        $this->the_linebreak('5px');
+        $this->the_kvm();
+        $this->the_linebreak();
+      }
       $this->the_subtitle('Kontaktdaten');
       $this->the_linebreak();
       $this->the_address();
@@ -53,72 +60,64 @@ class OrganisationTemplateHelper
     }
   }
 
-
-  public function the_linebreak($element = 'div', $clazz = null, $style = null)
-  {
-    $this->the_element( '&nbsp;', $element, $clazz, $style );
-  }
-
-  public function the_title($element = 'h3', $clazz = null, $style = null, $stylea = null)
-  {
-    $org = $this->current();
-    $stylea_css = '';
-    if(!empty($stylea))
-    {
-      $stylea_css = ' style="' . $stylea . '"';
-    }
-    $value = '<a href="'.get_the_permalink($org).'"' . $stylea_css . '>';
-    $value .= get_the_title($org);
-    $value .= '</a>';
-    $this->the_element( $value, $element, $clazz, $style );
-  }
-
-  public function the_subtitle($value, $element = 'h4', $clazz = null, $style = null)
-  {
-    $this->the_element( $value, $element, $clazz, $style );
-  }
-
-  public function the_excerpt($element = 'p', $clazz = null, $style = null)
-  {
-    $org = $this->current();
-    $this->the_element( get_the_excerpt($org), $element, $clazz, $style );
-  }
-
-  public function the_permalink($text = '.. weitere Informationen ..', 
-                                $element = 'p', 
-                                $clazz = null, 
-                                $style = null,
-                                $stylea = null)
-  {
-    $org = $this->current();
-    $stylea_css = '';
-    if(!empty($stylea))
-    {
-      $stylea_css = ' style="' . $stylea . '"';
-    }
-    $this->the_element( '<a href="' . 
-                           get_the_permalink($org) . 
-                           '"' .
-                           $stylea_css . '>' . $text. '</a>', 
-                         $element, $clazz, $style );
-  }
   
-  public function the_content($element = 'div', $clazz = null, $style = null)
+
+  public function has_kvm()
   {
-    $org = $this->current();
-    $this->the_element( get_the_content(null, false, $org), $element, $clazz, $style );
+    $mc = WPModuleConfiguration::get_instance();
+    return $mc->is_module_enabled('wp-kvm-interface');
   }
 
-  public function the_categories($element = 'p', $clazz = null, $style = null)
+  public function the_kvm($element = 'div', $clazz = null, $style = null)
   {
+    $mc = WPModuleConfiguration::get_instance();
+    $module = $mc->get_module('wp-kvm-interface');
+    if($module == null || !$module->is_module_enabled())
+    {
+      return;
+    }
     $org = $this->current();
-    $this->the_element( get_the_category_list(', ','', $org->ID), $element, $clazz, $style );
+
+    $this->the_begin('div', null, 'text-align:left');
+    ?>
+      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/#/?center=<?php echo get_post_meta($org->ID, 'organisation_lat', true); ?>,<?php echo get_post_meta($org->ID, 'organisation_lng', true); ?>&zoom=19.00&left=hide&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
+7           <br />
+           <a href="http://kartevonmorgen.org/" target="_blank"     rel="noopener noreferrer">zur karte</a>
+       </iframe>
+    <?php
+
+    $this->the_end();
   }
 
-  public function the_tags($element = 'p', $clazz = null, $style = null)
+  public function has_events()
   {
+    $mc = WPModuleConfiguration::get_instance();
+    return $mc->is_module_enabled('wp-events-interface');
+  }
+
+
+  public function the_events($bordercolor = '#0F618E', 
+                             $format = null, 
+                             $format_footer = null)
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    $module = $mc->get_module('wp-events-interface');
+    if($module == null || !$module->is_module_enabled())
+    {
+      return;
+    }
     $org = $this->current();
-    $this->the_element( '&nbsp;' . get_the_tag_list('', ', ','', $org->ID), $element, $clazz, $style );
+    if($format == null)
+    {
+      $format = '<div style="margin-top:10px"><div style="text-align:center;border:2px solid '.$bordercolor.';border-radius:8px;float:left;width:200px;padding:5px;margin-right:60px">#_EVENTDATES<br/><i>#_EVENTTIMES</i></div><div style="padding:5px 0px;float:left">#_EVENTLINK{has_location}<br/><i>#_LOCATIONNAME, #_LOCATIONTOWN #_LOCATIONSTATE</i>{/has_location}</div><div style="clear:both"></div></div>';
+    }
+    if($format_footer == null)
+    {
+      $format_footer = '<div style="height:10px;clear:both">&nbsp;</div><div style="float:left;width:200px">&nbsp;</div>';
+    }
+    $module->the_output_list($org->post_author, 
+                             $format, 
+                             $format_footer);
   }
 
   public function the_address($element = 'div', $clazz = null)
@@ -171,70 +170,5 @@ class OrganisationTemplateHelper
     $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_website', true), $element, $clazz );
   }
 
-  public function the_element($value, 
-                              $element = 'p', 
-                              $clazz = null,
-                              $style = null)
-  {
-    $this->the_begin($element, $clazz, $style);
-    echo '' . $value;
-    $this->the_end();
-  }
-
-  public function the_begin($element = 'p', $clazz = null, $style = null)
-  {
-    $clazz_css = '';
-    $style_css = '';
-    array_push($this->parent_elements, $element);
-
-    if(!empty($clazz))
-    {
-      $clazz_css = ' class="' . $clazz . '"';
-    }
-
-    if(!empty($style))
-    {
-      $style_css = ' style="' . $style . '"';
-    }
-
-    if(count($this->parent_elements) > 1)
-    {
-      echo '  ';
-    }
-    
-    echo "<" . $element . $clazz_css . $style_css . ">";
-    if($element == 'p')
-    {
-      echo "\n";
-    }
-  }
-
-  public function the_end()
-  {
-    $element = array_pop($this->parent_elements);
-    echo '</' . $element . '>';
-    echo "\n";
-  }
-
-  public function next()
-  {
-    $this->pointer = $this->pointer + 1;
-    return $this->current();
-  }
-
-  public function has_next()
-  {
-    return ($this->pointer + 1 < count($this->organisations));
-  }
-
-  public function current()
-  {
-    return $this->organisations[$this->pointer];
-  }
-
-  public function has_current()
-  {
-    return ($this->pointer < count($this->organisations));
-  }
 
 }

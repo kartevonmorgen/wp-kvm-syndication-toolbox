@@ -16,6 +16,7 @@ class KVMInterfaceAdminControl implements WPModuleStarterIF
   {
     $mc = WPModuleConfiguration::get_instance();
     $rootmodule = $mc->get_root_module();
+    $module = $mc->get_module('wp-kvm-interface');
 
     $page = new UISettingsPage('kvm-interface', 
                                'Karte von Morgen');
@@ -45,8 +46,9 @@ class KVMInterfaceAdminControl implements WPModuleStarterIF
                             'With this token it is possible to upload and download ' .
                             'events and organisations.'); 
 
-    $field = $section->add_textfield('kvm_fixed_tag', 
-                                     'Fixed tag');
+    $field = $section->add_textfield(
+                         $module->get_kvm_fixed_tag_id(), 
+                         'Fixed tag');
     $field->set_description('Gives uploaded events and entries a fixed tag '.
                             'so they all can be found by this tag '.
                             'This tag is also used as the special organisation hashtag ' .

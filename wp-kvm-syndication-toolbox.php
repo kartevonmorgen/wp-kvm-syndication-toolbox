@@ -173,6 +173,8 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/ui/class-ui-posttableaction-if.php' );
     $loader->add_include('/inc/lib/ui/class-ui-usertableaction.php' );
     $loader->add_include('/inc/lib/ui/class-ui-usertableaction-if.php' );
+    // UI Support for AdminControl
+    $loader->add_include('/inc/lib/ui/class-ui-abstractadmincontrol.php' );
 
     // -- UI MVC Tools
     $loader->add_include('/inc/lib/ui/models/class-ui-color.php');
@@ -195,6 +197,10 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/admin/inc/controllers/ui/class-ui-modulesettingscheckbox-field.php');
     $loader->add_include('/admin/inc/controllers/class-wpmodules-admincontrol.php' );
     $loader->add_include('/admin/inc/controllers/class-psr7-admincontrol.php' );
+
+    // Helper class for creating templates for single-posts
+    // and a list of posts with a setted post_type
+    $loader->add_include('/inc/lib/template/class-wp-templatehelper.php');
 
     return $loader;
   }

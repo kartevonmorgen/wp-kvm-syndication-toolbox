@@ -134,4 +134,13 @@ class WPKVMInterfaceModule extends WPAbstractModule
     return $this->client;
   }
 
+  public function get_kvm_fixed_tag_id()
+  {
+    return 'kvm_fixed_tag';
+  }
+
+  public function get_kvm_fixed_tag()
+  {
+    return get_option($this->get_kvm_fixed_tag_id());
+  }
 }

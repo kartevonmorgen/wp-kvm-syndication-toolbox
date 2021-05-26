@@ -13,7 +13,8 @@ define( 'EI_CUSTOM_DATE_RANGE_DAYS', 0 );
  * @copyright  No Copyright.
  * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
  */
-class EIAdminControl implements WPModuleStarterIF
+class EIAdminControl extends UIAbstractAdminControl
+                     implements WPModuleStarterIF
 {
   public function start() 
   {
@@ -35,8 +36,7 @@ class EIAdminControl implements WPModuleStarterIF
 
     $field = $section->add_dropdownfield('ei_event_calendar', 
                                          'Calendar plugin');
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-events-interface');
+    $module = $this->get_current_module();
 	  $available_feeds = $module->get_available_calendar_feeds();
     foreach($available_feeds as $feed)
     {
@@ -96,8 +96,7 @@ class EIAdminControl implements WPModuleStarterIF
 
   private function add_saved_listener()
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-events-interface');
+    $module = $this->get_current_module();
     $module->add_event_saved_listener(
       new class() implements EIEventSavedListenerIF
       {

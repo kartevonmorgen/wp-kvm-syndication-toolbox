@@ -951,6 +951,20 @@ class EICalendarFeedEventsManager extends EICalendarFeed
     include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
     return is_plugin_active( 'events-manager/events-manager.php');
   }
+
+  public function the_output_list($user_id, $format, $format_footer)
+  {
+    em_events(
+       array(
+         // This gives also trashed events.
+         //'event_status'=>'pending,publish',
+         'pagination' => true,
+         'limit'=> 5,
+         'owner'=> $user_id,
+         'format'=> $format,
+         'format_footer' => $format_footer
+         ));
+  }
 }
 
 }

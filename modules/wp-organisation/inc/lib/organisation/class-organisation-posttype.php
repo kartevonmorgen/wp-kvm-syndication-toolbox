@@ -2,6 +2,18 @@
 
 class OrganisationPosttype implements WPModuleStarterIF
 { 
+  private $_current_module;
+
+  public function __construct($current_module) 
+  {
+    $this->_current_module = $current_module;
+  }
+
+  public function get_current_module()
+  {
+    return $this->_current_module;
+  }
+
   public function setup_actions($loader)
   {
   }
@@ -49,8 +61,7 @@ class OrganisationPosttype implements WPModuleStarterIF
       'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' ),
       'map_meta_cap'       => true );
 
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-organisation');
+    $module = $this->get_current_module();
     if(!$module->is_multiple_organisation_pro_user_allowed())
     {
       $args['capabilities'] = array('create_posts' => false);
@@ -61,8 +72,6 @@ class OrganisationPosttype implements WPModuleStarterIF
                                 'organisation');
     $field = $ui_metabox->add_dropdownfield('organisation_type', 
                                             'Organisationstype');
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-organisation');
     foreach($module->get_organisation_types() as $type)
     {
       $field->add_value($type->get_id(), $type->get_name());
