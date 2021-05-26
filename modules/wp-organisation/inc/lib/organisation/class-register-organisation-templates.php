@@ -2,6 +2,18 @@
 
 class RegisterOrganisationTemplates implements WPModuleStarterIF
 {
+  private $_current_module;
+
+  public function __construct($current_module) 
+  {
+    $this->_current_module = $current_module;
+  }
+
+  public function get_current_module()
+  {
+    return $this->_current_module;
+  }
+
   public function setup($loader)
   {
     add_filter('the_content', array($this, 'single_content'));
@@ -9,9 +21,12 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
 
   public function start()
   {
-    add_filter( 'single_template', 
-                array($this, 
-                      'get_organisation_template'), 10, 2);
+    if($this->get_current_module()->is_extend_the_content_for_single_organisation())
+    {
+      add_filter( 'single_template', 
+                  array($this, 
+                        'get_organisation_template'), 10, 2);
+    }
     add_shortcode('organisations', array( $this, 'organisations_shortcode'));
   }
 
@@ -21,13 +36,19 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
     $root = $mc->get_root_module();
 
     $template = locate_template(array('plugins/' . 
-                                     $root->get_id() . 
-                                     '/templates/organisations-template.php'));
+                                      $root->get_id() . 
+                                      '/templates/organisations-template.php'));
     if( !$template )
     {
-      $template = dirname( __FILE__, 4 ) . 
-        '/templates/organisations-template.php';
+        $template = dirname( __FILE__, 4 ) . 
+          '/templates/organisations-template.php';
     }
+
+    if( !$template )
+    {
+      return;
+    }
+    
     include($template);
   }
 
@@ -41,18 +62,26 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
 
     $mc = WPModuleConfiguration::get_instance();
     $root = $mc->get_root_module();
-
-    ob_start();
+    
     $template = locate_template(array('plugins/' . 
                                      $root->get_id() . 
                                      '/templates/organisation-template.php'));
     if( !$template )
     {
-      $template = dirname( __FILE__, 4 ) . 
-        '/templates/organisation-template.php';
+      if($this->get_current_module()->is_extend_the_content_for_single_organisation())
+      {
+        $template = dirname( __FILE__, 4 ) . 
+          '/templates/organisation-template.php';
+      }
     }
-    include($template);
 
+    if( !$template )
+    {
+      return $content;
+    }
+
+    ob_start();
+    include($template);
     return ob_get_clean();
   }
  

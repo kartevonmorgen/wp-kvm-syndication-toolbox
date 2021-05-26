@@ -35,7 +35,7 @@ class WPOrganisationModule extends WPAbstractModule
   {
     $this->init_organisation_types();
 
-    $templates = new RegisterOrganisationTemplates();
+    $templates = new RegisterOrganisationTemplates($this);
     $templates->setup($loader);
 
     $searcher = new OrganisationSearchBehaviour();
@@ -116,6 +116,18 @@ class WPOrganisationModule extends WPAbstractModule
   public function is_migration_enabled()
   {
     return get_option($this->get_migration_enabled_id(), false);
+  }
+
+  public function get_extend_the_content_for_single_organisation_id()
+  {
+    return 'extend_the_content_for_single_organisation';
+  }
+
+  public function is_extend_the_content_for_single_organisation()
+  {
+    return get_option(
+      $this->get_extend_the_content_for_single_organisation_id(), 
+      true);
   }
 
   public function get_organisation_by_user($user_id)

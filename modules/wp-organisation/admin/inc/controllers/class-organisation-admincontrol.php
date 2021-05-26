@@ -28,6 +28,12 @@ class OrganisationAdminControl extends UIAbstractAdminControl
       return;
     }
 
+    $field = $section->add_checkbox($module->get_extend_the_content_for_single_organisation_id(), 
+                                    'Extend the content of the organisation detail view.');
+    $field->set_description('Extend the content of the organisation detail view with. ' . 
+                            'categories, tags, events, karte von morgen and contact data');
+    $field->set_defaultvalue(true);
+
     $field = $section->add_checkbox($module->get_multiple_organisation_pro_user_id(), 
                                     'Allow multiple Organisations pro User');
     $field->set_description('Normally a user registers himself and its organisation. ' . 

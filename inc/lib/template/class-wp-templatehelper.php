@@ -17,7 +17,7 @@ abstract class WPTemplateHelper
   /**
    * Loads a List of posts from the Database
    */
-  public function load($page = 0, $posts_per_page = 2)
+  public function load($page = 0, $posts_per_page = 10)
   {
     $posts_offset = $page * $posts_per_page;
 
