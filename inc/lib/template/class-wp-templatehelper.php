@@ -196,7 +196,7 @@ abstract class WPTemplateHelper
   public function the_pagination($element = 'div', 
                                  $clazz = null)
   {
-    $this->the_linebreak('div', null, 'clear:both');
+    $this->the_linebreak(null, 'div', null, 'clear:both');
     if($this->page > 0)
     {
       $this->the_element('<a href="' . 
@@ -219,7 +219,7 @@ abstract class WPTemplateHelper
                        $clazz, 
                        'float:right');
     }
-    $this->the_linebreak('div', null, 'clear:both');
+    $this->the_linebreak(null, 'div', null, 'clear:both');
   }
 
   /**
