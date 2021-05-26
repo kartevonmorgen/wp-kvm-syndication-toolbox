@@ -1,8 +1,8 @@
-
 <?php
 
 /**
- * Controller OrganisationAdminControl
+ * UIAbstractAdminControl for basic functioionality for 
+ * Settings
  *
  * @author   Sjoerd Takken
  * @copyright  No Copyright.

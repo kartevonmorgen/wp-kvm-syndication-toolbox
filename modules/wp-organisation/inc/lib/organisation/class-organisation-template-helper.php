@@ -169,6 +169,4 @@ class OrganisationTemplateHelper extends WPTemplateHelper
                         'float:left;width:110px');
     $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_website', true), $element, $clazz );
   }
-
-
 }
