@@ -60,7 +60,12 @@ class UIMetaboxField
   public function get_value($post)
   {
     $id = $this->get_id();
-    return get_post_meta( $post->ID, $id, true );
+
+    if ( metadata_exists( 'post', $post->ID, $id ) ) 
+    {
+      return get_post_meta( $post->ID, $id, true );
+    }
+    return $this->get_defaultvalue();
   }
 
   public function get_values()

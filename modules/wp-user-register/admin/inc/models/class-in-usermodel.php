@@ -64,6 +64,11 @@ class InUserModel extends UIModel
     }
 
     $ma = $this->add_ma(
+      new UIPostMetaModelAdapter('organisation_kvm_upload', UIModelAdapterType::BOOLTYPE));
+    $ma->set_title('Upload zu der Karte von Morgen');
+    $ma->set_default_value(true);
+
+    $ma = $this->add_ma(
       new UIPostMetaModelAdapter('organisation_kvm_log', UIModelAdapterType::TEXTAREA));
     $ma->set_title('Karte von Morgen Statusmeldungen');
     $ma->set_disabled(true);

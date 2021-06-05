@@ -61,11 +61,19 @@ class WPMetaFieldsHelper
 
   public function is_in_memory($key)
   {
+    if(!array_key_exists($key, $_POST))
+    {
+      return false;
+    }
     return isset($_POST[$key]);
   }
 
   private function get_in_memory_value($key)
   {
+    if(!array_key_exists($key, $_POST))
+    {
+      return null;
+    }
     return $_POST[$key];
   }
 

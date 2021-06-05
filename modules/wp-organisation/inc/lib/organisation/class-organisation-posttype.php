@@ -30,18 +30,18 @@ class OrganisationPosttype implements WPModuleStarterIF
 		  'singular_name'      => _x( 'Organisation', 
                                   'post type singular name', 
                                   'organisation' ),
-      'menu_name'          => _x( 'Organisations', 'admin menu', 'organisation' ),
+      'menu_name'          => _x( 'Organisationen', 'admin menu', 'organisation' ),
       'name_admin_bar'     => _x( 'Organisation', 'add new on admin bar', 'organisation' ),
       'add_new'            => _x( 'Erstellen', 'organisation', 'organisation' ),
       'add_new_item'       => __( 'Organisation erstellen', 'organisation' ),
       'new_item'           => __( 'Neue Organisation', 'organisation' ),
       'edit_item'          => __( 'Organisation bearbeiten', 'organisation' ),
       'view_item'          => __( 'Organisation Anschauen', 'organisation' ),
-      'all_items'          => __( 'Alle Organisationn', 'organisation' ),
-      'search_items'       => __( 'Organisationn Suche', 'organisation' ),
-      'parent_item_colon'  => __( 'Parent Organisations:', 'organisation' ),
-      'not_found'          => __( 'Keine Organisation gefunden.', 'organisation' ),
-      'not_found_in_trash' => __( 'Keine Organisation gefunden im Papierkorb.', 
+      'all_items'          => __( 'Alle Organisationen', 'organisation' ),
+      'search_items'       => __( 'Organisationen Suche', 'organisation' ),
+      'parent_item_colon'  => __( 'Parent Organisationen:', 'organisation' ),
+      'not_found'          => __( 'Keine Organisationen gefunden.', 'organisation' ),
+      'not_found_in_trash' => __( 'Keine Organisationen gefunden im Papierkorb.', 
                                   'organisation' ));
     $args = array(
       'labels'             => $labels,
@@ -97,19 +97,32 @@ class OrganisationPosttype implements WPModuleStarterIF
     $ui_metabox->add_textfield('organisation_website', 'Webseite');
     $ui_metabox->register();
 
-    // Karte von morgen Meldungen
-    $ui_metabox = new UIMetabox('organisation_kvm_log_metabox',
-                                'Karte von morgen Logging',
-                                'organisation');
-    $field = $ui_metabox->add_textarea('organisation_kvm_log', 
+    $mc = WPModuleConfiguration::get_instance();
+    if ($mc->is_module_enabled('wp-kvm-interface')) 
+    { 
+      // Karte von morgen Meldungen
+      $ui_metabox = new UIMetabox('organisation_kvm_log_metabox',
+                                  'Karte von morgen',
+                                  'organisation');
+
+      $field = $ui_metabox->add_textarea('organisation_kvm_log', 
                                         'Meldung');
 
-    // Field should be disabled, otherwise the UI
-    // updates the field after the KVM has updated it.
-    $field->set_disabled(true);
-    $field = $ui_metabox->add_textfield('organisation_kvm_id', 'Karte von morgen Id');
-    $field->set_disabled(true);
-    $ui_metabox->register();
+      // Field should be disabled, otherwise the UI
+      // updates the field after the KVM has updated it.
+      $field->set_disabled(true);
+
+      $field = $ui_metabox->add_textfield('organisation_kvm_id', 
+                                          'Karte von morgen Id');
+      $field->set_disabled(true);
+
+      //$field = $ui_metabox->add_checkbox('organisation_kvm_upload', 
+      //                                   'Upload zu der Karte von morgen');
+      //$field->set_defaultvalue(true);
+
+      $ui_metabox->register();
+    }
+
 
     register_post_type( 'organisation', $args );
   }

@@ -55,6 +55,10 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
   public function single_content( $content )
   {
     $post = get_post();
+    if( $post == null || !is_object($post))
+    {
+      return $content;
+    }
     if( $post->post_type != 'organisation')
     {
       return $content;

@@ -36,6 +36,7 @@ class UploadWPOrganisationToKVM
     $helper = new WPMetaFieldsHelper($organisation_post_id);
     $helper->add_field('organisation_kvm_id');
     $helper->add_field('organisation_kvm_log');
+    $helper->add_field('organisation_kvm_upload');
     $helper->add_field('organisation_type');
     $helper->add_field('organisation_firstname');
     $helper->add_field('organisation_lastname');
@@ -84,10 +85,18 @@ class UploadWPOrganisationToKVM
       return;
     }
 
+    //
+    //$value = $helper->get_value('organisation_kvm_upload');
+    //if( ! empty( $value) && $value == false)
+    //{
+    //  echo '<p>Upload to the KVM is not activated</p>';
+    //  return;
+    //}
+
     $wpOrganisation = new WPOrganisation();
     $this->fill_organisation_postmeta($helper, 
-                                    $wpOrganisation, 
-                                    $organisation_post);
+                                      $wpOrganisation, 
+                                      $organisation_post);
 
     if(empty($organisation_post->post_status))
     {
@@ -127,8 +136,8 @@ class UploadWPOrganisationToKVM
   }
 
   private function fill_organisation_postmeta($helper,
-                                            $wpOrganisation, 
-                                            $post)
+                                              $wpOrganisation, 
+                                              $post)
   {
     $value = $helper->get_value('organisation_kvm_id');
     if( ! empty( $value))
