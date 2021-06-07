@@ -39,10 +39,10 @@ class WPUserRegisterModule extends WPAbstractModule
     $tableColumns = new UserRegisterTableColumns(); 
     $tableColumns->setup($loader);
 
-    $urposttype = new WPRegisterUserRegisterPosttype();
+    $urposttype = new WPRegisterUserRegisterPosttype($this);
     $urposttype->setup($loader);
 
-    $urlayout = new WPRegisterUserRegisterLayout();
+    $urlayout = new WPRegisterUserRegisterLayout($this);
     $urlayout->setup($loader);
 
     $create_urposts = new WPCreateDefaultUserRegisterPosts();
@@ -53,7 +53,7 @@ class WPUserRegisterModule extends WPAbstractModule
 
     $loader->add_starter( new InControlHolder());
     $loader->add_starter($urposttype);
-    $loader->add_starter( new UserRegisterAdminControl());
+    $loader->add_starter( new UserRegisterAdminControl($this));
   }
 
   public function module_activate()

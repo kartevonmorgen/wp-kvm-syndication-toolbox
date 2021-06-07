@@ -21,4 +21,10 @@ class WPAbstractModuleProvider
   {
     return $this->_current_module;
   }
+
+  public function get_root_module()
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    return $mc->get_root_module();
+  }
 }

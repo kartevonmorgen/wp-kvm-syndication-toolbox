@@ -1,19 +1,9 @@
 <?php
 
-class OrganisationPosttype implements WPModuleStarterIF
+class OrganisationPosttype 
+  extends WPAbstractModuleProvider
+  implements WPModuleStarterIF
 { 
-  private $_current_module;
-
-  public function __construct($current_module) 
-  {
-    $this->_current_module = $current_module;
-  }
-
-  public function get_current_module()
-  {
-    return $this->_current_module;
-  }
-
   public function setup_actions($loader)
   {
   }
@@ -116,9 +106,9 @@ class OrganisationPosttype implements WPModuleStarterIF
                                           'Karte von morgen Id');
       $field->set_disabled(true);
 
-      //$field = $ui_metabox->add_checkbox('organisation_kvm_upload', 
-      //                                   'Upload zu der Karte von morgen');
-      //$field->set_defaultvalue(true);
+      $field = $ui_metabox->add_checkbox('organisation_kvm_do_not_upload', 
+                                         'Nicht hochladen zu der Karte von morgen');
+      $field->set_defaultvalue(false);
 
       $ui_metabox->register();
     }

@@ -31,12 +31,14 @@ class UploadWPOrganisationToKVM
   }
 
 
-  function upload($organisation_post_id, $organisation_post, $update = false) 
+  function upload($organisation_post_id, 
+                  $organisation_post, 
+                  $update = false) 
   {
     $helper = new WPMetaFieldsHelper($organisation_post_id);
     $helper->add_field('organisation_kvm_id');
     $helper->add_field('organisation_kvm_log');
-    $helper->add_field('organisation_kvm_upload');
+    $helper->add_field('organisation_kvm_do_not_upload');
     $helper->add_field('organisation_type');
     $helper->add_field('organisation_firstname');
     $helper->add_field('organisation_lastname');
@@ -48,7 +50,8 @@ class UploadWPOrganisationToKVM
     $helper->add_field('organisation_city');
     $helper->add_field('organisation_lat');
     $helper->add_field('organisation_lng');
-    if(!$this->is_skip_in_memory_check() && !$helper->has_in_memory_values())
+    if(!$this->is_skip_in_memory_check() && 
+       !$helper->has_in_memory_values())
     {
       // There are two save_post events,
       // We only want to upload to the KVM if there are
@@ -85,13 +88,12 @@ class UploadWPOrganisationToKVM
       return;
     }
 
-    //
-    //$value = $helper->get_value('organisation_kvm_upload');
-    //if( ! empty( $value) && $value == false)
-    //{
-    //  echo '<p>Upload to the KVM is not activated</p>';
-    //  return;
-    //}
+    $value = $helper->get_value('organisation_kvm_do_not_upload');
+    if( $value == true )
+    {
+      echo "<p>Die Organisation wird nicht hochgeladen !!<br>Nicht hochladen zu der Karte von morgen ist aktiviert.</p>";
+      return;
+    }
 
     $wpOrganisation = new WPOrganisation();
     $this->fill_organisation_postmeta($helper, 
@@ -128,6 +130,8 @@ class UploadWPOrganisationToKVM
       $location = $wpOrganisation->get_location();
       update_post_meta($organisation_post_id, 'organisation_lat', $location->get_lat());
       update_post_meta($organisation_post_id, 'organisation_lng', $location->get_lon());
+      echo '<p>Hochladen erfolgreich (KVM Id: ' . 
+           $kvm_id . ')</p>';
     }
     finally 
     {

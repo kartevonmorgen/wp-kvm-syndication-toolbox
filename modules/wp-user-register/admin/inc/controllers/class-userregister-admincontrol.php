@@ -7,16 +7,13 @@
  * @copyright  No Copyright.
  * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
  */
-class UserRegisterAdminControl implements WPModuleStarterIF
+class UserRegisterAdminControl 
+ extends UIAbstractAdminControl
+ implements WPModuleStarterIF
 {
-  public function __construct() 
-  {
-  }
-
   public function start() 
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $rootmodule = $mc->get_root_module();
+    $rootmodule = $this->get_root_module();
 
     $page = new UISettingsPage('userregister-options', 
                                'User register settings');
@@ -40,7 +37,8 @@ class UserRegisterAdminControl implements WPModuleStarterIF
 
     $field = $section->add_textfield('userregister_logo',
                                      'Path to Logo for the Loginpage');
-    $layout = new WPRegisterUserRegisterLayout();
+    $layout = new WPRegisterUserRegisterLayout(
+                    $this->get_current_module());
     $field->set_defaultvalue($layout->get_default_logo());
 
     $page->register();

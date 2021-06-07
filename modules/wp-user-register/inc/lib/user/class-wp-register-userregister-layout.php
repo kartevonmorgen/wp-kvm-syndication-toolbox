@@ -1,11 +1,14 @@
 <?php
 
 class WPRegisterUserRegisterLayout
+  extends WPAbstractModuleProvider
 {
 
   public function setup($loader)
   {
-    $loader->add_action('login_enqueue_scripts', $this, 'login_logo');
+    $loader->add_action('login_enqueue_scripts', 
+                        $this, 
+                        'login_logo');
   }
 
   function login_logo()
@@ -32,8 +35,7 @@ input#user_email
 
   public function get_default_logo()
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     return 'wp-content/plugins/' . $root->get_id() . '/images/defaultlogo.png';
   }
 }

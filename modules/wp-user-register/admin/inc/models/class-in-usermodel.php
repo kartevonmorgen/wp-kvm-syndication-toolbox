@@ -64,9 +64,9 @@ class InUserModel extends UIModel
     }
 
     $ma = $this->add_ma(
-      new UIPostMetaModelAdapter('organisation_kvm_upload', UIModelAdapterType::BOOLTYPE));
-    $ma->set_title('Upload zu der Karte von Morgen');
-    $ma->set_default_value(true);
+      new UIPostMetaModelAdapter('organisation_kvm_do_not_upload', UIModelAdapterType::BOOLTYPE));
+    $ma->set_title('Nicht hochladen zu der Karte von Morgen');
+    $ma->set_description('Die Organisation wird nicht hochgeladen zu der Karte von Morgen nachdem sie aktualisiert worden ist.');
 
     $ma = $this->add_ma(
       new UIPostMetaModelAdapter('organisation_kvm_log', UIModelAdapterType::TEXTAREA));

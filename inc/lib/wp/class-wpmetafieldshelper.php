@@ -80,7 +80,12 @@ class WPMetaFieldsHelper
   private function get_in_db_value($key)
   {
     $post_id = $this->get_post_id();
-    return get_post_meta( $post_id, $key, true );
+    $value = get_post_meta( $post_id, $key, true );
+    if($value == 'off')
+    {
+      return false;
+    }
+    return $value;
   }
 
   public function has_in_memory_values()

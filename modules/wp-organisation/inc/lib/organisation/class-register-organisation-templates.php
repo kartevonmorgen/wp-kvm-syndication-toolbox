@@ -1,19 +1,9 @@
 <?php
 
-class RegisterOrganisationTemplates implements WPModuleStarterIF
+class RegisterOrganisationTemplates 
+  extends WPAbstractModuleProvider
+  implements WPModuleStarterIF
 {
-  private $_current_module;
-
-  public function __construct($current_module) 
-  {
-    $this->_current_module = $current_module;
-  }
-
-  public function get_current_module()
-  {
-    return $this->_current_module;
-  }
-
   public function setup($loader)
   {
     add_filter('the_content', array($this, 'single_content'));
@@ -21,7 +11,8 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
 
   public function start()
   {
-    if($this->get_current_module()->is_extend_the_content_for_single_organisation())
+    $module = $this->get_current_module();
+    if($module->is_extend_the_content_for_single_organisation())
     {
       add_filter( 'single_template', 
                   array($this, 
@@ -32,8 +23,7 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
 
   public function organisations_shortcode($atts)
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
 
     $template = locate_template(array('plugins/' . 
                                       $root->get_id() . 
@@ -64,15 +54,15 @@ class RegisterOrganisationTemplates implements WPModuleStarterIF
       return $content;
     }
 
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     
     $template = locate_template(array('plugins/' . 
                                      $root->get_id() . 
                                      '/templates/organisation-template.php'));
     if( !$template )
     {
-      if($this->get_current_module()->is_extend_the_content_for_single_organisation())
+      $module = $this->get_current_module();
+      if($module->is_extend_the_content_for_single_organisation())
       {
         $template = dirname( __FILE__, 4 ) . 
           '/templates/organisation-template.php';

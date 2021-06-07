@@ -63,7 +63,12 @@ class UIMetaboxField
 
     if ( metadata_exists( 'post', $post->ID, $id ) ) 
     {
-      return get_post_meta( $post->ID, $id, true );
+      $value = get_post_meta( $post->ID, $id, true );
+      if($this->is_checkbox() && $value == 'off')
+      {
+        return false;
+      }
+      return $value;
     }
     return $this->get_defaultvalue();
   }
@@ -112,12 +117,9 @@ class UIMetaboxField
       {
         $value = $_POST[$this->get_id()];
       }
-      else
+      else if($this->is_checkbox())
       {
-        if($this->is_checkbox())
-        {
-          $value = false;
-        }
+        $value = 'off';
       }
     }
 
@@ -126,6 +128,10 @@ class UIMetaboxField
       if(!$this->is_checkbox() && $this->is_escape_html())
       {
         $value = sanitize_text_field( $value );
+      }
+      if($this->is_checkbox() && $value == false)
+      {
+        $value = 'off';
       }
       update_post_meta( $post_id, 
                         $this->get_id(), 

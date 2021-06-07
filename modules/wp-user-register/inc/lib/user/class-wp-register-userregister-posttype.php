@@ -1,6 +1,8 @@
 <?php
 
-class WPRegisterUserRegisterPosttype implements WPModuleStarterIF
+class WPRegisterUserRegisterPosttype 
+  extends WPAbstractModuleProvider
+  implements WPModuleStarterIF
 {
 
   public function setup($loader)
@@ -85,8 +87,7 @@ class WPRegisterUserRegisterPosttype implements WPModuleStarterIF
 
   function modify_admin_menu()
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     add_submenu_page($root->get_id() . '-menu', 
                      'User register items', 
                      'User register items',
