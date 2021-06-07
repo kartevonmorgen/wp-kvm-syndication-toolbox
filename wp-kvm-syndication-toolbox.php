@@ -155,6 +155,9 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/osm/class-osm-nominatim.php' );
     $loader->add_include('/inc/lib/osm/class-osm-nominatim-cache.php' );
 
+    // -- Module Provider --
+    $loader->add_include('/inc/lib/module/class-wp-abstractmoduleprovider.php');
+    
     // -- UI Tools Metabox --
     $loader->add_include('/inc/lib/ui/class-ui-metabox-field.php' );
     $loader->add_include('/inc/lib/ui/class-ui-metabox.php' );
@@ -173,6 +176,7 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/ui/class-ui-posttableaction-if.php' );
     $loader->add_include('/inc/lib/ui/class-ui-usertableaction.php' );
     $loader->add_include('/inc/lib/ui/class-ui-usertableaction-if.php' );
+
     // UI Support for AdminControl
     $loader->add_include('/inc/lib/ui/class-ui-abstractadmincontrol.php' );
 
