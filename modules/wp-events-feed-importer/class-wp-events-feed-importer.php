@@ -167,7 +167,7 @@ class WPEventsFeedImporterModule extends WPAbstractModule
 
   public function get_category_prefix()
   {
-    return get_option($this->get_category_prefix(), '');
+    return get_option($this->get_category_prefix_id(), '');
   }
 
   public function get_max_recurring_count_id()
