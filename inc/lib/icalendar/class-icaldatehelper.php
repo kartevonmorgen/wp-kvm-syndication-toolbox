@@ -261,10 +261,13 @@ class ICalDateHelper
 		if($duration[0] == "P") {
 			$duration = str_replace(array("H","M","S","T","D","W","P"),array("H,","M,","S,","","D,","W,",""),$duration);
 			$dur2 = explode(",",$duration);
-			foreach($dur2 as $dur){
+			foreach($dur2 as $dur)
+      {
 				$val=intval($dur);
-				if(strlen($dur) > 0){
-					switch($dur{strlen($dur) - 1}) {
+				if(strlen($dur) > 0)
+        {
+					switch($dur[strlen($dur) - 1]) 
+          {
 						case "H":
 							$secs += 60*60 * $val;
 							break;
