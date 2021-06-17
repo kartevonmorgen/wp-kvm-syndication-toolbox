@@ -183,10 +183,37 @@ class UploadWPOrganisationToKVM
     }
 
     $wpOrganisation->set_location(
-      $this->create_location($helper, $post));
+      $this->create_location_with_helper($helper, $post));
   }
 
-  public function create_location($helper, $post)
+  public function create_location($organisation_post_id, 
+                                  $organisation_post,
+                                  $fill_geo = false)
+  {
+    $helper = new WPMetaFieldsHelper($organisation_post_id);
+    $helper->set_force_db(true);
+    $helper->add_field('organisation_kvm_id');
+    $helper->add_field('organisation_kvm_log');
+    $helper->add_field('organisation_kvm_do_not_upload');
+    $helper->add_field('organisation_type');
+    $helper->add_field('organisation_firstname');
+    $helper->add_field('organisation_lastname');
+    $helper->add_field('organisation_phone');
+    $helper->add_field('organisation_website');
+    $helper->add_field('organisation_email');
+    $helper->add_field('organisation_address');
+    $helper->add_field('organisation_zipcode');
+    $helper->add_field('organisation_city');
+    $helper->add_field('organisation_lat');
+    $helper->add_field('organisation_lng');
+    return $this->create_location_with_helper($helper, 
+                                       $organisation_post,
+                                       $fill_geo);
+  }
+
+  private function create_location_with_helper($helper, 
+                                               $post,
+                                               $fill_geo = false)
   {
     if(empty($post))
     {
@@ -218,22 +245,20 @@ class UploadWPOrganisationToKVM
       $wpLocation->set_city($value);
     }
 
-    /* 
-     * Do not set them, but find them with OSM
-
-    $value = $helper->get_value( 'organisation_lat');
-    if( ! empty($value))
+    if($fill_geo)
     {
-      $wpLocation->set_lat($value);
-    }
+      $value = $helper->get_value( 'organisation_lat');
+      if( ! empty($value))
+      {
+        $wpLocation->set_lat($value);
+      }
 
-    $value = $helper->get_value( 'organisation_lng');
-    if( ! empty($value))
-    {
-      $wpLocation->set_lon($value);
+      $value = $helper->get_value( 'organisation_lng');
+      if( ! empty($value))
+      {
+        $wpLocation->set_lon($value);
+      }
     }
-     */
-
     return $wpLocation;
   }
 

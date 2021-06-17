@@ -122,13 +122,20 @@ class KVMInterfaceHandleEvents
       // to get the location of the organisation
       // because a lot of online events do not have
       // a location
-      if( class_exists('UploadWPOrganisationToKVM'))
+      $orga_id = 0;
+      $mc = WPModuleConfiguration::get_instance();
+      if( $mc->is_module_enabled('wp-organisation'))
       {
+        $module = $mc->get_module('wp-organisation');
+        $organisation_post = $module->get_organisation_by_user(
+           $eiEvent->get_owner_user_id());
+        $orga_id = $organisation_post->ID;
+
         $iske = new UploadWPOrganisationToKVM();
-        $organisation_id = get_user_meta($eiEvent->get_owner_user_id(), 'organisation_id', true);
-        $ipost = get_post($organisation_id);
-        $ipost_meta = get_post_meta($organisation_id);
-        $wpLocation = $iske->create_location($organisation_id, $ipost, $ipost_meta);
+        $wpLocation = $iske->create_location(
+                               $orga_id, 
+                               $organisation_post,
+                               true);
         $eiEvent->set_location($wpLocation);
       }
     }
@@ -138,7 +145,9 @@ class KVMInterfaceHandleEvents
       $this->handleOFDBException(
         'Hochladen zu der Karte von Morgen '.
         'geht nicht, die Addresse ist ' . 
-        'nicht bekannt (location is null)',
+        'nicht bekannt (location is null, ' . 
+        'organisation id ='. 
+        $orga_id . ')',
         $eiEvent,
         $id,
         null);

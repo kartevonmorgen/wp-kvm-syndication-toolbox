@@ -67,5 +67,13 @@ class WPUserRegisterModule extends WPAbstractModule
   public function module_uninstall()
   {
   }
+
+  public function get_organisation_by_user($user_id)
+  {
+    $uhelper = new UserOrganisationHelper();
+    $organisation_post = 
+      $uhelper->get_organisation_by_user($user_id);
+    return $organisation_post;
+  }
 }
 

@@ -5,10 +5,21 @@ class WPMetaFieldsHelper
   private $_fields = array();
   private $_cvalues = array();
   private $_post_id;
+  private $_force = false;
 
   public function __construct($post_id)
   {
     $this->_post_id = $post_id;
+  }
+
+  public function set_force_db($force)
+  {
+    $this->force = $force;
+  }
+
+  public function is_force_db()
+  {
+    return $this->force;
   }
 
   public function add_field($key)
@@ -32,7 +43,11 @@ class WPMetaFieldsHelper
     {
       return $this->get_cache_value($key);
     }
-    if($this->is_in_memory($key))
+    if($this->is_force_db())
+    {
+      $value = $this->get_in_db_value($key);
+    }
+    else if($this->is_in_memory($key))
     {
       $value = $this->get_in_memory_value($key);
     }
