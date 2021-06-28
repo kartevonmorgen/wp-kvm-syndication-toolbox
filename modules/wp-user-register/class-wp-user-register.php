@@ -51,7 +51,7 @@ class WPUserRegisterModule extends WPAbstractModule
     $uremail = new UserRegisterEmail();
     $uremail->setup($loader);
 
-    $loader->add_starter( new InControlHolder());
+    $loader->add_starter( new InControlHolder($this));
     $loader->add_starter($urposttype);
     $loader->add_starter( new UserRegisterAdminControl($this));
   }
@@ -66,6 +66,18 @@ class WPUserRegisterModule extends WPAbstractModule
 
   public function module_uninstall()
   {
+  }
+
+  public function get_publish_organisation_after_approve_id()
+  {
+    return 'publish_organisation_after_approve';
+  }
+
+  public function is_publish_organisation_after_approve()
+  {
+    return get_option(
+      $this->get_publish_organisation_after_approve_id(), 
+      false);
   }
 
   public function get_organisation_by_user($user_id)

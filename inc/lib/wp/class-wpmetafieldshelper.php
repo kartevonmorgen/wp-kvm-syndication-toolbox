@@ -14,12 +14,12 @@ class WPMetaFieldsHelper
 
   public function set_force_db($force)
   {
-    $this->force = $force;
+    $this->_force = $force;
   }
 
   public function is_force_db()
   {
-    return $this->force;
+    return $this->_force;
   }
 
   public function add_field($key)

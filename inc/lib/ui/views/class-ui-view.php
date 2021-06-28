@@ -43,6 +43,16 @@ abstract class UIView
   {
     return $this->_viewadapters;
   }
+  
+  public function get_viewadapter_ids()
+  {
+    $ids = array();
+    foreach($this->get_viewadapters() as $va)
+    {
+      array_push($ids, $va->get_id());
+    }
+    return $ids;
+  }
 
   public function get_viewadapter($id)
   {

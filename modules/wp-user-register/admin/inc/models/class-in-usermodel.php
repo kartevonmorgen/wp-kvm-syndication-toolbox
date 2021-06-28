@@ -15,6 +15,11 @@ class InUserModel extends UIModel
     $ma->set_title('Name der Organisation');
     $ma->set_validate(true);
 
+    // Organisation Post Modeladapters
+    $ma = $this->add_ma(
+      new UIPostModelAdapter('post_content', UIModelAdapterType::TEXTAREA));
+    $ma->set_title('Beschreibung der Organisation');
+    $ma->set_validate(true);
 
     $ma = $this->add_ma(
       new UIPostMetaModelAdapter(

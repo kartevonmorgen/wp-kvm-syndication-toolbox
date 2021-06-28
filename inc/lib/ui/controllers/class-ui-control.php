@@ -1,6 +1,6 @@
 <?php
 
-abstract class UIControl
+abstract class UIControl extends WPAbstractModuleProvider
 { 
   private $_model;
   private $_view;
@@ -40,7 +40,9 @@ abstract class UIControl
 
   public function validate($errors)
   {
-    return $this->get_model()->validate($errors);
+    return $this->get_model()->validate(
+      $this->get_view()->get_viewadapter_ids(),
+      $errors);
   }
 
   public function save()

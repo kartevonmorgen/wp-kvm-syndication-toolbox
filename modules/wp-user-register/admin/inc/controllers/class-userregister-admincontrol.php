@@ -14,15 +14,22 @@ class UserRegisterAdminControl
   public function start() 
   {
     $rootmodule = $this->get_root_module();
+    $module = $this->get_current_module();
 
     $page = new UISettingsPage('userregister-options', 
                                'User register settings');
     $page->set_submenu_page(true, $rootmodule->get_id() . '-menu');
     $section = $page->add_section('wplib_section_one', 'Userregister settings');
-    $section->set_description(
-      '');
+    $section->set_description('');
 
-    $field =$section->add_checkbox('userregister_createdefaultitems', 
+    $field = $section->add_checkbox($module->get_publish_organisation_after_approve_id(), 
+                                   'Publish an Organisation direct after the approving');
+    $field->set_description('Normally an Organisation will be published by the user itself ' . 
+                            'but it is also possible to publish the Organisation directly ' . 
+                            'after the registration, then the description of the organisation ' .
+                            'should also be added to the registration form.');
+
+    $field = $section->add_checkbox('userregister_createdefaultitems', 
                                    'Create default userregister items');
     $field->set_description('New items are created wenn the checkbox was saved with off and ' . 
                             'is switched from off to on and saved again ' . 
@@ -37,8 +44,7 @@ class UserRegisterAdminControl
 
     $field = $section->add_textfield('userregister_logo',
                                      'Path to Logo for the Loginpage');
-    $layout = new WPRegisterUserRegisterLayout(
-                    $this->get_current_module());
+    $layout = new WPRegisterUserRegisterLayout($module);
     $field->set_defaultvalue($layout->get_default_logo());
 
     $page->register();

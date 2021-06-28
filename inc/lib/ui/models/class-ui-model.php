@@ -129,10 +129,11 @@ abstract class UIModel
         continue;
       }
 
-      //if ( isset( $_POST[$ma->get_id()] ) )
-      //{
-        $ma->set_value( $_POST[$ma->get_id()] );
-      //}
+      if ( !array_key_exists($ma->get_id(), $_POST ) )
+      {
+        continue;
+      }
+      $ma->set_value( $_POST[$ma->get_id()] );
     }
 
     $this->update_model();
@@ -147,16 +148,22 @@ abstract class UIModel
    * ModelAdapter can add an error
    * on WP_Error
    */
-  public function validate($errors)
+  public function validate($viewadapter_ids, $errors)
   {
     $this->update();
 
     foreach($this->get_modeladapters() as $ma)
     {
-      if($ma->is_validate())
+      if(!in_array($ma->get_id(), $viewadapter_ids ))
       {
-        $errors = $ma->validate_value($errors);
+        continue;
       }
+
+      if(!$ma->is_validate())
+      {
+        continue;
+      }
+      $errors = $ma->validate_value($errors);
     }
     return $this->validate_model($errors);
   }

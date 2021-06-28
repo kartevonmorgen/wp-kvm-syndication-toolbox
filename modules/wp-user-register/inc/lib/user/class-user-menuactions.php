@@ -34,7 +34,22 @@ class UserMenuActions
           }
           else
           {
-            echo ' (Organisation: ' . $organisation->post_title . ', id=' . $organisation->ID . ' ist bereits erstellt)</br>';
+            $post_status = $organisation->post_status;
+            $mc = WPModuleConfiguration::get_instance();
+            $module = $mc->get_module('wp-user-register');
+            if($module->is_publish_organisation_after_approve())
+            {
+              $post_status = 'publish';
+              $ipost = array(
+                'ID' => $organisation->ID,
+                'post_status' => $post_status);
+              wp_update_post( $ipost, true );
+            }
+
+            echo ' (Organisation: ' . $organisation->post_title . 
+                 ', id=' . $organisation->ID . 
+                 ', status=' . $post_status . 
+                 ' ist bereits erstellt)</br>';
           }
           echo ' ist bestätigt</p>';
         }
