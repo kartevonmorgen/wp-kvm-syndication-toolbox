@@ -7,6 +7,10 @@ class KVMEntry
   public function __construct($body = array())
   {
     $this->_body = $body;
+    if(empty($this->_body['links']))
+    {
+      $this->_body['links'] = $body['custom'];
+    }
   }
 
   public function get_body()
@@ -134,23 +138,48 @@ class KVMEntry
         array('2cd00bebec0c48ba9db761da48678134');
     }
 
-    $existinglinks = $this->get_wp_links();
     $newlinks = array();
-    foreach($existinglinks as $existinglink)
+    $existinglinks = $this->get_wp_links();
+    foreach($existinglinks as $existingLink)
     {
-      $link_to_add = $existinglink;
-      foreach($wpOrganisation->get_links() as $wpLink)
+      $link_to_add = $existingLink;
+      //$this->_body['description'] .= 'ADD ELINK=' . $link_to_add->get_url();
+      array_push($newlinks, $link_to_add);
+    }
+
+    foreach($wpOrganisation->get_links() as $wpLink)
+    {
+      $link_to_add = $wpLink;
+      foreach($newlinks as $newlink)
       {
-        if($wpLink->equals_by_url($existinglink->get_url()))
+        if($wpLink->equals_by_title($newlink->get_title()))
         {
-          $link_to_add = $wpLink;
+          $newlink->set_url($wpLink->get_url());
+          $link_to_add = null;
+          break;
+        }
+
+        if($wpLink->equals_by_url($newlink->get_url()))
+        {
+          $link_to_add = null;
           break;
         }
       }
-      array_push($newlinks, $this->convert_to_kvm_link($link_to_add));
+
+      if(!empty($link_to_add))
+      {
+        array_push($newlinks, $link_to_add);
+      }
+
+
+    }
+    $new_kvm_links = array();
+    foreach($newlinks as $newlink)
+    {
+      array_push($new_kvm_links, $this->convert_to_kvm_link($newlink));
     }
     
-    $this->_body['links'] = $newlinks;
+    $this->_body['links'] = $new_kvm_links;
 
     // In KVM ist everything tags, so we convert
     // categories also to tags.

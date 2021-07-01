@@ -67,15 +67,25 @@ class WPLink
     return false;
   }
 
+  public function equals_by_title($title)
+  {
+    if(trim($this->get_title()) === trim($title))
+    {
+      return true;
+    }
+
+    return false;
+  }
+
   public function equals_by_url($url)
   {
     $thisurl = $this->get_url();
     $thisurl = parse_url($thisurl, PHP_URL_HOST);
-    $thisurl = replace('www.', '', $thisurl);
+    $thisurl = str_replace('www.', '', $thisurl);
 
     $thaturl = $url;
     $thaturl = parse_url($thaturl, PHP_URL_HOST);
-    $thaturl = replace('www.', '', $thaturl);
+    $thaturl = str_replace('www.', '', $thaturl);
 
     if($thisurl === $thaturl)
     {
