@@ -11,19 +11,24 @@ class InUserModel extends UIModel
 
     // Organisation Post Modeladapters
     $ma = $this->add_ma(
-      new UIPostModelAdapter('post_title', UIModelAdapterType::TEXT));
+      new UIPostModelAdapter('post_title', 
+                             UIModelAdapterType::TEXT));
     $ma->set_title('Name der Organisation');
     $ma->set_validate(true);
 
     // Organisation Post Modeladapters
     $ma = $this->add_ma(
-      new UIPostModelAdapter('post_content', UIModelAdapterType::TEXTAREA));
+      new UIPostModelAdapter('post_content', 
+                             UIModelAdapterType::TEXTAREA));
+    $ma->set_value_prefix('<!-- wp:paragraph --><p>');
+    $ma->set_value_suffix('</p><!-- /wp:paragraph -->');
     $ma->set_title('Beschreibung der Organisation');
     $ma->set_validate(true);
 
     $ma = $this->add_ma(
       new UIPostMetaModelAdapter(
-                 'organisation_type', UIModelAdapterType::COMBOBOX));
+                 'organisation_type', 
+                 UIModelAdapterType::COMBOBOX));
     $ma->set_title('Organisationstype');
     $ma->set_description('Sind Sie ein Unternehmen oder Initiative ?');
 

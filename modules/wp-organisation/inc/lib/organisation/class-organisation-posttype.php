@@ -48,7 +48,12 @@ class OrganisationPosttype
       'menu_position'      => null,
       'show_in_rest'       => true,
       'taxonomies'         => array( 'category', 'post_tag' ),
-      'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' ),
+      'supports'           => array( 'title', 
+                                     'editor', 
+                                     'author', 
+                                     'thumbnail', 
+                                     'excerpt', 
+                                     'revisions' ),
       'map_meta_cap'       => true );
 
     $module = $this->get_current_module();
