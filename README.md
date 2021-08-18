@@ -217,4 +217,5 @@ In submenu of the plugin you find a menu entry "Dashboard items", there you can 
 
 First after some entries are created the old Dashboard will be removed.
 
+
 29 March 2021, Sjoerd Takken
