@@ -12,6 +12,7 @@ class WPUserRegisterModule extends WPAbstractModule
     $loader->add_include("/inc/lib/user/class-wp-createdefault-userregister-posts.php");
     $loader->add_include("/inc/lib/user/ui/class-wp-userregister-field.php");
     $loader->add_include("/inc/lib/user/email/class-userregister-email.php");
+    $loader->add_include("/inc/lib/user/class-wp-register-honeypot.php");
 
     // Model
     $loader->add_include("/admin/inc/models/class-in-usermodel.php");
@@ -23,7 +24,7 @@ class WPUserRegisterModule extends WPAbstractModule
 
     $loader->add_include('/admin/inc/controllers/class-userregister-admincontrol.php' );
 
-    //Views
+    // Views
     $loader->add_include("/admin/inc/views/class-in-userregisterview.php");
     $loader->add_include("/admin/inc/views/class-in-userprofileview.php");
   }
@@ -46,7 +47,7 @@ class WPUserRegisterModule extends WPAbstractModule
     $urlayout->setup($loader);
 
     $create_urposts = new WPCreateDefaultUserRegisterPosts();
-    $create_urposts ->setup($loader);
+    $create_urposts->setup($loader);
 
     $uremail = new UserRegisterEmail();
     $uremail->setup($loader);
@@ -54,6 +55,9 @@ class WPUserRegisterModule extends WPAbstractModule
     $loader->add_starter( new InControlHolder($this));
     $loader->add_starter($urposttype);
     $loader->add_starter( new UserRegisterAdminControl($this));
+
+    $hpot = new WPRegisterHoneypot();
+    $hpot->setup($loader);
   }
 
   public function module_activate()

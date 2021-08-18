@@ -6,10 +6,12 @@ abstract class UIViewAdapter
   private $_view;
   private $_title;
   private $_description;
+  private $_width;
 
-  public function __construct($id)
+  public function __construct($id, $width = null)
   {
     $this->_id = $id;
+    $this->_width = $width;
   }
 
   public function show_label()
@@ -141,12 +143,33 @@ abstract class UIViewAdapter
                                               $backgroundcolorid);
   }
 
+  public function set_width($width)
+  {
+    $this->_width = $width;
+  }
+
+  public function get_width()
+  {
+    return $this->_width;
+  }
+
   public function the_style()
   {
-    if(empty($this->get_backgroundcolor_code()))
+    $style = '';
+    if(!empty($this->get_backgroundcolor_code()))
+    {
+      $style .= 'background-color:#' . 
+                $this->get_backgroundcolor_code() . ';';
+    }
+    if(!empty($this->get_width()))
+    {
+      $style .= 'width:' . 
+                $this->get_width() . ';';
+    }
+    if(empty($style))
     {
       return;
     }
-    echo 'style="background-color:#' . $this->get_backgroundcolor_code() . '"';
+    echo 'style="' . $style . '"';
   }
 }
