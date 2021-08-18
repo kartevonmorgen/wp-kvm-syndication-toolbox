@@ -56,7 +56,7 @@ final class WPRegisterHoneypot
    */
   public function print_styles() 
   { ?>
-		<style type="text/css">.th_rh_name_field { display: block; }</style>
+		<style type="text/css">.th_rh_name_field { display: none; }</style>
   <?php }
 
   /**
