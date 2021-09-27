@@ -217,5 +217,14 @@ In submenu of the plugin you find a menu entry "Dashboard items", there you can 
 
 First after some entries are created the old Dashboard will be removed.
 
+## Newsletter interface
 
-29 March 2021, Sjoerd Takken
+The Newsletter interface Module makes it possible to generate an Events List in the Newsletter. At the moment the Noptin Newsletter Plugin is only supported. In the future also the Mailpoet Newsletter Plugin should be supported. 
+
+In the Noptin Newsletter use the [[events]] tag to import the event list automatically in the Newsletter, the category and number of days in future for this event list can be configured in the Settings of the module (KVM Syndication Toolbox -> Newsletter Interface). 
+
+### Newsletter lists
+
+As an addition to Noptin, different Lists of Subscribers are also supported and can be enabled in the Settings of the module (KVM Syndication Toolbox -> Newsletter Interface), then lists can be added under (KVM Syndication Toolbox -> Newsletter lists). Then they will be automatically added to the Noptin Plugin.
+
+27 September 2021, Sjoerd Takken
