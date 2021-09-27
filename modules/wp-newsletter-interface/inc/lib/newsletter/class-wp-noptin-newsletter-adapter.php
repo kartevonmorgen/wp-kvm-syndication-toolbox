@@ -24,6 +24,12 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
                         10,
                         2);
 
+    $loader->add_filter('noptin_default_newsletter_body',
+                        $this,
+                        'default_newsletter_body',
+                        10,
+                        1);
+
     $loader->add_action('add_meta_boxes_noptin_newsletters', 
                         $this, 
                         'add_newsletter_metaboxes');
@@ -40,15 +46,45 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
                         'query', 
                         10, 
                         2);
+
+    $loader->add_filter('manage_noptin_newsletters_sortable_table_columns',
+                        $this,
+                        'sortable_columns',
+                        10,
+                        1);
+  }
+
+  public function default_newsletter_body($body)
+  {
+    $eventsPart = $this->get_mail_events_part();
+    $body = '';
+    $body .= '<p>Hallo [[first_name]]</p>';
+    $body .= '<p>Hier gibt es ein Übersicht von die';
+    $body .= ' kommende Veranstaltungen von ';
+    $body .= '<i>[[noptin_company]]</i></p>';
+    $body .= $eventsPart;
+    $body .= '<p>Viel spaß</p>';
+    return $body;
   }
 
   public function mailer_default_merge_tags($default_merge_tags,
                                             $mailer)
   {
+    $eventsPart = $this->get_mail_events_part();
+    if(empty($eventsPart))
+    {
+      return $default_merge_tags;
+    }
+    $default_merge_tags['events'] = $eventsPart;
+    return $default_merge_tags;
+  }
+
+  private function get_mail_events_part()
+  {
     $mc = WPModuleConfiguration::get_instance();
     if(!$mc->is_module_enabled('wp-events-interface'))
     {
-      return $default_merge_tags;
+      return '';
     }
 
     $module = $this->get_current_module();
@@ -64,16 +100,17 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
     // return EICalendarEvent[]
     $events = $eiModule->get_events_by_cat($cat, $days);
 
+    setlocale(LC_TIME, "de_DE.utf8");
     $eventsPart = '';
     foreach($events as $event)
     {
-      $startdate = date( 'l j F', 
+      $startdate = strftime( '%A %e %B', 
                          strtotime( $event->get_start_date()));
-      $enddate = date( 'l j F', 
+      $enddate = strftime( '%A %e %B', 
                        strtotime( $event->get_end_date()));
-      $starttime = date( 'H:i',  
+      $starttime = strftime( '%R',  
                          strtotime( $event->get_start_date()));
-      $endtime = date( 'H:i',  
+      $endtime = strftime( '%R',  
                        strtotime( $event->get_end_date()));
       if($startdate == $enddate)
       {
@@ -126,8 +163,7 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
       $eventsPart .= '</p>';
     }
 
-    $default_merge_tags['events'] = $eventsPart;
-    return $default_merge_tags;
+    return $eventsPart;
   }
 
   public function add_newsletter_metaboxes($campaign)
@@ -295,5 +331,15 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
       array_push($newcustomfields, $customfield);
     }
     update_noptin_option('custom_fields', $newcustomfields);
+  }
+  
+  public function sortable_columns($sortable)
+  {
+    foreach($this->get_newsletterlist_fields() as $nl_post)
+    {
+      $id = 'newsletterlist_' . $nl_post->ID;
+      $sortable[$id] = array($id, false);
+    }
+    return $sortable;
   }
 }
