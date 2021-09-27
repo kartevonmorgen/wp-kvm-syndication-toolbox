@@ -52,6 +52,11 @@ class WPNewsletterInterfaceAdminControl
       'Select the category to be shown');
     $field->set_description('Select one or more event categories that will be shown in the newsletter, if empty, all events will be shown');
 
+    $field = $section->add_checkbox(
+      $module->get_send_new_email_body_with_events_id(), 
+      'Create new newsletter with events');
+    $field->set_description('If a new email newsletter is created, the eventslist will be directly included and can be edited');
+
     $section->add_checkbox(
       $module->get_newsletter_lists_support_enabled_id(), 
       'Are Newsletter lists supported');

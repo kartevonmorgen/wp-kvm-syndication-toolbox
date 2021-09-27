@@ -52,18 +52,27 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
                         'sortable_columns',
                         10,
                         1);
+
+    $loader->add_action( 'noptin_pre_get_subscribers', 
+                         $this, 
+                         'meta_orderby',
+                         10,
+                         1 );
   }
 
   public function default_newsletter_body($body)
   {
-    $eventsPart = $this->get_mail_events_part();
-    $body = '';
-    $body .= '<p>Hallo [[first_name]]</p>';
-    $body .= '<p>Hier gibt es ein Übersicht von die';
-    $body .= ' kommende Veranstaltungen von ';
-    $body .= '<i>[[noptin_company]]</i></p>';
-    $body .= $eventsPart;
-    $body .= '<p>Viel spaß</p>';
+    if($this->get_current_module()->is_send_new_email_body_with_events())
+    {
+      $eventsPart = $this->get_mail_events_part();
+      $body = '';
+      $body .= '<p>Hallo [[first_name]]</p>';
+      $body .= '<p>Hier gibt es ein Übersicht von die';
+      $body .= ' kommende Veranstaltungen von ';
+      $body .= '<i>[[noptin_company]]</i></p>';
+      $body .= $eventsPart;
+      $body .= '<p>Viel spaß</p>';
+    }
     return $body;
   }
 
@@ -341,5 +350,31 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
       $sortable[$id] = array($id, false);
     }
     return $sortable;
+  }
+
+  public function meta_orderby( $query ) 
+  {
+    if( ! is_admin() )
+    {
+      return;
+    }
+
+    $orderby = $query->get( 'orderby');
+    $util = new PHPStringUtil();
+    if(!$util->startsWith($orderby, 'newsletterlist_'))
+    {
+      return;
+    }
+
+    foreach($this->get_newsletterlist_fields() as $nl_post)
+    {
+      $id = 'newsletterlist_' . $nl_post->ID;
+      if( $id == $orderby ) 
+      {
+        $query->set('meta_key', $id);
+        $query->set('orderby','meta_value');
+        return;
+      }
+    }
   }
 }

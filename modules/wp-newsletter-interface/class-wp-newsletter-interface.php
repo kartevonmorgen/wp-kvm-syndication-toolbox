@@ -161,4 +161,14 @@ class WPNewsletterInterfaceModule extends WPAbstractModule
     return get_option($this->get_selected_category_id());
   }
 
+  public function get_send_new_email_body_with_events_id()
+  {
+    return 'ni_send_new_email_body_with_events_id';
+  }
+
+  public function is_send_new_email_body_with_events()
+  {
+    return get_option($this->get_send_new_email_body_with_events_id(),false);
+  }
+
 }
