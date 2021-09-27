@@ -18,8 +18,7 @@ class EIAdminControl extends UIAbstractAdminControl
 {
   public function start() 
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $rootmodule = $mc->get_root_module();
+    $rootmodule = $this->get_root_module();
 
     $page = new UISettingsPage('events-interface-options', 
                                'Events interface');
