@@ -685,8 +685,16 @@ class EICalendarEvent
     {
       return $result;
     }
-    $result = LogResult::check( $this->get_description(),
-                                $eiEvent->get_description(),
+    $desc1 = $this->remove_parameter($this->get_description(),
+                                     'sizes');
+    $desc1 = $this->remove_parameter($desc1,
+                                     'srcset');
+    $desc2 = $this->remove_parameter($eiEvent->get_description(),
+                                     'sizes');
+    $desc2 = $this->remove_parameter($desc1,
+                                     'srcset');
+    $result = LogResult::check( $desc1,
+                                $desc2,
                                 'description');
     if($result->is_false())
     {
@@ -893,6 +901,15 @@ class EICalendarEvent
     $result .= $this->add_line('excerpt', $this->get_excerpt());
     $result .= $this->add_line('description', $this->get_description());
     return $result;
+  }
+
+  public function remove_parameter($string, $parameter)
+  {
+    $pattern = '/' . $parameter . '=".+" /';
+    $replacement = '${1}';
+    return preg_replace($pattern, 
+                        $replacement, 
+                        $string);
   }
 
 }
