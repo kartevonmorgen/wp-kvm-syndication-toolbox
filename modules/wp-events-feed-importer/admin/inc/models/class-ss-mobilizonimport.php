@@ -79,12 +79,23 @@ class SSMobilizonImport extends SSAbstractImport
       {
         echo '<p>  read Mob Event  ' . $event['title'] . '</p>';
       }
+
       // Only import events in the Group
       if(!$event['local'])
       {
         if($this->is_echo_log())
         {
           echo '<p>  Mob Event is not local</p>';
+        }
+        continue;
+      }
+
+      // Only import events in the Group
+      if(empty($event['attributedTo']))
+      {
+        if($this->is_echo_log())
+        {
+          echo '<p>  Mob Event is not on a Group, we only import events on Groups</p>';
         }
         continue;
       }
@@ -131,13 +142,20 @@ class SSMobilizonImport extends SSAbstractImport
                         updatedAt,
                         title,
                         attributedTo {
-                          preferredUsername
+                          name,
+                          preferredUsername,
+                          url
+                        }
+                        options
+                        {
+                          isOnline
                         }
                         url,
                         beginsOn,
                         endsOn,
                         description,
                         onlineAddress,
+                        phoneAddress,
                         status,
                         visibility,
                         tags {
@@ -204,6 +222,9 @@ class SSMobilizonImport extends SSAbstractImport
     $eiEvent->set_start_date($startdate);
     $eiEvent->set_end_date($enddate);
     $eiEvent->set_all_day(false);
+    $eiEvent->set_contact_name($event['attributedTo']['name']);
+    $eiEvent->set_contact_website($event['onlineAddress']);
+    $eiEvent->set_contact_phone($event['phoneAddress']);
 
     $eiEvent->set_published_date($event['updatedAt']);
     $eiEvent->set_updated_date($event['updatedAt']);
@@ -221,7 +242,7 @@ class SSMobilizonImport extends SSAbstractImport
     $wpLocH = new WPLocationHelper();
     $wpLocation = null;
 
-    if(!empty($event['onlineAddress']))
+    if(!empty($event['options']['isOnline']))
     {
       $eiEvent->set_link($event['onlineAddress']);
     }
@@ -257,15 +278,6 @@ class SSMobilizonImport extends SSAbstractImport
       $eiEvent->set_location($wpLocation);
     }
 
-    //$eiEvent->set_contact_name($vEvent->get_organizer_name());
-    //$eiEvent->set_contact_email($vEvent->get_organizer_email());
-
-    // In ICal we do categories as tags, weil tags do not exists
-    // and we do not know them really.
-    //foreach($vEvent->get_categories() as $cat)
-    //{
-    //  $eiEvent->add_tag(new WPTag($cat));
-    //}
     return $eiEvent;
   }
 
