@@ -8,14 +8,17 @@
   * @license   	GNU/GPLv2, see http://www.gnu.org/licenses/gpl-2.0.html
   * @link       https://github.com/kartevonmorgen
   */
-final class SSImporterFactory
+final class SSImporterFactory extends WPAbstractModuleProvider 
 {
-  private static $instance = null;
+  private $_importtypes = null;
 
-  private $_importtypes;
-
-  private function __construct() 
+  public function get_importtypes()
   {
+    if(!empty($this->_importtypes))
+    {
+      return $this->_importtypes;
+    }
+
     $this->_importtypes = array();
     array_push( $this->_importtypes, 
                 new SSImportType('ical', 
@@ -26,19 +29,12 @@ final class SSImporterFactory
                 new SSImportType('ess', 
                                  'ESS Feed', 
                                  'SSESSImport'));
-  }
 
-  /** 
-   * The object is created from within the class itself
-   * only if the class has no instance.
-   */
-  public static function get_instance()
-  {
-    if (self::$instance == null)
-    {
-      self::$instance = new SSImporterFactory();
-    }
-    return self::$instance;
+    array_push( $this->_importtypes, 
+                new SSImportType('mobilizon', 
+                                 'Mobilizon', 
+                                 'SSMobilizonImport'));
+    return $this->_importtypes;
   }
 
   public function create_importer($feed)
@@ -50,12 +46,7 @@ final class SSImporterFactory
     $feed_type = get_post_meta($feed->ID,'ss_feedurltype',1);
     $importtype = $this->get_importtype($feed_type);
     $class = $importtype->get_clazz();
-    return new $class($feed);
-  }
-
-  public function get_importtypes()
-  {
-    return $this->_importtypes;
+    return new $class($this->get_current_module(), $feed);
   }
 
   public function get_importtype($id)

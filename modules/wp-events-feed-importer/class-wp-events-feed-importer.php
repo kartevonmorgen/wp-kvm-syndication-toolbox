@@ -20,8 +20,10 @@ if ( !defined( 'EVENTS_SS_SECURE' ))
  *     Recurring Events are converted to single events.
  */
 class WPEventsFeedImporterModule extends WPAbstractModule 
+                                 implements WPModuleStarterIF
 {
   private $_ssfeeds;
+  private $_importer_factory;
 
   public function setup_includes($loader)
   {
@@ -36,6 +38,10 @@ class WPEventsFeedImporterModule extends WPAbstractModule
     $loader->add_include('/admin/inc/models/class-ss-abstractimport.php');
     $loader->add_include('/admin/inc/models/class-ss-essimport.php');
     $loader->add_include('/admin/inc/models/class-ss-icalimport.php');
+    $loader->add_include('/admin/inc/models/class-ss-mobilizonimport.php');
+    $loader->add_include('/admin/inc/models/class-ss-abstracteventprocessor.php');
+    $loader->add_include('/admin/inc/models/class-ss-defaulteventprocessor.php');
+    $loader->add_include('/admin/inc/models/class-ss-directeventprocessor.php');
 
     // -- CONTROLLERS
     $loader->add_include('/admin/inc/controllers/class-ss-admincontrol.php');
@@ -44,23 +50,25 @@ class WPEventsFeedImporterModule extends WPAbstractModule
 
   public function setup($loader)
   {
-    $ssnotices = new SSNotices();
-    $ssnotices->setup($loader);
+    $loader->add_starter( $this );
 
-    $ssio = new SS_IO($ssnotices);
+    $ssnotices = new SSNotices();
+    $ssnotices->setup( $loader );
+
+    $ssio = new SS_IO( $ssnotices );
     $ssio->setup($loader);
 
-    $ssfeeds = new SSFeeds();
-    $ssfeeds->setup($loader);
-    $loader->add_starter($ssfeeds);
-    $this->set_ssfeeds($ssfeeds);
+    $ssfeeds = new SSFeeds( $this );
+    $ssfeeds->setup( $loader );
+    $loader->add_starter( $ssfeeds );
+    $this->set_ssfeeds( $ssfeeds );
 
     $loader->add_action( SS_IO::CRON_EVENT_HOOK, 
                          $this, 
                          'update_feeds_daily');
 
     // Start UI Settings Part
-    $loader->add_starter( new SSAdminControl());
+    $loader->add_starter( new SSAdminControl($this));
   }
 
 	public function module_activate()
@@ -121,6 +129,11 @@ class WPEventsFeedImporterModule extends WPAbstractModule
 		wp_clear_scheduled_hook( SS_IO::CRON_EVENT_HOOK );
   }
 
+  public function start()
+  {
+    $this->_importer_factory = new SSImporterFactory($this);
+  }
+
   private function set_ssfeeds($ssfeeds)
   {
     $this->_ssfeeds = $ssfeeds;
@@ -138,6 +151,11 @@ class WPEventsFeedImporterModule extends WPAbstractModule
     {
       $ssfeeds->update_feeds_daily();
     }
+  }
+
+  public function get_importer_factory()
+  {
+    return $this->_importer_factory;
   }
 
   public function get_publish_directly_id()

@@ -1,11 +1,12 @@
 <?php
 
-class SSUpdateFeed implements UIPostTableActionIF
+class SSUpdateFeed extends WPAbstractModuleProvider
+                   implements UIPostTableActionIF
 {
   public function action($post_id, $post)
   {
     echo '<p>Start updatefeed for ' . $post->post_title . '</p>';
-    $instance = SSImporterFactory::get_instance();
+    $instance = $this->get_current_module()->get_importer_factory();
     $importer = $instance->create_importer($post);
     $importer->set_echo_log(true);
     if(empty($importer))

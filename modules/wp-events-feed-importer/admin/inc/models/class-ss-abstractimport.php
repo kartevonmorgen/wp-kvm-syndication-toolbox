@@ -1,14 +1,16 @@
 <?php
 /**
   * Controller SSAbstractImport
-  * Control the import of ESS feed
+  * Control the import of different Kind of Feeds
+  * Different Feed types can be added by overriding this
+  * class.
   *
-  * @author     Brice Pissard, Sjoerd Takken
+  * @author     Sjoerd Takken
   * @copyright 	No Copyright.
   * @license   	GNU/GPLv2, see http://www.gnu.org/licenses/gpl-2.0.html
   * @link	      https://github.com/kartevonmorgen
   */
-abstract class SSAbstractImport
+abstract class SSAbstractImport extends WPAbstractModuleProvider
 {
   private $_feed_url;
   private $_importtype;
@@ -24,9 +26,23 @@ abstract class SSAbstractImport
   private $_raw_data;
   private $_xml_data;
 
-	function __construct($feed)
+  private $_processor;
+
+	function __construct($module, $feed)
   {
+    parent::__construct($module);
+    $this->set_processor( new SSDefaultEventProcessor());
     $this->_feed = $feed;
+  }
+
+  public function set_processor($processor)
+  {
+    $this->_processor = $processor;
+  }
+
+  public function get_processor()
+  {
+    return $this->_processor;
   }
 
   public function get_feed()
@@ -81,15 +97,6 @@ abstract class SSAbstractImport
     return $factory->get_importtype( $importtypeid );
   }
 
-  public function get_feed_eventids()
-  {
-    $au = new PHPArrayUtil();
-
-    $result = explode(',', 
-     $this->get_feed_meta('ss_feed_eventids'));
-    return $au->remove_empty_entries($result);
-  }
-
   public function get_feed_filtered_tags()
   {
     $au = new PHPArrayUtil();
@@ -122,8 +129,7 @@ abstract class SSAbstractImport
     }
 
     // Find the default if emmpty
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     foreach($root->get_wplocation_freetextformat_types()
             as $type)
     {
@@ -138,16 +144,14 @@ abstract class SSAbstractImport
 
   public function is_feed_wplocation_freetextformat_type_local()
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     $id = $this->get_feed_wplocation_freetextformat_type();
     return $root->is_wplocation_freetextformat_type_local($id);
   }
 
   public function is_feed_wplocation_freetextformat_type_osm()
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     $id = $this->get_feed_wplocation_freetextformat_type();
     return $root->is_wplocation_freetextformat_type_osm($id);
   }
@@ -226,7 +230,7 @@ abstract class SSAbstractImport
     $logger->save();
 
     $now = time();
-    $thismodule = $this->get_thismodule();
+    $thismodule = $this->get_current_module();
 
     $max_events = $thismodule->get_max_events_pro_feed();
     $count = 0;
@@ -237,7 +241,8 @@ abstract class SSAbstractImport
       echo '<p>Maximum number of events to import ' . 
            $max_events . '</p>';
     }
-
+    
+    $eiEventsToProcess = array();
     foreach ( $eiEvents as $eiEvent )
     {
       echo '<p>Import(' . $count . '):: ' . $eiEvent->get_title() . '</p>';
@@ -254,7 +259,7 @@ abstract class SSAbstractImport
       $logger->remove_prefix();
       $logger->add_newline();
       $logger->add_date();
-      $logger->add_line('Update Event ' . $eiEvent->get_uid());
+      $logger->add_line('Prepare update Event ' . $eiEvent->get_uid());
       $logger->add_prefix('  ');
       // Do not import events from the past
       if(strtotime($eiEvent->get_start_date()) < $now)
@@ -374,109 +379,18 @@ abstract class SSAbstractImport
         }
       }
 
-      // Check if the Event has been changed
-      // only by changes we save it.
-      // This prevents not needed saves and updates 
-      // to the Karte von Morgen
-      $mc = WPModuleConfiguration::get_instance();
-      $eiInterface = $mc->get_module('wp-events-interface');
-      $oldEiEvent = $eiInterface->get_event_by_uid(
-                      $eiEvent->get_uid());
-      if(empty($oldEiEvent))
-      {
-        $logger->add_line('event does not exist'); 
-      }
-      else
-      {
-        $result = $oldEiEvent->equals_by_content($eiEvent);
-        if($result->is_true())
-        {
-          $logger->add_line('events are equal, ' .
-                            'so we do NOT update'); 
-          array_push( $updated_event_ids, 
-                      $oldEiEvent->get_event_id());
-          continue;
-        }
-        $logger->add_line('event has been changed (' . 
-          $result->get_message() . ') so we save it'); 
-      }
-
-      // Only save if we have changes
-      $result = $eiInterface->save_event($eiEvent);
-      if( $result->has_error() )
-      {
-        $logger->add_line('save_event gives an ERROR (' . 
-          $result->get_error() . ') '); 
-        $this->set_error($result->get_error());
-        if($this->is_echo_log())
-        {
-          $logger->echo_log();
-        }
-        $logger->save();
-        return;
-      }
-
-      if( !empty( $result->get_event_id() ))
-      {
-        array_push( $updated_event_ids, $result->get_event_id());
-      }
-      if($this->is_echo_log())
-      {
-        $logger->echo_log();
-      }
-      $logger->save();
+      array_push($eiEventsToProcess, $eiEvent);
+      $logger->remove_prefix();
     }
 
-    $logger->remove_prefix();
-    $logger->add_newline();
-    $logger->add_line('updates finished: save the new ' .
-                      'feed status');
-    if($this->is_echo_log())
-    {
-      $logger->echo_log();
-    }
-    $logger->save();
+    $logger->add_line('check import events finished: process events ');
 
-    // Save the eventids that were already there
-    $last_event_ids = $this->get_feed_eventids();
+    $processor = $this->get_processor();
+    $processor->set_importer($this);
+    $processor->set_logger($logger);
 
-    $this->save_feed($updated_event_ids);
+    $processor->process($eiEventsToProcess);
 
-    // We check if some events are 
-    // no longer in the feed, if so, we delete these events.
-    if(empty($last_event_ids))
-    {
-      $logger->add_line('-- nothing to delete, ' . 
-                        'update feed finished ---');
-      if($this->is_echo_log())
-      {
-        $logger->echo_log();
-      }
-      $logger->save();
-      return;
-    }
-
-    $logger->add_line('delete no longer updated events ');
-    $logger->add_prefix('  ');
-
-    foreach($last_event_ids as $last_event_id)
-    {
-      if(empty($last_event_id))
-      {
-        continue;
-      }
-
-      if(in_array($last_event_id, $updated_event_ids))
-      {
-        continue;
-      }
-
-      $logger->add_line('delete event (id=' . 
-                        $last_event_id. ')');
-      $mc = WPModuleConfiguration::get_instance();
-      $eiInterface = $mc->get_module('wp-events-interface');
-      $eiInterface->delete_event_by_event_id($last_event_id);
-    }
     $logger->remove_prefix();
     $logger->add_line('-- update feed finished ---');
     if($this->is_echo_log())
@@ -486,30 +400,6 @@ abstract class SSAbstractImport
     $logger->save();
   }
           
-  // == SAVE FEED ===
-  // Only save the Feed if, 
-  // at least, one event have been saved.
-  private function save_feed($updated_event_ids)
-  {
-    $feed_id = $this->get_feed_id();
-    if(empty($feed_id))
-    {
-      $this->set_error("Feed Id is 0");
-      return;
-    }
-
-    $lastupdate = get_date_from_gmt(date("Y-m-d H:i:s"));
-
-    update_post_meta($feed_id, 'ss_feed_title', 
-                     $this->get_feed_title());
-    update_post_meta($feed_id, 'ss_feed_uuid', 
-                     $this->get_feed_uuid());
-    update_post_meta($feed_id, 'ss_feed_lastupdate', 
-                     $lastupdate);
-    update_post_meta($feed_id, 'ss_feed_eventids', 
-                     implode(',',$updated_event_ids ));
-	}
-
   private function is_linkurl_valid($eiEvent)
   {
     $feed_url = $this->get_feed_url();
@@ -604,12 +494,6 @@ abstract class SSAbstractImport
     $backlink_html .= '</a></p>';
     $eiEvent->set_description(
       $eiEvent->get_description() . $backlink_html);
-  }
-
-  public function get_thismodule()
-  {
-    $mc = WPModuleConfiguration::get_instance();
-    return $mc->get_module('wp-events-feed-importer');
   }
 
   public function set_error($error)

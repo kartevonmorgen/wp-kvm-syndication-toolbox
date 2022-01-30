@@ -7,13 +7,13 @@
   * @copyright 	No Copyright.
   * @license   	GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
   */
-class SSAdminControl implements WPModuleStarterIF
+class SSAdminControl extends UIAbstractAdminControl 
+                     implements WPModuleStarterIF
 {
   public function start() 
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $rootmodule = $mc->get_root_module();
-    $thismodule = $mc->get_module('wp-events-feed-importer');
+    $rootmodule = $this->get_root_module();
+    $thismodule = $this->get_current_module();
 
     $page = new UISettingsPage('events-feed-importer', 
                                'Events feed importer settings');

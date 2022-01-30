@@ -1,6 +1,7 @@
 <?php
 
-class SSFeeds implements WPModuleStarterIF
+class SSFeeds extends WPAbstractModuleProvider
+              implements WPModuleStarterIF
 { 
   public function setup($loader)
   {  
@@ -32,7 +33,8 @@ class SSFeeds implements WPModuleStarterIF
                                          'Update feed', 
                                          'ssfeed',
                                          'Event feed');
-    $tableAction->set_postaction_listener(new SSUpdateFeed());
+    $tableAction->set_postaction_listener(
+      new SSUpdateFeed($this->get_current_module()) );
     $tableAction->setup($loader);
   }
   
@@ -87,7 +89,8 @@ class SSFeeds implements WPModuleStarterIF
     $field = $ui_metabox->add_dropdownfield(
                             'ss_feedurltype',
                             'Feed URL type');
-    $factory = SSImporterFactory::get_instance();
+
+    $factory = $this->get_current_module()->get_importer_factory();
     foreach($factory->get_importtypes()
             as $importtype)
     {
@@ -144,6 +147,19 @@ class SSFeeds implements WPModuleStarterIF
                             'that are imported by this Feed. ' .
                             'You can give a comma seperated ' . 
                             'list for multiple tags');
+
+    $field = $ui_metabox->add_textfield('ss_feed_filtered_mobgroups', 
+                                        'Only Mobilizon: Filter groups');
+    $field->set_description('Only events from one of these groups ' . 
+                            'will be imported ' .
+                            'You can give a comma seperated list ' .
+                            'for multiple groups');
+
+    $field = $ui_metabox->add_checkbox('ss_feed_include_mobgroup', 
+                                       'Only Mobilizon: Convert group to tag');
+    $field->set_description('The Mobilizon group will be added as a tag to ' .
+                            'the event ');
+
     $ui_metabox->register();
 
     // Feed Info's

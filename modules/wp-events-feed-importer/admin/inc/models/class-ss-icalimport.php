@@ -91,7 +91,7 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
   public function read_events_from_feed()
   {
     $now = time();
-    $thismodule = $this->get_thismodule();
+    $thismodule = $this->get_current_module();
     $maxPeriodInDays = $thismodule->get_max_periodindays();
     $vCal = $this->get_vcalendar();
     if(empty($vCal))

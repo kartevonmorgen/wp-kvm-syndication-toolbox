@@ -175,7 +175,7 @@ class SSESSImport extends SSAbstractImport
       return;
     }
 
-    $thismodule = $this->get_thismodule();
+    $thismodule = $this->get_current_module();
     $category_prefix = $thismodule->get_category_prefix();
 
     foreach ( $feedChild->children() as $cItem )

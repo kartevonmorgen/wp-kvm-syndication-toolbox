@@ -159,6 +159,16 @@ class WPLocationHelper
     return $output;
   }
 
+  public function set_swapped_address($wpLocation, $address)
+  {
+    $search = '/([0-9]+[a-zA-Z]?) ([A-Za-zäÄöÖüÜß.\s_-]+)/i';
+    $replace = '${2} $1';
+    $this->set_address($wpLocation,
+                       preg_replace($search, 
+                                    $replace, 
+                                    $address));
+  }
+
   public function set_address($wpLocation, $address)
   {
     if(empty($address))
