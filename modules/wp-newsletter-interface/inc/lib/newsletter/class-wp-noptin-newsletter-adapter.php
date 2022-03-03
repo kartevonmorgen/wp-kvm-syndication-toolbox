@@ -58,6 +58,21 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
                          'meta_orderby',
                          10,
                          1 );
+
+    $loader->add_filter('noptin_contact_form_7_map_fields',
+                        $this,
+                        'contact_form_7_map_list_fields',
+                        10,
+                        1);
+
+    // Make a CF7 Checkbox mit multiple options
+    // to one Option with true or false
+    $loader->add_filter('noptin_contact_form_7_integration_new_subscriber_fields',
+                        $this,
+                        'change_list_fields',
+                        10,
+                        2);
+
   }
 
   public function default_newsletter_body($body)
@@ -341,6 +356,31 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
     }
     update_noptin_option('custom_fields', $newcustomfields);
   }
+
+  public function contact_form_7_map_list_fields($map_fields)
+  {
+    $util = new PHPStringUtil();
+    $customfields = get_noptin_option( 'custom_fields' );
+    foreach($customfields as $customfield)
+    {
+      if ( !$customfield['predefined'] ) 
+      {
+        continue;
+      }
+      
+      if(!$util->startsWith($customfield['merge_tag'], 
+                            'newsletterlist_'))
+      {
+        continue;
+      }
+
+      $map_fields[] = array(
+        'name'    => $customfield['merge_tag'],
+        'label'   => $customfield['label'], 
+        'type'  => 'checkbox');
+    }
+    return $map_fields;
+  }
   
   public function sortable_columns($sortable)
   {
@@ -376,5 +416,34 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
         return;
       }
     }
+  }
+
+  public function change_list_fields($noptin_fields, $cf)
+  {
+    $new_fields = array();
+    $util = new PHPStringUtil();
+    foreach( $noptin_fields as $id => $value )
+    {
+      if(!$util->startsWith($id, 
+                            'newsletterlist_'))
+      {
+        $new_fields[$id] = $value;
+        continue;
+      }
+
+      $new_fields[$id] = '0';
+      if(is_array($value) && count($value) > 0)
+      {
+        $new_fields[$id] = '1';
+        foreach($value as $item)
+        {
+          if(empty($item))
+          {
+            $new_fields[$id] = '0';
+          }
+        }
+      }
+    }
+    return $new_fields;
   }
 }
