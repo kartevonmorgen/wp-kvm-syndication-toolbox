@@ -56,9 +56,12 @@ class SSDefaultEventProcessor extends SSAbstractEventProcessor
       $result = $eiInterface->save_event($eiEvent);
       if( $result->has_error() )
       {
+        $logger->add_line('save_event (' . 
+                            $eiEvent->to_text() . ')');
         $logger->add_line('save_event gives an ERROR (' . 
           $result->get_error() . ') '); 
-        $this->set_error($result->get_error());
+        $importer = $this->get_importer();
+        $importer->set_error($result->get_error());
         if($importer->is_echo_log())
         {
           $logger->echo_log();

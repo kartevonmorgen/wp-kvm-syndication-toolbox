@@ -715,8 +715,14 @@ class EICalendarFeedEventsManager extends EICalendarFeed
 
     if ( $emLocation->save() === FALSE )
     {
-      $result->set_error( 'SAVE LOCATION ERROR (user='. 
-                          get_current_user_id() . ') ' .
+      $result->set_error( 'SAVE LOCATION ERROR (' . 
+        'user='. get_current_user_id() . 
+        ' loc_name=' . $emLocation->location_name .
+        ' loc_addr=' . $emLocation->location_address .
+        ' loc_zip=' . $emLocation->location_postcode .
+        ' loc_city=' . $emLocation->location_town .
+        ' loc_country=' . $emLocation->location_country .
+        ') ' .
                           implode( ",", 
                             $emLocation->get_errors()) );
       return null;
@@ -818,7 +824,8 @@ class EICalendarFeedEventsManager extends EICalendarFeed
 
     if(!empty($eiEventLocation->get_country_code()))
     {
-      $emLocation->location_country = $eiEventLocation->get_country_code();
+      $emLocation->location_country = 
+        strtoupper($eiEventLocation->get_country_code());
     }
 
     if(!empty($eiEventLocation->get_lon()))
