@@ -329,8 +329,12 @@ class WPLocationHelper
     return true;
   }
 
+  /**
+   * This only works for German and Danish chars.
+   * TODO: We need to find a general cleanup. See Issue
+   */
   private function cleanup($input, 
-    $pattern = '/([A-Za-zäÄöÖüÜß.\s_-]+)/')
+    $pattern = '/([A-Za-zäÄöÖüÜßøØÆæÅå.\s_-]+)/')
   {
     if(empty($input))
     {
