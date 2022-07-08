@@ -68,11 +68,14 @@ class UIPostTableAction extends UITableAction
   {
     $id = $this->get_id();
     $posttype = $this->get_posttype();
-    $url = 'edit.php?post_type=' . $posttype;
-    //$url .= '&amp;page=' . $id;
-    if(!empty($post_id))
+    $parent_menu_php_file = $this->get_parent_menu_php_file();
+    if(empty($post_id))
     {
-      $url .= '&amp;post_id=' . $post_id;
+      $url = $parent_menu_php_file . '?post_type=' . $posttype;
+    }
+    else
+    {
+      $url = $parent_menu_php_file . '?post_id=' . $post_id;
     }
     return admin_url($url); 
   }
@@ -82,8 +85,14 @@ class UIPostTableAction extends UITableAction
     $id = $this->get_id();
     $title = $this->get_title();
     $posttype = $this->get_posttype();
+    $parent_menu_id = $this->get_parent_menu_id();
+    $parent_menu_php_file = $this->get_parent_menu_php_file();
+    if(empty($parent_menu_id))
+    {
+      $parent_menu_id = $parent_menu_php_file . '?post_type=' . $posttype;
+    }
 
-    add_submenu_page('edit.php?post_type=' . $posttype,
+    add_submenu_page($parent_menu_id,
                      $title, $title,
                      'publish_posts', $id,
                      array($this, 'do_action'));
@@ -107,6 +116,7 @@ class UIPostTableAction extends UITableAction
 
     $post = get_post($post_id);
     ?><p>für <?php echo $this->get_entity_title(); ?>: <b><?php echo $post->post_title; ?></b></p><?php
+
 
     if(! $this->do_fields_action($post))
     {
@@ -132,7 +142,8 @@ class UIPostTableAction extends UITableAction
         <form method="get">
           <p>
             <label><?php echo $posttype_title; ?>:&nbsp;
-            <input type="hidden" name="post_type" value="<?php echo $posttype; ?>" />
+            <!-- looks like this is not needed, because we have the ID for sure
+             input type="hidden" name="post_type" value="<?php echo $posttype; ?>" /-->
             <?php $dropdown->wp_dropdown_posts( ); ?>
           </p>
           <p>

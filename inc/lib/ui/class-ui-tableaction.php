@@ -5,6 +5,8 @@ class UITableAction
   private $_id;
   private $_title;
   private $_menu_title;
+  private $_parent_menu_id = null;
+  private $_parent_menu_php_file = 'edit.php';
   private $_entity_title;
   private $_enabled_roles = array();
   private $_disabled_roles = array();
@@ -35,6 +37,22 @@ class UITableAction
   public function get_menu_title()
   {
     return $this->_menu_title;
+  }
+
+  public function set_parent_menu($php, $id)
+  {
+    $this->_parent_menu_php_file = $php;
+    $this->_parent_menu_id = $id;
+  }
+
+  public function get_parent_menu_php_file()
+  {
+    return $this->_parent_menu_php_file;
+  }
+
+  public function get_parent_menu_id()
+  {
+    return $this->_parent_menu_id;
   }
 
   public function get_entity_title()

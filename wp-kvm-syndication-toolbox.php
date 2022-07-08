@@ -38,6 +38,7 @@ include_once( dirname( __FILE__ ) . '/modules/wp-dashboard-posts/class-wp-dashbo
 include_once( dirname( __FILE__ ) . '/modules/wp-user-register/class-wp-user-register.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-ess-event-calendar-client/class-wp-ess-event-calendar-client.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-newsletter-interface/class-wp-newsletter-interface.php');
+include_once( dirname( __FILE__ ) . '/modules/wp-commonsbooking-extensions/class-wp-commonsbooking-extensions.php');
 
 class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
 {
@@ -98,6 +99,16 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $ni_module = $this->add_module(new WPNewsletterInterfaceModule('Newsletter Interface'));
     $ni_module ->set_description('Das Modul kann events in ein Newsletter importieren ' . 
                                  'und unterstützt mehrere Newsletter Plugins in Wordpress ');
+
+    $cbe_module = $this->add_module(new WPCommonsBookingExtensionsModule('Commons Booking Extensions'));
+    $cbe_module ->set_description('Das Modul ermöglicht Zeitrahmen auf alle Artikel ' . 
+                                 'zu duplizieren fürs Commons Booking Plugin ' .
+                                 'Man erstellt ein Zeitrahmen ohne ein Artikel zu wahlen ' .
+                                 'in Entwurf Modus. Dann wahlt man die Aktion '. 
+                                 '"Duplizier Zeitrahmen für alle Artikel" ' . 
+                                 'Dann werden erst alle Zeitrahmen für diese Standort '.
+                                 'entfernt und gleich danach wieder erstellt aus dem ' .
+                                 'Zeitrahmen ohne Artikel in Entwurf Modus');
   }
 
   public function setup_includes($loader)
