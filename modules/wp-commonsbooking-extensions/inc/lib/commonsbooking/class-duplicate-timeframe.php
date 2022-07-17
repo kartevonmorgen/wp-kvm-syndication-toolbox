@@ -21,8 +21,10 @@ class DuplicateTimeFrame
     $duplicate_location = get_post($duplicate_location_id);
     echo '<p>für Standort: ' . $duplicate_location->post_title . '</p>'; 
 
-    $cb_timeframes = get_posts(array('post_type' => 'cb_timeframe',
-                                     'post_status'    => 'any'));
+    $cb_timeframes = get_posts(array(
+      'post_type' => 'cb_timeframe',
+      'post_status'    => 'any',
+      'numberposts'    => -1));
 
     // First search for the 
     foreach($cb_timeframes as $cb_timeframe)
@@ -43,6 +45,11 @@ class DuplicateTimeFrame
       {
         continue;
       }
+      if($cb_timeframe->post_title !== 
+        $cb_timeframe_to_duplicate->post_title)
+      {
+        continue;
+      }
 
       echo '<p>Entferne Zeitrahmen ' . $cb_timeframe->post_title . 
         ' für Artikel ' . $item_id .'</p>'; 
@@ -50,7 +57,8 @@ class DuplicateTimeFrame
     }
 
     // Get all the Items and create timeFrames for it.
-    $cb_items = get_posts(array('post_type' => 'cb_item'));
+    $cb_items = get_posts(array('post_type' => 'cb_item',
+                                'numberposts'    => -1));
     foreach($cb_items as $cb_item)
     {
       echo '<p>Erstelle Zeitrahmen für Artikel ' . $cb_item->post_title .
