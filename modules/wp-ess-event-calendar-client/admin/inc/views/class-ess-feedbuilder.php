@@ -46,7 +46,9 @@ final class ESSFeedBuilder
 	  $essFeed->setTitle( ''. $_SERVER[ 'HTTP_HOST' ] );
     $essFeed->setLink($link); 
     $essFeed->setPublished( 'now' ); 
-    $essFeed->setRights( '' );
+
+    // TODO: Get option from the module class
+    $essFeed->setRights( '' . get_option('ess_feed_rights') );
 
 
     if( count($events) > 0)
