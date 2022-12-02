@@ -25,6 +25,7 @@ class TimeFrameMenuActions
                                          'Zeitrahmen duplizieren', 
                                          'cb_timeframe',
                                          'Zeitrahemen');
+    $tableAction->set_post_status('draft');
     $tableAction->set_parent_menu('admin.php', 'cb-dashboard');
     $tableAction->set_postaction_listener(new class() implements UIPostTableActionIF
       {

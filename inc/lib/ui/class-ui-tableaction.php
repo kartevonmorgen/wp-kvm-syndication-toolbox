@@ -11,6 +11,7 @@ class UITableAction
   private $_enabled_roles = array();
   private $_disabled_roles = array();
   private $_fields = array();
+  private $_post_status = 'publish';
 
   public function __construct($id, $title, $menu_title = null, $entity_title)
   {
@@ -118,6 +119,16 @@ class UITableAction
   public function get_fields()
   {
     return $this->_fields;
+  }
+
+  public function set_post_status($post_status)
+  {
+    $this->_post_status = $post_status;
+  }
+
+  public function get_post_status()
+  {
+    return $this->_post_status;
   }
 
 }

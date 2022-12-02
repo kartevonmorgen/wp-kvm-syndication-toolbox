@@ -227,4 +227,8 @@ In the Noptin Newsletter use the [[events]] tag to import the event list automat
 
 As an addition to Noptin, different Lists of Subscribers are also supported and can be enabled in the Settings of the module (KVM Syndication Toolbox -> Newsletter Interface), then lists can be added under (KVM Syndication Toolbox -> Newsletter lists). Then they will be automatically added to the Noptin Plugin.
 
-27 September 2021, Sjoerd Takken
+## Commons Booking Extensions
+
+Gives Commons Booking the oppertunity to duplicate Timeframes for all the articles.
+
+2 Dezember 2022, Sjoerd Takken

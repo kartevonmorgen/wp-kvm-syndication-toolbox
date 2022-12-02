@@ -135,7 +135,9 @@ class UIPostTableAction extends UITableAction
     $posttype = $this->get_posttype();
     $posttype_title = $this->get_entity_title();
     $title = $this->get_title();
+    $post_status = $this->get_post_status();
     $dropdown = new UIDropdownPosts(array('post_type' => $posttype,
+                                          'post_status' => $post_status
                                           ));
 
     ?>
