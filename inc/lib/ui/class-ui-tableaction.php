@@ -51,6 +51,11 @@ class UITableAction
     return $this->_parent_menu_php_file;
   }
 
+  public function is_edit()
+  {
+    return $this->get_parent_menu_php_file() == 'edit.php';
+  }
+
   public function get_parent_menu_id()
   {
     return $this->_parent_menu_id;

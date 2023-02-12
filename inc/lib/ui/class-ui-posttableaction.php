@@ -20,6 +20,17 @@ class UIPostTableAction extends UITableAction
     return $this->_posttype;
   }
 
+  public function get_parent_menu_id()
+  {
+    if(empty(parent::get_parent_menu_id()))
+    {
+      // If the get_parent_menu_id() is not set we assume it is an edit.php (which is default in UITableAction) page, 
+      // so we must habe a posttype in the parent menu item.
+      return $this->get_parent_menu_php_file() . '?post_type=' . $this->get_posttype();
+    }
+    return parent::get_parent_menu_id();
+  }
+
   public function set_postaction_listener($listener)
   {
     $this->_listener = $listener;
@@ -75,9 +86,16 @@ class UIPostTableAction extends UITableAction
     }
     else
     {
-      $url = $parent_menu_php_file . 
-        '?post_type=' . $posttype .
-        '&post_id=' . $post_id;
+      // Check if it is an Edit Page, then we always hava a PostType which musst be passed further
+      // to the action
+      if($this->is_edit())
+      {
+        $url = $parent_menu_php_file . '?post_type=' . $posttype . '&post_id=' . $post_id;
+      }
+      else
+      {
+        $url = $parent_menu_php_file . '?post_id=' . $post_id;
+      }
     }
     return admin_url($url); 
   }
@@ -86,13 +104,7 @@ class UIPostTableAction extends UITableAction
   {
     $id = $this->get_id();
     $title = $this->get_title();
-    $posttype = $this->get_posttype();
     $parent_menu_id = $this->get_parent_menu_id();
-    $parent_menu_php_file = $this->get_parent_menu_php_file();
-    if(empty($parent_menu_id))
-    {
-      $parent_menu_id = $parent_menu_php_file . '?post_type=' . $posttype;
-    }
 
     add_submenu_page($parent_menu_id,
                      $title, $title,
@@ -146,8 +158,15 @@ class UIPostTableAction extends UITableAction
         <form method="get">
           <p>
             <label><?php echo $posttype_title; ?>:&nbsp;
+            <?php 
+                  // Check if it is an Edit Page, then we always hava a PostType which musst be passed further
+                  // to the action
+                  if( $this->is_edit() )
+                  { ?>  
              <input type="hidden" name="post_type" value="<?php echo $posttype; ?>" />
-            <?php $dropdown->wp_dropdown_posts( ); ?>
+            <?php }
+                  $dropdown->wp_dropdown_posts( ); 
+                  ?>
           </p>
           <p>
             <button type="submit" 
