@@ -93,7 +93,7 @@ abstract class SSAbstractImport extends WPAbstractModuleProvider
   {
     $importtypeid = $this->get_feed_meta('ss_feedurltype');
 
-    $factory = SSImporterFactory::get_instance();
+    $factory = $this->get_current_module()->get_importer_factory();
     return $factory->get_importtype( $importtypeid );
   }
 

@@ -75,7 +75,9 @@ class UIPostTableAction extends UITableAction
     }
     else
     {
-      $url = $parent_menu_php_file . '?post_id=' . $post_id;
+      $url = $parent_menu_php_file . 
+        '?post_type=' . $posttype .
+        '&post_id=' . $post_id;
     }
     return admin_url($url); 
   }
@@ -144,8 +146,7 @@ class UIPostTableAction extends UITableAction
         <form method="get">
           <p>
             <label><?php echo $posttype_title; ?>:&nbsp;
-            <!-- looks like this is not needed, because we have the ID for sure
-             input type="hidden" name="post_type" value="<?php echo $posttype; ?>" /-->
+             <input type="hidden" name="post_type" value="<?php echo $posttype; ?>" />
             <?php $dropdown->wp_dropdown_posts( ); ?>
           </p>
           <p>

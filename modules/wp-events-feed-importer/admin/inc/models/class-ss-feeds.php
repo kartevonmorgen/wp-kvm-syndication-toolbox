@@ -249,7 +249,7 @@ class SSFeeds extends WPAbstractModuleProvider
                    'numberposts' => -1);
     $feeds = get_posts($args);
 
-    $instance = SSImporterFactory::get_instance();
+    $instance = $this->get_current_module()->get_importer_factory();
 		if ( empty( $feeds ))
 		{
       $cron_message .= 'No feeds found';
@@ -264,6 +264,7 @@ class SSFeeds extends WPAbstractModuleProvider
 			{
         $cron_message .= 'Feed is empty';
         $cron_message .= PHP_EOL;
+        update_option('ss_cron_message', $cron_message );
         continue;
       }
 
@@ -288,6 +289,7 @@ class SSFeeds extends WPAbstractModuleProvider
 			{
         $cron_message .= 'Feed update daily is OFF';
         $cron_message .= PHP_EOL;
+        update_option('ss_cron_message', $cron_message );
         continue;
       }
 
@@ -295,6 +297,7 @@ class SSFeeds extends WPAbstractModuleProvider
 			{
         $cron_message .= 'Feed URL or Type is empty';
         $cron_message .= PHP_EOL;
+        update_option('ss_cron_message', $cron_message );
         continue;
       }
 
@@ -303,8 +306,10 @@ class SSFeeds extends WPAbstractModuleProvider
       {
         $cron_message .= 'Importer could not be created';
         $cron_message .= PHP_EOL;
+        update_option('ss_cron_message', $cron_message );
         continue;
       }
+
       wp_set_current_user($feed_user);
       $importer->import();
       if( $importer->has_error() )
