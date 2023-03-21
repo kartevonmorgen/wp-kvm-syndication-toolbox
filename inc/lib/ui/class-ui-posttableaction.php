@@ -7,7 +7,7 @@ class UIPostTableAction extends UITableAction
 
   public function __construct($id, 
                               $title, 
-                              $menu_title = null,
+                              $menu_title,
                               $posttype, 
                               $entity_title = null) 
   {

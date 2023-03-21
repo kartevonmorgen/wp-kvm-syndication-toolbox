@@ -13,7 +13,7 @@ class UITableAction
   private $_fields = array();
   private $_post_status = 'publish';
 
-  public function __construct($id, $title, $menu_title = null, $entity_title)
+  public function __construct($id, $title, $menu_title, $entity_title)
   {
     $this->_id = $id;
     $this->_title = $title;

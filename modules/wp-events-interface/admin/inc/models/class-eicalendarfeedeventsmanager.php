@@ -73,7 +73,7 @@ class EICalendarFeedEventsManager extends EICalendarFeed
     $this->em_event_deleted(true, $event);
   }
 
-  public function em_event_deleted($result=NULL, $event)
+  public function em_event_deleted($result, $event)
   {
     if ( $result == true )
     {
