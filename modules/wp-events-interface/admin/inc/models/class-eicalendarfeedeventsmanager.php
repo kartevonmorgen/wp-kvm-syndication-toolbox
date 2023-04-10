@@ -350,6 +350,7 @@ class EICalendarFeedEventsManager extends EICalendarFeed
     $filters = array(
 		   'category' => $event_cat,
        'status' => 'publish',
+       'private' => false,
 		   'tag' => array(),
 		   'scope' => date( 'Y-m-d', $start_date ) . ',' . date( 'Y-m-d', $end_date + 86400 ),
 	    );

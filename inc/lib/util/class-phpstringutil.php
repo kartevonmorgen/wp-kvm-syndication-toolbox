@@ -12,14 +12,32 @@ class PHPStringUtil
   {
   }
 
+  /**
+   * $haystack: The String to search in
+   * $needle: The String where is searched for
+   * Gives true if the $haystack starts with $needle
+   */
   public function startsWith( $haystack, $needle ) 
   {
+    if(empty($haystack) || !is_string($haystack))
+    {
+      return false;
+    }
     $length = strlen( $needle );
     return substr( $haystack, 0, $length ) === $needle;
   }
 
+  /**
+   * $haystack: The String to search in
+   * $needle: The String where is searched for
+   * Gives true if the $haystack ends with $needle
+   */
   public function endsWith( $haystack, $needle ) 
   {
+    if(empty($haystack) || !is_string($haystack))
+    {
+      return false;
+    }
     $length = strlen( $needle );
     if( !$length ) 
     {
