@@ -1,11 +1,12 @@
 <?php
 
-class OrganisationMenuActions
+class OrganisationMenuActions extends WPAbstractModuleProvider 
 {
   private $_kvm_uploader;
 
-  public function __construct($kvm_uploader)
+  public function __construct($current_module, $kvm_uploader)
   {
+    parent::__construct($current_module);
     $this->_kvm_uploader = $kvm_uploader;
   }
 
@@ -18,11 +19,9 @@ class OrganisationMenuActions
   {
     $this->reset_log_action($loader);
 
-    $mc = WPModuleConfiguration::get_instance();
-
     // Only make the upload option available if we 
     // have this devleoper setting setted.
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     if($root->is_manual_post_save_actions())
     {
       $tableAction = new UIPostTableAction('upload-to-kvm', 
@@ -62,8 +61,7 @@ class OrganisationMenuActions
       return;
     }
 
-    $mc = WPModuleConfiguration::get_instance();
-    $root = $mc->get_root_module();
+    $root = $this->get_root_module();
     if(!$root->is_reset_log_manual())
     {
       return;

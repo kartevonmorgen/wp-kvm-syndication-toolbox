@@ -14,11 +14,6 @@ class WPOrganisationModule extends WPAbstractModule
     
     $loader->add_include("/inc/lib/user/class-user-organisation-helper.php");
 
-    $loader->add_include('/inc/lib/initiative/class-initiative-posttype.php');
-    $loader->add_include('/inc/lib/initiative/class-migrate-user-und-initiative.php');
-    $loader->add_include('/inc/lib/initiative/class-initiative-menuactions.php');
-    $loader->add_include('/inc/lib/initiative/class-user-oldvalues-modeladapter.php');
-
     $loader->add_include('/inc/lib/organisation/class-organisation-posttype.php');
     $loader->add_include('/inc/lib/organisation/class-organisation-search-behaviour.php');
     $loader->add_include('/inc/lib/organisation/class-organisation-menuactions.php');
@@ -43,27 +38,16 @@ class WPOrganisationModule extends WPAbstractModule
 
     $loader->add_filter( 'excerpt_more', $this, 'excerpt_more');
 
-    $kvmUploader = new UploadWPOrganisationToKVM();
+    $kvmUploader = new UploadWPOrganisationToKVM($this);
     $kvmUploader->setup($loader);
 
 
-    if($this->is_migration_enabled())
-    {
-      $menuActions = new InitiativeMenuActions();
-      $menuActions->setup($loader);
-    }
-
-    $menuActions = new OrganisationMenuActions($kvmUploader);
+    $menuActions = new OrganisationMenuActions($this, $kvmUploader);
     $menuActions->setup($loader);
     
 
     
     $loader->add_action( 'admin_menu', $this, 'remove_menus', 999 );
-
-    if($this->is_migration_enabled())
-    {
-      $loader->add_starter(new InitiativePosttype());
-    }
 
     $loader->add_starter(new OrganisationPosttype($this));
     $loader->add_starter(new OrganisationAdminControl($this));
@@ -106,16 +90,6 @@ class WPOrganisationModule extends WPAbstractModule
   public function is_multiple_organisation_pro_user_allowed()
   {
     return get_option($this->get_multiple_organisation_pro_user_id(), false);
-  }
-
-  public function get_migration_enabled_id()
-  {
-    return 'organisation-migration-enabled';
-  }
-
-  public function is_migration_enabled()
-  {
-    return get_option($this->get_migration_enabled_id(), false);
   }
 
   public function get_extend_the_content_for_single_organisation_id()

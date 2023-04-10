@@ -111,11 +111,6 @@ class InUserModel extends UIModel
       new UIUserMetaModelAdapter('user_email', UIModelAdapterType::TEXT));
     $ma->set_title('Email');
 
-    $ma = $this->add_ma(
-      new UserOldValuesModelAdapter('organisation_oldvalues', 
-        UIModelAdapterType::TEXTAREA));
-    $ma->set_title('Altes von früher');
-    $ma->set_disabled(true);
   }
 
   protected function before_save_model()

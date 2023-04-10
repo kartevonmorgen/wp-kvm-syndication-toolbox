@@ -12,8 +12,7 @@ class OrganisationAdminControl extends UIAbstractAdminControl
 {
   public function start() 
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $rootmodule = $mc->get_root_module();
+    $rootmodule = $this->get_root_module();
 
     $page = new UISettingsPage('organisation-options', 
                                'Organisation settings');
@@ -43,16 +42,6 @@ class OrganisationAdminControl extends UIAbstractAdminControl
                             'for now it is not possible to create' .
                             'a organisation page with an eventslist ' .
                             'for the organisation)');
-    $field->set_defaultvalue(false);
-
-    $field = $section->add_checkbox($module->get_migration_enabled_id(), 
-                                    'Migrate User und Initiative to a Organisation');
-    $field->set_description('If you have already created initiative in the past ' .
-                            'after the upgrade they still exists but are saved ' .
-                            'under the old post type "initiative". ' . 
-                            'If you enable this option, then the initiative ' .
-                            'are visible and we can migrate them to ' . 
-                            'organisations '); 
     $field->set_defaultvalue(false);
 
     $page->register();

@@ -27,4 +27,18 @@ abstract class WPAbstractModuleProvider
     $mc = WPModuleConfiguration::get_instance();
     return $mc->get_root_module();
   }
+
+  public function is_module_enabled($module_id)
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    return $mc->is_module_enabled($module_id); 
+  }
+
+  public function get_module($module_id)
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    return $mc->get_module($module_id); 
+  }
+
 }
+

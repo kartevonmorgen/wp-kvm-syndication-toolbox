@@ -17,15 +17,6 @@ class InUserProfileView extends UIView
 
     $va = $this->add_va('organisation_ds');
     $va->set_disabled(true);
-
-    
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-organisation');
-    if($module->is_migration_enabled())
-    {
-      $va = $this->add_va('organisation_oldvalues');
-      $va->set_disabled(true);
-    }
   }
 
   public function show()

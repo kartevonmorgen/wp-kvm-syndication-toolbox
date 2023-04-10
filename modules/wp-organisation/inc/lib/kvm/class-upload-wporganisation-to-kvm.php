@@ -1,6 +1,7 @@
 <?php
 
 class UploadWPOrganisationToKVM
+  extends WPAbstractModuleProvider
 {
   private $_do_not_upload = false;
   private $_skip_in_memory_check = false;
@@ -75,13 +76,12 @@ class UploadWPOrganisationToKVM
       return;
     }
 
-    $mc = WPModuleConfiguration::get_instance();
-    if (!$mc->is_module_enabled('wp-kvm-interface')) 
+    if (!$this->is_module_enabled('wp-kvm-interface')) 
     { 
       echo '<p>Plugin Events KVM Interface not found</p>';
       return;
     }
-    $kvminterface = $mc->get_module('wp-kvm-interface');
+    $kvminterface = $this->get_module('wp-kvm-interface');
 
     if(empty($organisation_post))
     {

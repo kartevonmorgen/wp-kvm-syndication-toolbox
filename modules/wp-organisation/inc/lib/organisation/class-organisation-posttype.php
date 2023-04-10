@@ -92,8 +92,7 @@ class OrganisationPosttype
     $ui_metabox->add_textfield('organisation_website', 'Webseite');
     $ui_metabox->register();
 
-    $mc = WPModuleConfiguration::get_instance();
-    if ($mc->is_module_enabled('wp-kvm-interface')) 
+    if ($this->is_module_enabled('wp-kvm-interface')) 
     { 
       // Karte von morgen Meldungen
       $ui_metabox = new UIMetabox('organisation_kvm_log_metabox',
