@@ -1,12 +1,18 @@
 <?php
 
-class OrganisationSearchBehaviour
+class EntrySearchBehaviour
+  extends WPAbstractModuleProvider
 {
+  public function get_type()
+  {
+    return $this->get_current_module()->get_type();
+  }
+
   public function setup($loader)
   {
     $loader->add_filter('pre_get_posts', $this, 'query_post_type');
     $loader->add_filter('pre_get_posts', $this, 'posts_for_current_author');
-    $loader->add_filter('pre_get_posts', $this, 'organisation_type');
+    $loader->add_filter('pre_get_posts', $this, 'entry_type');
 
     $loader->add_action('pre_get_posts', $this, 'users_own_attachments');
   }
@@ -26,6 +32,8 @@ class OrganisationSearchBehaviour
       }
       else
       {
+        // TODO: Add 'project' post_type if the Module 'Projekte'
+        //       is enabled
         // don't forget nav_menu_item to allow menus to work!
         $post_type = array('nav_menu_item', 'post', 'organisation'); 
       }
@@ -92,9 +100,9 @@ class OrganisationSearchBehaviour
 
 
  /**
-  * Search for Organisation by Type (Company or Organisation)
+  * Search for Entries by Type (Company or Organisation)
   */
-  function organisation_type($query) 
+  function entry_type($query) 
   {
     // Wir sind nicht im Admin Bereich
     if( $query->is_admin )
@@ -107,7 +115,7 @@ class OrganisationSearchBehaviour
       return $query;
     }
 
-    if( ! $query->is_post_type_archive(array('organisation')))
+    if( ! $query->is_post_type_archive(array($this->get_type()->get_id())))
     {
       return $query;
     }
@@ -149,18 +157,18 @@ class OrganisationSearchBehaviour
 
     if( isset( $search_company))
     {
-      $query->set('meta_key', 'organisation_type'); 
-      $query->set('meta_value', WPOrganisationType::COMPANY); 
+      $query->set('meta_key', 'entry_type'); 
+      $query->set('meta_value', WPEntryType::COMPANY); 
     }
     else if( isset($search_initiative))
     {
-      $query->set('meta_key', 'organisation_type'); 
-      $query->set('meta_value', WPOrganisationType::INITIATIVE); 
+      $query->set('meta_key', 'entry_type'); 
+      $query->set('meta_value', WPEntryType::INITIATIVE); 
       // And Not exist
     }
     else
     {
-      $query->set('meta_key', 'organisation_type'); 
+      $query->set('meta_key', 'entry_type'); 
       $query->set('meta_value', 'nothing to find'); 
     }
 

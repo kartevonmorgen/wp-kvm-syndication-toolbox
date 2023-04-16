@@ -38,20 +38,20 @@ class KVMInterfaceHandleEntries
 
   }
 
-  public function save_entry($wpOrganisation)
+  public function save_entry($wpEntry)
   {
     $this->get_parent()->update_config();
     $api = $this->getEntriesApi();
 
-    $id = $wpOrganisation->get_kvm_id();
+    $id = $wpEntry->get_kvm_id();
 
-    $wpLocation = $wpOrganisation->get_location();
+    $wpLocation = $wpEntry->get_location();
     if(empty($wpLocation))
     {
       $this->handleOFDBException(
         'Hochladen zu der Karte von Morgen '.
         'geht nicht, das Ort ist leer (= NULL), ',
-        $wpOrganisation,
+        $wpEntry,
         $id,
         null);
       return $id;
@@ -67,7 +67,7 @@ class KVMInterfaceHandleEntries
         'Hochladen zu der Karte von Morgen '.
         'geht nicht, die Adresse ist nicht richtig, '.
         'keine Koordinaten gefunden für die Adresse.',
-        $wpOrganisation,
+        $wpEntry,
         $id,
         null);
       return $id;
@@ -78,16 +78,16 @@ class KVMInterfaceHandleEntries
       try
       {
         $entry = new KVMEntry();
-        $entry->fill_entry($wpOrganisation);
+        $entry->fill_entry($wpEntry);
         $id = $api->entriesPost($entry);
         $id = str_replace('"', '', $id);
-        $wpOrganisation->set_kvm_id($id);
+        $wpEntry->set_kvm_id($id);
       }
       catch(OpenFairDBApiException $e)
       {
         $this->handleOFDBException(
           'entriesPut',
-          $wpOrganisation,
+          $wpEntry,
           $id,
           $e);
         return $id;
@@ -102,7 +102,7 @@ class KVMInterfaceHandleEntries
         $this->handleOFDBException(
           'Hochladen zu der Karte von Morgen '.
           'geht nicht, die KVM Entry Id existiert nicht.',
-          $wpOrganisation,
+          $wpEntry,
           $id,
           null);
         return '';
@@ -111,7 +111,7 @@ class KVMInterfaceHandleEntries
       try
       {
         $entry = $entryFromKVM;
-        $entry->fill_entry($wpOrganisation);
+        $entry->fill_entry($wpEntry);
         $entry->set_version(intval($entryFromKVM->get_version()) + 1);
         $api->entriesPut($entry, $id); 
       }
@@ -119,7 +119,7 @@ class KVMInterfaceHandleEntries
       {
         $this->handleOFDBException(
           'entriesPut',
-          $wpOrganisation,
+          $wpEntry,
           $id,
           $e);
         return $id;
@@ -128,7 +128,7 @@ class KVMInterfaceHandleEntries
 
     $this->handleOFDBException(
       'Status Okey',
-      $wpOrganisation,
+      $wpEntry,
       $id,
       null);
     return $id;
@@ -152,6 +152,9 @@ class KVMInterfaceHandleEntries
     return $this->get_entries_by_ids($ids);
   }
 
+  /**
+   * TODO: Convert to the Type it belongs to
+   */
   public function get_entries_by_ids($ids)
   {
     try
@@ -186,25 +189,25 @@ class KVMInterfaceHandleEntries
   }
 
   public function handleOFDBException($msg, 
-                                      $wpOrganisation,
+                                      $wpEntry,
                                       $kvm_id,
                                       $e)
   {
-    if(empty($wpOrganisation->get_id()))
+    if(empty($wpEntry->get_id()))
     {
       return;
     }
 
     $logger = new PostMetaLogger(
-      'organisation_kvm_log',
-      $wpOrganisation->get_id());
+      $wpEntry->get_type_slug() . '_kvm_log',
+      $wpEntry->get_id());
 
     $logger->add_date();
 
-    $logger->add_line('Organisation hochladen');
-    $logger->add_line('Organisation Name: ' . 
-              $wpOrganisation->get_name() . 
-              '(' . $wpOrganisation->get_id() . ')'); 
+    $logger->add_line($wpEntry->get_type_title() . ' hochladen');
+    $logger->add_line($wpEntry->get_type_title() . ' Name: ' . 
+              $wpEntry->get_name() . 
+              '(' . $wpEntry->get_id() . ')'); 
     $logger->add_line($kvm_id);
     $logger->add_line('Bericht: ' . $msg);
     if( ! empty($e ))

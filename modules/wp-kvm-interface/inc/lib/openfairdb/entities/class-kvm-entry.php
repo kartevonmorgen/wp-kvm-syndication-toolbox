@@ -93,12 +93,12 @@ class KVMEntry
       {
         if( $cat == '77b3c33a92554bcf8e8c2c86cedd6f6f' )
         {
-          $wpOrganisation->set_type_id(WPOrganisationType::COMPANY);
+          $wpOrganisation->set_type_type_id(WPEntryType::COMPANY);
           break;
         }
         if( $cat == '2cd00bebec0c48ba9db761da48678134' )
         {
-          $wpOrganisation->set_type_id(WPOrganisationType::INITIATIVE);
+          $wpOrganisation->set_type_type_id(WPEntryType::INITIATIVE);
           break;
         }
       }
@@ -113,21 +113,21 @@ class KVMEntry
     return $wpOrganisation;
   }
 
-  public function fill_entry($wpOrganisation)
+  public function fill_entry($wpEntry)
   {
-    $this->_body['title'] = $wpOrganisation->get_name();
-    $this->_body['description'] = $wpOrganisation->get_description();
-    $this->_body['telephone'] = $wpOrganisation->get_contact_phone();
-    $this->_body['email'] = $wpOrganisation->get_contact_email();
-    $this->_body['homepage'] = $wpOrganisation->get_contact_website();
+    $this->_body['title'] = $wpEntry->get_name();
+    $this->_body['description'] = $wpEntry->get_description();
+    $this->_body['telephone'] = $wpEntry->get_contact_phone();
+    $this->_body['email'] = $wpEntry->get_contact_email();
+    $this->_body['homepage'] = $wpEntry->get_contact_website();
 
-    if(!empty( $wpOrganisation->get_image_url()))
+    if(!empty( $wpEntry->get_image_url()))
     {
-      $this->_body['image_url'] = $wpOrganisation->get_image_url();
-      $this->_body['image_link_url'] = $wpOrganisation->get_image_link_url();
+      $this->_body['image_url'] = $wpEntry->get_image_url();
+      $this->_body['image_link_url'] = $wpEntry->get_image_link_url();
     }
 
-    if( WPOrganisationType::COMPANY === $wpOrganisation->get_type_id())
+    if( WPEntryType::COMPANY === $wpEntry->get_type_type_id())
     {
       $this->_body['categories'] = 
         array('77b3c33a92554bcf8e8c2c86cedd6f6f');
@@ -147,7 +147,7 @@ class KVMEntry
       array_push($newlinks, $link_to_add);
     }
 
-    foreach($wpOrganisation->get_links() as $wpLink)
+    foreach($wpEntry->get_links() as $wpLink)
     {
       $link_to_add = $wpLink;
       foreach($newlinks as $newlink)
@@ -184,13 +184,13 @@ class KVMEntry
     // In KVM ist everything tags, so we convert
     // categories also to tags.
     $tags = array();
-    foreach($wpOrganisation->get_categories() as $wpCat)
+    foreach($wpEntry->get_categories() as $wpCat)
     {
       array_push($tags, 
         $this->convert_to_kvm_tag($wpCat->get_name()));
     }
 
-    foreach($wpOrganisation->get_tags() as $wpTag)
+    foreach($wpEntry->get_tags() as $wpTag)
     {
       if( ! in_array(
               $this->convert_to_kvm_tag($wpTag->get_name()), 
@@ -216,7 +216,7 @@ class KVMEntry
       $this->_body['tags'] = $tags;
     }
 
-    $wpLocation = $wpOrganisation->get_location();
+    $wpLocation = $wpEntry->get_location();
     if(!empty($wpLocation))
     {
       $wpLocH = new WPLocationHelper();

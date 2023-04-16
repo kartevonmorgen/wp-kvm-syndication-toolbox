@@ -5,20 +5,25 @@
  */
 class WPOrganisationModule extends WPAbstractModule 
 {
-  private $_organisation_types = array();
+  private $_entry_type_types = array();
+  private $_entry_type_factory = null;
 
   public function setup_includes($loader)
   {
-    $loader->add_include('/inc/lib/kvm/class-upload-wporganisation-to-kvm.php');
-    $loader->add_include('/inc/lib/kvm/class-download-wporganisation-from-kvm.php');
+    $loader->add_include('/inc/lib/kvm/class-upload-wpentry-to-kvm.php');
+    $loader->add_include('/inc/lib/kvm/class-download-wpentry-from-kvm.php');
     
     $loader->add_include("/inc/lib/user/class-user-organisation-helper.php");
 
+    $loader->add_include('/inc/lib/entry/class-entry-menuactions.php');
+    $loader->add_include('/inc/lib/entry/class-entry-posttype.php');
+    $loader->add_include('/inc/lib/entry/class-entry-search-behaviour.php');
+    $loader->add_include('/inc/lib/entry/class-entry-template-helper.php');
+    $loader->add_include('/inc/lib/entry/class-wpentry-type-factory.php');
+    $loader->add_include('/inc/lib/entry/class-wpentry-type.php');
+
     $loader->add_include('/inc/lib/organisation/class-organisation-posttype.php');
-    $loader->add_include('/inc/lib/organisation/class-organisation-search-behaviour.php');
-    $loader->add_include('/inc/lib/organisation/class-organisation-menuactions.php');
     $loader->add_include('/inc/lib/organisation/class-register-organisation-templates.php');
-    $loader->add_include('/inc/lib/organisation/class-organisation-template-helper.php');
     //$loader->add_include('inc/lib/organisation/class-widget-organisation-search.php');
 
     // Admin
@@ -28,21 +33,21 @@ class WPOrganisationModule extends WPAbstractModule
 
   public function setup($loader)
   {
-    $this->init_organisation_types();
+    $this->init_entry_type_types();
 
     $templates = new RegisterOrganisationTemplates($this);
     $templates->setup($loader);
 
-    $searcher = new OrganisationSearchBehaviour();
+    $searcher = new EntrySearchBehaviour($this);
     $searcher->setup($loader);
 
     $loader->add_filter( 'excerpt_more', $this, 'excerpt_more');
 
-    $kvmUploader = new UploadWPOrganisationToKVM($this);
+    $kvmUploader = new UploadWPEntryToKVM($this);
     $kvmUploader->setup($loader);
 
 
-    $menuActions = new OrganisationMenuActions($this, $kvmUploader);
+    $menuActions = new EntryMenuActions($this, $kvmUploader);
     $menuActions->setup($loader);
     
 
@@ -67,19 +72,28 @@ class WPOrganisationModule extends WPAbstractModule
   {
   }
 
-  private function init_organisation_types()
+  public function get_type()
   {
-    array_push($this->_organisation_types,
-               new WPOrganisationType(WPOrganisationType::INITIATIVE, 
+    if(empty($this->_entry_type_factory))
+    {
+      $this->_entry_type_factory = new WPEntryTypeFactory($this);
+    }
+    return $this->_entry_type_factory->get_type(WPEntryType::ORGANISATION);
+  }
+
+  private function init_entry_type_types()
+  {
+    array_push($this->_entry_type_types,
+               new WPEntryTypeType(WPEntryTypeType::INITIATIVE, 
                                       'Initiative', true)); 
-    array_push($this->_organisation_types,
-               new WPOrganisationType(WPOrganisationType::COMPANY, 
+    array_push($this->_entry_type_types,
+               new WPEntryTypeType(WPEntryTypeType::COMPANY, 
                                       'Company')); 
   }
 
-  public function get_organisation_types()
+  public function get_entry_type_types()
   {
-    return $this->_organisation_types;
+    return $this->_entry_type_types;
   }
 
   public function get_multiple_organisation_pro_user_id()
@@ -89,7 +103,9 @@ class WPOrganisationModule extends WPAbstractModule
 
   public function is_multiple_organisation_pro_user_allowed()
   {
-    return get_option($this->get_multiple_organisation_pro_user_id(), false);
+    return get_option(
+      $this->get_multiple_organisation_pro_user_id(), 
+      false);
   }
 
   public function get_extend_the_content_for_single_organisation_id()

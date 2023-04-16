@@ -79,6 +79,10 @@ abstract class WPTemplateHelper
                                $clazz = null, 
                                $style = null)
   {
+    if(empty($style))
+    {
+      $style = 'style="clear:both"';
+    }
     $this->the_element( $subtitle, $element, $clazz, $style );
   }
 

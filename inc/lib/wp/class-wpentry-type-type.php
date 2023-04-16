@@ -1,6 +1,6 @@
 <?php
 
-class WPOrganisationType
+class WPEntryTypeType
 {
   const INITIATIVE = 'initiative'; 
   const COMPANY = 'company'; 

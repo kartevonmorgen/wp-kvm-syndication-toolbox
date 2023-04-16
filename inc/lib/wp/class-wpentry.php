@@ -83,14 +83,14 @@ class WPEntry
 		return $this->_kvm_version;
 	}
 
-	public function set_type_id( $type_id ) 
+	public function set_type_type_id( $type_id ) 
   {
-		$this->_type_id = $type_id;
+		$this->_type_type_id = $type_type_id;
 	}
 
-	public function get_type_id() 
+	public function get_type_type_id() 
   {
-		return $this->_type_id;
+		return $this->_type_type_id;
   }
 
   public function set_description( $description ) 

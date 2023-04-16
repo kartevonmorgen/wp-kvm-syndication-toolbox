@@ -1,12 +1,7 @@
 <?php
 
-class OrganisationTemplateHelper extends WPTemplateHelper
+class EntryTemplateHelper extends WPTemplateHelper
 {
-  public function __construct()
-  {
-    parent::__construct('organisation');
-  }
-
   public function show()
   {
     while($this->has_next())
@@ -80,7 +75,7 @@ class OrganisationTemplateHelper extends WPTemplateHelper
 
     $this->the_begin('div', null, 'text-align:left');
     ?>
-      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/#/?center=<?php echo get_post_meta($org->ID, 'organisation_lat', true); ?>,<?php echo get_post_meta($org->ID, 'organisation_lng', true); ?>&zoom=19.00&left=hide&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
+      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/m/main?c=<?php echo get_post_meta($org->ID, 'organisation_lat', true); ?>,<?php echo get_post_meta($org->ID, 'organisation_lng', true); ?>&z=18.00&sidebar=hidden&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
 7           <br />
            <a href="http://kartevonmorgen.org/" target="_blank"     rel="noopener noreferrer">zur karte</a>
        </iframe>

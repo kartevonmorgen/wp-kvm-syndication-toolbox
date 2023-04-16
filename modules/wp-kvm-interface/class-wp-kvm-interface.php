@@ -65,14 +65,14 @@ class WPKVMInterfaceModule extends WPAbstractModule
     $eiInterface->register_for_kartevonmorgen();
   }
 
-  public function save_entry($wpOrganisation)
+  public function save_entry($wpEntry)
   {
     return $this->get_handle_entries()->save_entry(
-      $wpOrganisation);
+      $wpEntry);
   }
 
   /**
-   * return: array of WPOrganisation
+   * return: array of WPEntry
    */
   public function get_entries()
   {
@@ -80,7 +80,7 @@ class WPKVMInterfaceModule extends WPAbstractModule
   }
 
   /**
-   * return: array of WPOrganisation
+   * return: array of WPEntry
    */
   public function get_entries_by_ids($ids)
   {

@@ -1,6 +1,6 @@
 <?php
 
-class OrganisationMenuActions extends WPAbstractModuleProvider 
+class EntryMenuActions extends WPAbstractModuleProvider 
 {
   private $_kvm_uploader;
 
@@ -17,6 +17,8 @@ class OrganisationMenuActions extends WPAbstractModuleProvider
 
   public function setup($loader)
   {
+    $type = $this->get_current_module()->get_type();
+
     $this->reset_log_action($loader);
 
     // Only make the upload option available if we 
@@ -27,10 +29,11 @@ class OrganisationMenuActions extends WPAbstractModuleProvider
       $tableAction = new UIPostTableAction('upload-to-kvm', 
                                            'Upload zu der Karte von morgen', 
                                            'Upload zu KVM', 
-                                           'organisation',
-                                           'Organisation');
+                                           $type->get_id(),
+                                           $type->get_title());
       $tableAction->set_postaction_listener(
-        new KVMUploadAction($this->get_kvm_uploader()));
+        new KVMUploadAction($this->get_current_module(),
+                            $this->get_kvm_uploader()));
       $tableAction->setup($loader);
     }
     
@@ -44,13 +47,14 @@ class OrganisationMenuActions extends WPAbstractModuleProvider
     $tableAction = new UIPostTableAction('download-from-kvm', 
                                          'Download von der Karte von morgen', 
                                          'Download von KVM', 
-                                         'organisation',
-                                         'Organisation');
-    $field = new UIMetaboxField('organisation_kvm_id', 'KVM Id');
-    $field->set_description('Download Organisation für dieser KVM Id');
+                                         $type->get_id(),
+                                         $type->get_title());
+    $field = new UIMetaboxField($type->get_id() . '_kvm_id', 'KVM Id');
+    $field->set_description('Download ' . $type . ' für dieser KVM Id');
     $tableAction->add_field($field);
     $tableAction->set_postaction_listener(
-      new KVMDownloadAction($this->get_kvm_uploader()));
+      new KVMDownloadAction($this->get_current_module(),
+                            $this->get_kvm_uploader()));
     $tableAction->setup($loader);
   }
 
@@ -61,6 +65,7 @@ class OrganisationMenuActions extends WPAbstractModuleProvider
       return;
     }
 
+    $type = $this->get_current_module()->get_type();
     $root = $this->get_root_module();
     if(!$root->is_reset_log_manual())
     {
@@ -71,14 +76,14 @@ class OrganisationMenuActions extends WPAbstractModuleProvider
     $tableAction = new UIPostTableAction('reset-kvm-log', 
                                          'Reset KVM Log', 
                                          'Reset KVM Log', 
-                                         'organisation',
-                                         'Organisation');
+                                         $type->get_id(),
+                                         $type->get_title());
     $tableAction->set_postaction_listener(new class() implements UIPostTableActionIF
       {
         public function action($post_id, $post)
         {
           $logger = new PostMetaLogger(
-             'organisation_kvm_log',
+             $post->post_type . '_kvm_log',
              $post_id);
           $logger->add_line('');
           $logger->save();
@@ -90,16 +95,23 @@ class OrganisationMenuActions extends WPAbstractModuleProvider
 
 abstract class KVMAction implements UIPostTableActionIF
 {
+  private $_type;
   private $_kvm_uploader;
 
-  public function __construct($kvm_uploader)
+  public function __construct($module, $kvm_uploader)
   {
+    $this->_current_module = $module;
     $this->_kvm_uploader = $kvm_uploader;
   }
 
   public function get_kvm_uploader()
   {
     return $this->_kvm_uploader;
+  }
+
+  public function get_current_module()
+  {
+    return $this->_current_module;
   }
 
   public abstract function action($post_id, $post);
@@ -125,8 +137,9 @@ class KVMDownloadAction extends KVMAction
       // if fields are changed on the Organisation.
       // We do not want to upload if we have just downloaded.
       $this->get_kvm_uploader()->set_do_not_upload(true);
-    
-      $downloader = new DownloadWPOrganisationFromKVM();
+
+      $module = $this->get_current_module();
+      $downloader = new DownloadWPEntryFromKVM( $module );
       $downloader->download($post_id, $post, $kvm_id); 
     }
     finally

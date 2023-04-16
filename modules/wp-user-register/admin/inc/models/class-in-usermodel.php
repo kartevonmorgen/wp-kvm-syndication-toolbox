@@ -34,11 +34,11 @@ class InUserModel extends UIModel
 
     $mc = WPModuleConfiguration::get_instance();
     $module = $mc->get_module('wp-organisation');
-    foreach($module->get_organisation_types() as $type)
+    foreach($module->get_entry_type_types() as $type)
     {
       $ma->add_choice($type->get_id(), $type->get_name());
     }
-    $ma->set_default_value(WPOrganisationType::INITIATIVE);
+    $ma->set_default_value(WPEntryTypeType::INITIATIVE);
 
     $ma = $this->add_ma(
       new UIPostMetaModelAdapter('organisation_address', UIModelAdapterType::TEXT));

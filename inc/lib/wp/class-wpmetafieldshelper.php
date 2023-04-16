@@ -2,6 +2,7 @@
 
 class WPMetaFieldsHelper
 {
+  private $_prefix = '';
   private $_fields = array();
   private $_cvalues = array();
   private $_post_id;
@@ -10,6 +11,16 @@ class WPMetaFieldsHelper
   public function __construct($post_id)
   {
     $this->_post_id = $post_id;
+  }
+
+  public function set_prefix($prefix)
+  {
+    $this->_prefix = $prefix;
+  }
+
+  public function get_prefix()
+  {
+    return $this->_prefix;
   }
 
   public function set_force_db($force)
@@ -24,7 +35,7 @@ class WPMetaFieldsHelper
 
   public function add_field($key)
   {
-    array_push($this->_fields, $key);
+    array_push($this->_fields, $this->get_prefix() . $key);
   }
 
   public function get_fields()
@@ -37,8 +48,9 @@ class WPMetaFieldsHelper
     return $this->_post_id;
   }
 
-  public function get_value($key)
+  public function get_value($k)
   {
+    $key = $this->get_prefix() . $k;
     if($this->has_cache_value($key))
     {
       return $this->get_cache_value($key);
@@ -74,7 +86,7 @@ class WPMetaFieldsHelper
     $this->_cvalues[$key] = $value;
   }
 
-  public function is_in_memory($key)
+  private function is_in_memory($key)
   {
     if(!array_key_exists($key, $_POST))
     {
