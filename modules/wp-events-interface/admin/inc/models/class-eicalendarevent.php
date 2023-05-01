@@ -106,11 +106,11 @@ class EICalendarEvent
       }
       else if ( is_numeric( $date ) )
       {
-        return self::get_date_GMT($date);
+        return self::get_date_for_timezone($date);
       }
       elseif ( strtotime( $date ) !== FALSE )
       {
-        return self::get_date_GMT( strtotime( $date ));
+        return self::get_date_for_timezone( strtotime( $date ));
       }
       else
       {
@@ -119,10 +119,9 @@ class EICalendarEvent
       }
     }
 
-    private function get_date_GMT( $timestamp_unix ) 
+    private function get_date_for_timezone( $timestamp_unix ) 
     {
       $timezone = "Europe/Berlin";
-      
       if( function_exists( 'date_default_timezone_get' ) ) 
       {
         $timezone = date_default_timezone_get();
@@ -133,6 +132,23 @@ class EICalendarEvent
           new DateTimeZone( $timezone )
         );
  
+      return $dt->format( DateTime::ATOM );
+    }
+
+    /**
+     * Used by Karte von Morgen to get the universal GMT date
+     */
+    private function get_date_gmt($strDate)
+    {
+      $timezone = "Europe/Berlin";
+      if( function_exists( 'date_default_timezone_get' ) ) 
+      {
+        $timezone = date_default_timezone_get();
+      }
+
+      $timestamp = strtotime($strDate);
+      $dt = new DateTime($strDate, new DateTimeZone( $timezone ));
+      $dt->setTimezone(new DateTimeZone('GMT'));
       return $dt->format( DateTime::ATOM );
     }
 
@@ -325,6 +341,14 @@ class EICalendarEvent
     return $this->_start_date;
   }
 
+  /**
+   * Used by Karte von Morgen to get the universal GMT date
+   */
+  public function get_start_date_gmt() 
+  {
+    return $this->get_date_gmt($this->get_start_date());
+  }
+
 	public function set_end_date( $end_date ) 
   {
     $this->_end_date = $this->sanitize_date( $end_date );
@@ -333,6 +357,14 @@ class EICalendarEvent
   public function get_end_date() 
   {
     return $this->_end_date;
+  }
+
+  /**
+   * Used by Karte von Morgen to get the universal GMT date
+   */
+  public function get_end_date_gmt() 
+  {
+    return $this->get_date_gmt($this->get_end_date());
   }
 
 	public function set_all_day( $all_day ) 
