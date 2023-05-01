@@ -11,8 +11,7 @@ class InControlHolder extends WPAbstractModuleProvider
     $userRegister = new InUserRegisterControl($this->get_current_module());
     $userRegister->init();
 
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-organisation');
+    $module = $this->get_parent_module();
     if(!$module->is_multiple_organisation_pro_user_allowed())
     {
       $userProfile = new InUserProfileControl($this->get_current_module());

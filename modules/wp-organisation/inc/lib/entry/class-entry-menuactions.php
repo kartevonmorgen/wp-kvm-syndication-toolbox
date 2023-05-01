@@ -95,7 +95,7 @@ class EntryMenuActions extends WPAbstractModuleProvider
 
 abstract class KVMAction implements UIPostTableActionIF
 {
-  private $_type;
+  private $_current_module;
   private $_kvm_uploader;
 
   public function __construct($module, $kvm_uploader)

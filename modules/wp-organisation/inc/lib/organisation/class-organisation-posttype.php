@@ -33,6 +33,7 @@ class OrganisationPosttype
     {
       $args['capabilities'] = array('create_posts' => false);
     }
+    return $args;
   }
 
   protected function create_post_type_metabox1_addons($ui_metabox)

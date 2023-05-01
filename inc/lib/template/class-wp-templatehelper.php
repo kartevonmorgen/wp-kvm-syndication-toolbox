@@ -14,6 +14,11 @@ abstract class WPTemplateHelper
     $this->post_type = $post_type;
   }
 
+  public function get_post_type()
+  {
+    return $this->post_type;
+  }
+
   /**
    * Loads a List of posts from the Database
    */

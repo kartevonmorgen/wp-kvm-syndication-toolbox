@@ -13,7 +13,7 @@ class WPOrganisationModule extends WPAbstractModule
     $loader->add_include('/inc/lib/kvm/class-upload-wpentry-to-kvm.php');
     $loader->add_include('/inc/lib/kvm/class-download-wpentry-from-kvm.php');
     
-    $loader->add_include("/inc/lib/user/class-user-organisation-helper.php");
+    $loader->add_include("/inc/lib/user/class-user-entry-helper.php");
 
     $loader->add_include('/inc/lib/entry/class-entry-menuactions.php');
     $loader->add_include('/inc/lib/entry/class-entry-posttype.php');
@@ -122,8 +122,8 @@ class WPOrganisationModule extends WPAbstractModule
 
   public function get_organisation_by_user($user_id)
   {
-    $helper = new UserOrganisationHelper();
-    return $helper->get_organisation_by_user($user_id);
+    $helper = new UserEntryHelper($this);
+    return $helper->get_entry_by_user($user_id);
   }
 
   /** 

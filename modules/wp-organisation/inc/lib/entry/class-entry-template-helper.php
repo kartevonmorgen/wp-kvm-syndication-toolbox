@@ -122,7 +122,11 @@ class EntryTemplateHelper extends WPTemplateHelper
                         $element, 
                         $clazz, 
                         'float:left;width:110px');
-    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_address', true), $element, $clazz );
+    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 
+                          $this->get_post_type() . '_address', 
+                          true), 
+                        $element, 
+                        $clazz );
   }
 
   public function the_city($element = 'div', $clazz = null)

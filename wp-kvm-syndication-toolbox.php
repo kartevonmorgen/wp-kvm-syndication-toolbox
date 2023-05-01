@@ -34,6 +34,7 @@ include_once( dirname( __FILE__ ) . '/modules/wp-events-interface/class-wp-event
 include_once( dirname( __FILE__ ) . '/modules/wp-events-feed-importer/class-wp-events-feed-importer.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-kvm-interface/class-wp-kvm-interface.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-organisation/class-wp-organisation.php');
+include_once( dirname( __FILE__ ) . '/modules/wp-project/class-wp-project.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-dashboard-posts/class-wp-dashboard-posts.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-user-register/class-wp-user-register.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-ess-event-calendar-client/class-wp-ess-event-calendar-client.php');
@@ -77,6 +78,14 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
                                'inklusiv Eingabe von Kontaktdaten und Kontaktperson ' .
                                'Wenn das Karte von morgen Modul aktiviert ist ' . 
                                'wird die Organisation ' .
+                               'hochgeladen zu der Karte von morgen ');
+
+    $p_module = $i_module->add_module(new WPProjectModule('Projekte'));
+    $p_module->set_description('Das Projekte Modul ermöglich die Eingabe ' .
+                               'von Projekte für ein Organisation ' .
+                               'inklusiv Eingabe von Kontaktdaten und Kontaktperson ' .
+                               'Wenn das Karte von morgen Modul aktiviert ist ' . 
+                               'wird das Projekt als Initiative ' .
                                'hochgeladen zu der Karte von morgen ');
     
     $user_module = $i_module->add_module(new WPUserRegisterModule('Benutzer registrieren'));

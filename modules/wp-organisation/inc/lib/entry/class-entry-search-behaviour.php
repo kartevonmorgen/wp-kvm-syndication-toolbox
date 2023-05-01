@@ -35,7 +35,7 @@ class EntrySearchBehaviour
         // TODO: Add 'project' post_type if the Module 'Projekte'
         //       is enabled
         // don't forget nav_menu_item to allow menus to work!
-        $post_type = array('nav_menu_item', 'post', 'organisation'); 
+        $post_type = array('nav_menu_item', 'post', 'organisation', 'project'); 
       }
       $query->set('post_type',$post_type);
     }
@@ -157,13 +157,13 @@ class EntrySearchBehaviour
 
     if( isset( $search_company))
     {
-      $query->set('meta_key', 'entry_type'); 
-      $query->set('meta_value', WPEntryType::COMPANY); 
+      $query->set('meta_key', $this->get_type()->get_id() . '_type'); 
+      $query->set('meta_value', WPEntryTypeType::COMPANY); 
     }
     else if( isset($search_initiative))
     {
-      $query->set('meta_key', 'entry_type'); 
-      $query->set('meta_value', WPEntryType::INITIATIVE); 
+      $query->set('meta_key', $this->get_type()->get_id() . '_type'); 
+      $query->set('meta_value', WPEntryTypeType::INITIATIVE); 
       // And Not exist
     }
     else

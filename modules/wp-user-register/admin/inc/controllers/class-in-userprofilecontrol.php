@@ -34,8 +34,8 @@ class InUserProfileControl extends UIControl
   {
     $this->set_property(UIModel::USER_ID, $user->ID );
 
-    $helper = new UserOrganisationHelper();
-    $post = $helper->get_organisation_by_user($user->ID);
+    $module = $this->get_current_module();
+    $post = $module->get_organisation_by_user($user->ID);
     if(!empty($post))
     {
       $this->set_property(UIModel::POST_ID, $post->ID );
@@ -54,8 +54,8 @@ class InUserProfileControl extends UIControl
     }
 
     $this->set_property(UIModel::USER_ID, $user_id );
-    $helper = new UserOrganisationHelper();
-    $post = $helper->get_organisation_by_user($user->ID);
+    $module = $this->get_current_module();
+    $post = $module->get_organisation_by_user($user->ID);
     if(!empty($post))
     {
       $this->set_property(UIModel::POST_ID, $post->ID );

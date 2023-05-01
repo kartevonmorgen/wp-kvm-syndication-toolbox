@@ -20,7 +20,13 @@ abstract class EntryPosttype
 
   public abstract function create_labels();
 
-  protected abstract function create_post_type_addons($args);
+  /**
+   * Allow the Subclass to add extra parameters on args.
+   */
+  protected function create_post_type_addons($args)
+  {
+    return $args;
+  }
 
   protected abstract function create_post_type_metabox1_addons($ui_metabox);
 
@@ -51,7 +57,7 @@ abstract class EntryPosttype
                                      'revisions' ),
       'map_meta_cap'       => true );
    
-    $this->create_post_type_addons($args);
+    $args = $this->create_post_type_addons($args);
 
     $ui_metabox = new UIMetabox($slug . '_contact_metabox',
                                 'Kontaktdaten',

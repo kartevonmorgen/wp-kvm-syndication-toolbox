@@ -31,10 +31,10 @@ class WPUserRegisterModule extends WPAbstractModule
 
   public function setup($loader)
   {
-    $menuActions = new UserMenuActions();
+    $menuActions = new UserMenuActions($this);
     $menuActions->setup($loader);
 
-    $tableColumns = new UserTableColumns();
+    $tableColumns = new UserTableColumns($this);
     $tableColumns->setup($loader);
 
     $tableColumns = new UserRegisterTableColumns(); 
@@ -86,10 +86,8 @@ class WPUserRegisterModule extends WPAbstractModule
 
   public function get_organisation_by_user($user_id)
   {
-    $uhelper = new UserOrganisationHelper();
-    $organisation_post = 
-      $uhelper->get_organisation_by_user($user_id);
-    return $organisation_post;
+    return $this->get_parent_module()->get_organisation_by_user(
+      $user_id);
   }
 }
 

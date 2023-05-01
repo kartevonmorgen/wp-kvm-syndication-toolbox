@@ -9,7 +9,11 @@ class KVMEntry
     $this->_body = $body;
     if(empty($this->_body['links']))
     {
-      $this->_body['links'] = $body['custom'];
+      if(array_key_exists('custom', 
+                          $body))
+      {
+        $this->_body['links'] = $body['custom'];
+      }
     }
   }
 
@@ -93,12 +97,12 @@ class KVMEntry
       {
         if( $cat == '77b3c33a92554bcf8e8c2c86cedd6f6f' )
         {
-          $wpOrganisation->set_type_type_id(WPEntryType::COMPANY);
+          $wpOrganisation->set_type_type_id(WPEntryTypeType::COMPANY);
           break;
         }
         if( $cat == '2cd00bebec0c48ba9db761da48678134' )
         {
-          $wpOrganisation->set_type_type_id(WPEntryType::INITIATIVE);
+          $wpOrganisation->set_type_type_id(WPEntryTypeType::INITIATIVE);
           break;
         }
       }

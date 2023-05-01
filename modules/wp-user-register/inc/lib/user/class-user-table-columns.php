@@ -1,6 +1,6 @@
 <?php
 
-class UserTableColumns 
+class UserTableColumns extends WPAbstractModuleProvider 
 {
   public function setup($loader)
   {
@@ -22,8 +22,8 @@ class UserTableColumns
   {
     if ('organisation' == $column_name) 
     {
-      $helper = new UserOrganisationHelper();
-      $organisation = $helper->get_organisation_by_user($user_id);
+      $module = $this->get_current_module();
+      $organisation = $module->get_organisation_by_user($user_id);
       if(empty($organisation))
       {
         return null;

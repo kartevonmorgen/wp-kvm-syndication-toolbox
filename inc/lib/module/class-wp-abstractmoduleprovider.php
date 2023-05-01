@@ -22,6 +22,11 @@ abstract class WPAbstractModuleProvider
     return $this->_current_module;
   }
 
+  public function get_parent_module()
+  {
+    return $this->get_current_module()->get_parent_module();
+  }
+
   public function get_root_module()
   {
     $mc = WPModuleConfiguration::get_instance();
