@@ -141,14 +141,18 @@ class EICalendarEvent
     private function get_date_gmt($strDate)
     {
       $timezone = "Europe/Berlin";
-      if( function_exists( 'date_default_timezone_get' ) ) 
-      {
-        $timezone = date_default_timezone_get();
-      }
+      //if( function_exists( 'date_default_timezone_get' ) ) 
+      //{
+      //  $timezone = date_default_timezone_get();
+      //}
 
-      $timestamp = strtotime($strDate);
+
+      // TODO:ST Dirty Hack to make sure the TimeZone is removed
+      //         from the String
+
+      $strDate = substr($strDate,0, -6);
       $dt = new DateTime($strDate, new DateTimeZone( $timezone ));
-      $dt->setTimezone(new DateTimeZone('GMT'));
+      $dt->setTimezone(new DateTimeZone('Etc/GMT+0'));
       return $dt->format( DateTime::ATOM );
     }
 
