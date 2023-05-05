@@ -80,13 +80,13 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
                                'wird die Organisation ' .
                                'hochgeladen zu der Karte von morgen ');
 
-    $p_module = $i_module->add_module(new WPProjectModule('Projekte'));
-    $p_module->set_description('Das Projekte Modul ermöglich die Eingabe ' .
-                               'von Projekte für ein Organisation ' .
-                               'inklusiv Eingabe von Kontaktdaten und Kontaktperson ' .
-                               'Wenn das Karte von morgen Modul aktiviert ist ' . 
-                               'wird das Projekt als Initiative ' .
-                               'hochgeladen zu der Karte von morgen ');
+    //$p_module = $i_module->add_module(new WPProjectModule('Projekte'));
+    //$p_module->set_description('Das Projekte Modul ermöglich die Eingabe ' .
+    //                           'von Projekte für ein Organisation ' .
+    //                           'inklusiv Eingabe von Kontaktdaten und Kontaktperson ' .
+    //                           'Wenn das Karte von morgen Modul aktiviert ist ' . 
+    //                           'wird das Projekt als Initiative ' .
+    //                           'hochgeladen zu der Karte von morgen ');
     
     $user_module = $i_module->add_module(new WPUserRegisterModule('Benutzer registrieren'));
     $user_module->set_description('Das Modul sorgt dafür das Benutzer sich gleich mit ihre Organisation ' . 
