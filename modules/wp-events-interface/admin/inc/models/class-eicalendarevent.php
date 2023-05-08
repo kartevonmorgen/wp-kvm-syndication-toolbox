@@ -65,96 +65,79 @@ class EICalendarEvent
     const REPEAT_YEAR = 'year';
     const REPEAT_WEEK = 'week';
 
-    public function __construct() 
-    {
-      $_event_id = 0;
-      $_tags = array();
-      $_categories = array();
-      $_location = null;
-    }
+  public function __construct() 
+  {
+    $_event_id = 0;
+    $_tags = array();
+    $_categories = array();
+    $_location = null;
+  }
 
-    public static function get_day_text( $number = 1 ) 
-    {
-      return _n( 'day', 'days', $number, 'events-interface' );
-    }
+  public static function get_day_text( $number = 1 ) 
+  {
+    return _n( 'day', 'days', $number, 'events-interface' );
+  }
 
-    public static function get_week_text( $number = 1 ) 
-    {
-      return _n( 'week', 'weeks', $number, 'events-interface' );
-    }
+  public static function get_week_text( $number = 1 ) 
+  {
+    return _n( 'week', 'weeks', $number, 'events-interface' );
+  }
 
-    public static function get_month_text( $number = 1 ) 
-    {
-      return _n( 'month', 'months', $number, 'events-interface' );
-    }
+  public static function get_month_text( $number = 1 ) 
+  {
+    return _n( 'month', 'months', $number, 'events-interface' );
+  }
 
-    public static function get_year_text( $number = 1 ) 
-    {
-      return _n( 'year', 'years', $number, 'events-interface' );
-    }
+  public static function get_year_text( $number = 1 ) 
+  {
+    return _n( 'year', 'years', $number, 'events-interface' );
+  }
 
-    private function sanitize_link( $link ) 
-    {
-      return $link;
-    }
+  private function sanitize_link( $link ) 
+  {
+    return $link;
+  }
     
-    private function sanitize_date( $date ) 
+  private function convert_date_to_unixtime( $date )
+  {
+    if (empty($date))
     {
-      if (empty($date))
-      {
-        return null;
-      }
-      else if ( is_numeric( $date ) )
-      {
-        return self::get_date_for_timezone($date);
-      }
-      elseif ( strtotime( $date ) !== FALSE )
-      {
-        return self::get_date_for_timezone( strtotime( $date ));
-      }
-      else
-      {
-        throw new Exception( __( 'Invalid date', 
-                                 'event-calendar-newsletter' ));
-      }
+      return null;
     }
-
-    private function get_date_for_timezone( $timestamp_unix ) 
+    else if ( is_numeric( $date ) )
     {
-      $timezone = "Europe/Berlin";
-      if( function_exists( 'date_default_timezone_get' ) ) 
-      {
-        $timezone = date_default_timezone_get();
-      }
+      return $date;
+    }
+    elseif ( strtotime( $date ) !== FALSE )
+    {
+      $timezone = $this->get_default_timezone();
+      $dt = new DateTime($date, new DateTimeZone( $timezone ));
+      return $dt->getTimestamp();
+    }
+    else
+    {
+      throw new Exception( __( 'Invalid date', 
+                               'events-interface' ));
+    }
+  }
 
-      $dt = new DateTime(
-        date( 'Y-m-d H:i:s', $timestamp_unix ),
-          new DateTimeZone( $timezone )
+  private function convert_unixtime_to_date($unixtime)
+  {
+    $timezone = $this->get_default_timezone();
+    $dt = new DateTime(
+      date( 'Y-m-d H:i:s', $unixtime ),
+        new DateTimeZone( $timezone )
         );
  
-      return $dt->format( DateTime::ATOM );
-    }
-
-    /**
-     * Used by Karte von Morgen to get the universal GMT date
-     */
-    private function get_date_gmt($strDate)
-    {
-      $timezone = "Europe/Berlin";
-      //if( function_exists( 'date_default_timezone_get' ) ) 
-      //{
-      //  $timezone = date_default_timezone_get();
-      //}
-
-
-      // TODO:ST Dirty Hack to make sure the TimeZone is removed
-      //         from the String
-
-      $strDate = substr($strDate,0, -6);
-      $dt = new DateTime($strDate, new DateTimeZone( $timezone ));
-      $dt->setTimezone(new DateTimeZone('Etc/GMT+0'));
-      return $dt->format( DateTime::ATOM );
-    }
+    return $dt->format( DateTime::ATOM );
+  }
+    
+  private function get_default_timezone()
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    $module = $mc->get_module('wp-events-interface');
+    return $module->get_ei_default_timezone();
+  }
 
   public function set_title( $title ) 
   {
@@ -337,38 +320,38 @@ class EICalendarEvent
 
 	public function set_start_date( $start_date ) 
   {
-    $this->_start_date = $this->sanitize_date( $start_date );
+    $this->_start_date = $this->convert_date_to_unixtime( $start_date);
   }
 
   public function get_start_date() 
   {
-    return $this->_start_date;
+    return $this->convert_unixtime_to_date($this->_start_date);
   }
 
   /**
    * Used by Karte von Morgen to get the universal GMT date
    */
-  public function get_start_date_gmt() 
+  public function get_start_date_unixtime() 
   {
-    return $this->get_date_gmt($this->get_start_date());
+    return $this->_start_date;
   }
 
 	public function set_end_date( $end_date ) 
   {
-    $this->_end_date = $this->sanitize_date( $end_date );
+    $this->_end_date = $this->convert_date_to_unixtime( $end_date );
   }
 
   public function get_end_date() 
   {
-    return $this->_end_date;
+    return $this->convert_unixtime_to_date($this->_end_date);
   }
 
   /**
    * Used by Karte von Morgen to get the universal GMT date
    */
-  public function get_end_date_gmt() 
+  public function get_end_date_unixtime() 
   {
-    return $this->get_date_gmt($this->get_end_date());
+    return $this->_end_date;
   }
 
 	public function set_all_day( $all_day ) 
@@ -383,22 +366,22 @@ class EICalendarEvent
 
 	public function set_published_date( $published_date ) 
   {
-		$this->_published_date = $this->sanitize_date( $published_date );
+		$this->_published_date = $this->convert_date_to_unixtime( $published_date );
 	}
 
 	public function get_published_date() 
   {
-		return $this->_published_date;
+		return $this->convert_unixtime_to_date($this->_published_date);
 	}
 
 	public function set_updated_date( $updated_date ) 
   {
-		$this->_updated_date = $this->sanitize_date( $updated_date );
+		$this->_updated_date = $this->convert_date_to_unixtime( $updated_date );
 	}
 
 	public function get_updated_date() 
   {
-		return $this->_updated_date;
+		return $this->convert_unixtime_to_date($this->_updated_date);
 	}
 
 	public function set_plugin( $plugin ) 
@@ -571,7 +554,7 @@ class EICalendarEvent
 
   public function set_repeat_end( $repeat_end ) 
   {
-    $this->_repeat_end = $this->sanitize_date( $repeat_end );
+    $this->_repeat_end = $this->convert_date_to_unixtime( $repeat_end );
   }
 
   public function get_repeat_end() 

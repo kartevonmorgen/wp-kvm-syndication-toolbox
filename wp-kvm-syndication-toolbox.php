@@ -162,7 +162,6 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/wp/class-wpentry.php' );
     $loader->add_include('/inc/lib/wp/class-wpentry-type-type.php');
     $loader->add_include('/inc/lib/wp/class-wporganisation.php' );
-    $loader->add_include('/inc/lib/wp/class-wporganisation-type.php' );
     $loader->add_include('/inc/lib/wp/class-wpproject.php' );
     $loader->add_include('/inc/lib/wp/class-wplocation-freetextformat-type.php' );
     $loader->add_include('/inc/lib/wp/class-wplocation.php' );

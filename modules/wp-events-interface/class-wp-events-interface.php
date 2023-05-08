@@ -283,4 +283,16 @@ class WPEventsInterfaceModule extends WPAbstractModule
     $feed->the_output_list($user_id, $format, $format_footer);
   }
 
+  public function get_ei_default_timezone_id()
+  {
+    return 'ei_default_timezone';
+  }
+
+  public function get_ei_default_timezone()
+  {
+    return get_option(
+      $this->get_ei_default_timezone_id(),
+      'Europe/Berlin');
+  }
+
 }

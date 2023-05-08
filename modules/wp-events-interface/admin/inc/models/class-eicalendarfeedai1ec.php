@@ -159,13 +159,13 @@ class EICalendarFeedAi1ec extends EICalendarFeed
     $eiEvent->set_link(  $permalink );
 		$eiEvent->set_event_id( $post->ID );
 		$eiEvent->set_event_instance_id( $instance_id );
-    $eiEvent->set_start_date( $event->get('start')->format( 'Y-m-d H:i:s', 
+    $eiEvent->set_start_date( $event->get('start')->format( 'Y-m-dTH:i:s', 
                                          $event->get( 'timezone_name' ) ));
-    $eiEvent->set_end_date( $event->get( 'end' )->format( 'Y-m-d H:i:s', 
+    $eiEvent->set_end_date( $event->get( 'end' )->format( 'Y-m-dTH:i:s', 
                                          $event->get( 'timezone_name' ) ));
     $eiEvent->set_all_day( $event->get( 'allday' ));
 		$eiEvent->set_published_date( get_the_date('Y-m-d H:i:s', $post->ID ));
-		$eiEvent->set_updated_date( get_the_modified_date( 'Y-m-d H:i:s', 
+		$eiEvent->set_updated_date( get_the_modified_date( 'Y-m-dTH:i:s', 
                                                        $post->ID ));
     $term_cats = get_the_terms( $post->ID, 'events_categories' );
 		$eiEvent->set_categories( 

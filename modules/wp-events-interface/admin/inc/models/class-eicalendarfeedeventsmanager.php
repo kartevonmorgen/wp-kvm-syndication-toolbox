@@ -411,10 +411,10 @@ class EICalendarFeedEventsManager extends EICalendarFeed
       $image_url = false;
     }
 
-    $event_start_datetime = strtotime( 
-      $event->event_start_date . ' ' . $event->event_start_time );
-    $event_end_datetime = strtotime( 
-      $event->event_end_date . ' ' . $event->event_end_time );
+    $event_start_datetime =  
+      $event->event_start_date . 'T' . $event->event_start_time;
+    $event_end_datetime =  
+      $event->event_end_date . 'T' . $event->event_end_time;
 
     //global $wp_taxonomies;
     //var_dump($wp_taxonomies);
