@@ -152,9 +152,6 @@ class KVMInterfaceHandleEntries
     return $this->get_entries_by_ids($ids);
   }
 
-  /**
-   * TODO: Convert to the Type it belongs to
-   */
   public function get_entries_by_ids($ids)
   {
     try
@@ -199,13 +196,13 @@ class KVMInterfaceHandleEntries
     }
 
     $logger = new PostMetaLogger(
-      $wpEntry->get_type_slug() . '_kvm_log',
+      $wpEntry->get_type()->get_id() . '_kvm_log',
       $wpEntry->get_id());
 
     $logger->add_date();
 
-    $logger->add_line($wpEntry->get_type_title() . ' hochladen');
-    $logger->add_line($wpEntry->get_type_title() . ' Name: ' . 
+    $logger->add_line($wpEntry->get_type()->get_title() . ' hochladen');
+    $logger->add_line($wpEntry->get_type()->get_title() . ' Name: ' . 
               $wpEntry->get_name() . 
               '(' . $wpEntry->get_id() . ')'); 
     $logger->add_line($kvm_id);

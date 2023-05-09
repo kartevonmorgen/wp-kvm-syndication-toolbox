@@ -15,6 +15,13 @@ class WPProject extends WPEntry
   {
   }
 
+  public function get_type()
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    $module = $mc->get_module('wp-project');
+    return $module->get_type();
+  }
+
 	public function set_organisation_id( $organisation_id ) 
   {
 		$this->_organisation_id = $organisation_id;

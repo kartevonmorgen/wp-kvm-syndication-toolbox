@@ -131,7 +131,7 @@ class KVMEntry
       $this->_body['image_link_url'] = $wpEntry->get_image_link_url();
     }
 
-    if( WPEntryType::COMPANY === $wpEntry->get_type_type_id())
+    if( WPEntryTypeType::COMPANY === $wpEntry->get_type_type_id())
     {
       $this->_body['categories'] = 
         array('77b3c33a92554bcf8e8c2c86cedd6f6f');

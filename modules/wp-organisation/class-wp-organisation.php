@@ -72,13 +72,19 @@ class WPOrganisationModule extends WPAbstractModule
   {
   }
 
-  public function get_type()
+  public function get_entry_type_factory()
   {
     if(empty($this->_entry_type_factory))
     {
       $this->_entry_type_factory = new WPEntryTypeFactory($this);
     }
-    return $this->_entry_type_factory->get_type(WPEntryType::ORGANISATION);
+    return $this->_entry_type_factory;
+  }
+
+  public function get_type()
+  {
+    $entry_type_factory = $this->get_entry_type_factory();
+    return $entry_type_factory->get_type(WPEntryType::ORGANISATION);
   }
 
   private function init_entry_type_types()

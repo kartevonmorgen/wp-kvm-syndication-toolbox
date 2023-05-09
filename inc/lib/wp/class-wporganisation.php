@@ -15,6 +15,13 @@ class WPOrganisation extends WPEntry
   {
   }
 
+  public function get_type()
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    $module = $mc->get_module('wp-organisation');
+    return $module->get_type();
+  }
+
 	public function set_user_id( $user_id ) 
   {
 		$this->_user_id = $user_id;

@@ -81,11 +81,17 @@ class WPLink
   {
     $thisurl = $this->get_url();
     $thisurl = parse_url($thisurl, PHP_URL_HOST);
-    $thisurl = str_replace('www.', '', $thisurl);
+    if($thisurl != null)
+    {
+      $thisurl = str_replace('www.', '', $thisurl);
+    }
 
     $thaturl = $url;
     $thaturl = parse_url($thaturl, PHP_URL_HOST);
-    $thaturl = str_replace('www.', '', $thaturl);
+    if($thaturl != null)
+    {
+      $thaturl = str_replace('www.', '', $thaturl);
+    }
 
     if($thisurl === $thaturl)
     {

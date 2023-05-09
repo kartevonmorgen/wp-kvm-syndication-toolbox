@@ -54,11 +54,9 @@ class WPProjectModule extends WPAbstractModule
 
   public function get_type()
   {
-    if(empty($this->_entry_type_factory))
-    {
-      $this->_entry_type_factory = new WPEntryTypeFactory($this);
-    }
-    return $this->_entry_type_factory->get_type(WPEntryType::PROJECT);
+    $parent = $this->get_parent_module();
+    $entry_type_factory = $parent->get_entry_type_factory();
+    return $entry_type_factory->get_type(WPEntryType::PROJECT);
   }
 
   public function get_extend_the_content_for_single_project_id()

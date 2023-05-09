@@ -7,13 +7,13 @@
   * @copyright  No Copyright.
   * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
   */
-class WPEntry 
+abstract class WPEntry 
 {
   private $_id;
   private $_name;
   private $_kvm_id;
   private $_kvm_version;
-  private $_type_id;
+  private $_type_type_id;
   private $_description;
   private $_status;
   private $_contact_firstname;
@@ -31,6 +31,9 @@ class WPEntry
   public function __construct() 
   {
   }
+
+  public abstract function get_type();
+
 
 	public function set_id( $id ) 
   {

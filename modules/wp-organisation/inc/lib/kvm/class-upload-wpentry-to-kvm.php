@@ -11,6 +11,12 @@ class UploadWPEntryToKVM
     return $this->get_current_module()->get_type();
   }
 
+  public function create_type()
+  {
+    $clazz = $this->get_type()->get_clazz();
+    return new $clazz();
+  }
+
   public function setup($loader)
   {
     $loader->add_action( 'save_post_' . $this->get_type()->get_id(), 
@@ -306,8 +312,14 @@ class UploadWPEntryToKVM
     }
     else if( !empty($entry_post->post_content))
     {
-      $wpEntry->set_description(
-        wp_trim_excerpt('', $entry_post));
+      $text = get_the_content( '', false, $entry_post );
+      $text = strip_shortcodes( $text );
+      $text = excerpt_remove_blocks( $text );
+      $text = str_replace( ']]>', ']]&gt;', $text );
+      $excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
+      $text = wp_trim_words( $text, 55, $excerpt_more );
+
+      $wpEntry->set_description($text);
     }
     else
     {
