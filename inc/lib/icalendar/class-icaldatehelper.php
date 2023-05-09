@@ -205,7 +205,7 @@ class ICalDateHelper
 	 * 
 	 * @return int Unix timestamp
 	 */
-	function fromiCaltoUnixDateTime($datetime) 
+	function fromiCaltoUnixDateTime($datetime, $timezone) 
   {
 			// first check format
 			$formats = array();
@@ -231,8 +231,13 @@ class ICalDateHelper
 				$hour = substr($datetime,9,2);
 				$minute = substr($datetime,11,2);
 				$second = substr($datetime,13,2);
-			}
-			return gmmktime($hour, $minute, $second, $month, $day, $year);
+      }
+
+      $dt_string = '' . $year . '-' . $month . '-' . $day . 'T' 
+                   . $hour . ':' . $minute . ':' . $second;
+
+      $dt = new DateTime($dt_string, $timezone );
+      return $dt->getTimestamp();
 	}
 
 	/**

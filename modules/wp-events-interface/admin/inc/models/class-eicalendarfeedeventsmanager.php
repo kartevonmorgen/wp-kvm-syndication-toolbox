@@ -572,20 +572,17 @@ class EICalendarFeedEventsManager extends EICalendarFeed
       $emEvent->post_content = $eiEvent->get_description();
 
       // Start Date and Time
-      $emEvent->event_start_date = date( 'Y-m-d', 
-                      strtotime( $eiEvent->get_start_date()));
-      $emEvent->event_start_time = date( 'H:i:s', 
-                      strtotime( $eiEvent->get_start_date()));
-      $emEvent->start = strtotime( $emEvent->event_start_date." ".
-                                 $emEvent->event_start_time );
+
+      $dt = new DateTime($eiEvent->get_start_date());
+      $emEvent->event_start_date = $dt->format('Y-m-d');
+      $emEvent->event_start_time = $dt->format('H:i:s');
+      $emEvent->start = $eiEvent->get_start_date_unixtime();
 
       // End Date and Time
-      $emEvent->event_end_date = date( 'Y-m-d', 
-                    strtotime( $eiEvent->get_end_date()));
-      $emEvent->event_end_time = date( 'H:i:s', 
-                    strtotime( $eiEvent->get_end_date()));
-      $emEvent->end = strtotime( $emEvent->event_end_date." ".
-                                 $emEvent->event_end_time );
+      $dt = new DateTime($eiEvent->get_end_date());
+      $emEvent->event_end_date = $dt->format( 'Y-m-d');
+      $emEvent->event_end_time = $dt->format( 'H:i:s'); 
+      $emEvent->end = $eiEvent->get_end_date_unixtime();
 
       $emEvent->event_all_day = $eiEvent->get_all_day();
 

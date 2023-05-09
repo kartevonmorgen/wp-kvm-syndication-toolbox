@@ -131,7 +131,7 @@ class KVMInterfaceHandleEvents
            $eiEvent->get_owner_user_id());
         $orga_id = $organisation_post->ID;
 
-        $iske = new UploadWPOrganisationToKVM();
+        $iske = new UploadWPEntryToKVM($module);
         $wpLocation = $iske->create_location(
                                $orga_id, 
                                $organisation_post,

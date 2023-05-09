@@ -57,20 +57,6 @@ class EIAdminControl extends UIAbstractAdminControl
     $field = $section->add_checkbox('ei_fill_lanlon_coordinates_over_osm', 'Fill longitude und latitude automatically by OSM');
     $field->set_description('Fill longitude und latitude automatically by Open Street Maps Nominatim wenn a location is saved in the calendar plugin');
 
-    $field = $section->add_dropdownfield($module->get_ei_default_timezone_id(), 
-                            'Default Timezone');
-    $field->add_value("Europe/Belfast", "Europe/Belfast");
-    $field->add_value("Europe/London", "Europe/London");
-    $field->add_value("Europe/Lisbon", "Europe/Lisbon");
-    $field->add_value("Europe/Berlin", "Europe/Berlin");
-    $field->add_value("Europe/Paris", "Europe/Paris");
-    $field->add_value("Europe/Warsaw", "Europe/Warsaw");
-    $field->add_value("Europe/Sofia", "Europe/Sofia");
-    $field->add_value("Europe/Moscow", "Europe/Moscow");
-    $field->add_value("Europe/Minsk", "Europe/Minsk");
-    $field->add_value("Europe/Kyiv", "Europe/Kyiv");
-    $field->set_defaultvalue("Europe/Berlin");
-
     if(!$rootmodule->are_developer_options_enabled())
     {
       $page->register();

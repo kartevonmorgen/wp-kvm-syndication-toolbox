@@ -111,7 +111,7 @@ class EICalendarEvent
     elseif ( strtotime( $date ) !== FALSE )
     {
       $timezone = $this->get_default_timezone();
-      $dt = new DateTime($date, new DateTimeZone( $timezone ));
+      $dt = new DateTime($date, $timezone );
       return $dt->getTimestamp();
     }
     else
@@ -123,20 +123,21 @@ class EICalendarEvent
 
   private function convert_unixtime_to_date($unixtime)
   {
-    $timezone = $this->get_default_timezone();
     $dt = new DateTime(
       date( 'Y-m-d H:i:s', $unixtime ),
-        new DateTimeZone( $timezone )
-        );
- 
+      new DateTimeZone('UTC'));
+
+    $localtimezone = $this->get_default_timezone();
+    $dt->setTimezone( $localtimezone );
     return $dt->format( DateTime::ATOM );
   }
-    
+
+  /** 
+   * Get the default Timezone configurated for Wordpress
+   */
   private function get_default_timezone()
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $module = $mc->get_module('wp-events-interface');
-    return $module->get_ei_default_timezone();
+    return wp_timezone();
   }
 
   public function set_title( $title ) 

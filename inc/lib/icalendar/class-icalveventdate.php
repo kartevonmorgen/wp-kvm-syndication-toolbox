@@ -63,6 +63,7 @@ class ICalVEventDate
 
   public function parse()
   {
+    $timezone = wp_timezone();
     $dateHelper = new ICalDateHelper();
     $vLine = $this->getVLine();
 
@@ -77,7 +78,7 @@ class ICalVEventDate
     $dateValues = explode(',', $value);
     foreach($dateValues as $dateValue)
     {
-      $ts = $dateHelper->fromiCaltoUnixDateTime($dateValue);
+      $ts = $dateHelper->fromiCaltoUnixDateTime($dateValue, $timezone);
       $this->addTimestamp($ts);
     }
   }

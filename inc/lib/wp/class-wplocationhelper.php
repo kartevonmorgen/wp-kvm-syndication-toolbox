@@ -36,7 +36,11 @@ class WPLocationHelper
   {
     $wpLocation = new WPLocation();
     //echo 'SET LOCATION: ' . $locationStr;
-    $array_location = explode(',', $locationStr);
+    $array_location = array();
+    if($locationStr != null)
+    {
+      $array_location = explode(',', $locationStr);
+    }
     
     $is_first = true;
     $after_address = false;
@@ -310,23 +314,42 @@ class WPLocationHelper
 
   public function is_location_empty( $wpLocation )
   {
-    if(!empty(trim($wpLocation->get_name())))
+    $name = $wpLocation->get_name();
+    if(!is_null($name))
     {
-      return false;
+      if(!empty( trim( $name )))
+      {
+        return false;
+      }
     }
-    if(!empty(trim($wpLocation->get_street())))
+
+    $street = $wpLocation->get_street();
+    if(!is_null($street))
     {
-      return false;
+      if(!empty(trim($street)))
+      {
+        return false;
+      }
     }
-    if(!empty(trim($wpLocation->get_zip())))
+
+    $zip = $wpLocation->get_zip();
+    if(!is_null($zip))
     {
-      return false;
+      if(!empty(trim($zip)))
+      {
+        return false;
+      }
     }
-    if(!empty(trim($wpLocation->get_city())))
+
+    $city = $wpLocation->get_city();
+    if(!is_null($city))
     {
-      return false;
+      if(!empty(trim($city)))
+      {
+        return false;
+      }
+      return true;
     }
-    return true;
   }
 
   /**

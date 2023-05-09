@@ -90,6 +90,7 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
 
   public function read_events_from_feed()
   {
+    $timezone = wp_timezone();
     $now = time();
     $thismodule = $this->get_current_module();
     $maxPeriodInDays = $thismodule->get_max_periodindays();
@@ -111,7 +112,9 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
         {
           $recurring = new ICalVEventRecurringDate(
                               $vEvent->get_recurring_rule(),
-                              $vEvent->get_dt_startdate());
+                              $vEvent->get_dt_startdate(),
+                              array(),
+                              $timezone);
           $recurring->setMaxPeriodInDays($maxPeriodInDays);
           $vEvent->set_recurring_dates($recurring->getDates());
         }
