@@ -12,10 +12,7 @@ class InControlHolder extends WPAbstractModuleProvider
     $userRegister->init();
 
     $module = $this->get_parent_module();
-    if(!$module->is_multiple_organisation_pro_user_allowed())
-    {
-      $userProfile = new InUserProfileControl($this->get_current_module());
-      $userProfile->init();
-    }
+    $userProfile = new InUserProfileControl($this->get_current_module());
+    $userProfile->init();
   }
 }

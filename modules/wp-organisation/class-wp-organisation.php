@@ -102,18 +102,6 @@ class WPOrganisationModule extends WPAbstractModule
     return $this->_entry_type_types;
   }
 
-  public function get_multiple_organisation_pro_user_id()
-  {
-    return 'organisation-multiple_pro_user';
-  }
-
-  public function is_multiple_organisation_pro_user_allowed()
-  {
-    return get_option(
-      $this->get_multiple_organisation_pro_user_id(), 
-      false);
-  }
-
   public function get_extend_the_content_for_single_organisation_id()
   {
     return 'extend_the_content_for_single_organisation';

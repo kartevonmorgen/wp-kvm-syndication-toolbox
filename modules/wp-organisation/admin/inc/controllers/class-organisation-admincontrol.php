@@ -33,17 +33,6 @@ class OrganisationAdminControl extends UIAbstractAdminControl
                             'categories, tags, events, karte von morgen and contact data');
     $field->set_defaultvalue(true);
 
-    $field = $section->add_checkbox($module->get_multiple_organisation_pro_user_id(), 
-                                    'Allow multiple Organisations pro User');
-    $field->set_description('Normally a user registers himself and its organisation. ' . 
-                            'In some cases you want to make it possible that  ' . 
-                            'a User can create multiple Organisation.' . 
-                            '(If this is option is enabled, ' . 
-                            'for now it is not possible to create' .
-                            'a organisation page with an eventslist ' .
-                            'for the organisation)');
-    $field->set_defaultvalue(false);
-
     $page->register();
   }
 }

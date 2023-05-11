@@ -75,9 +75,9 @@ class EntryTemplateHelper extends WPTemplateHelper
 
     $this->the_begin('div', null, 'text-align:left');
     ?>
-      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/m/main?c=<?php echo get_post_meta($org->ID, 'organisation_lat', true); ?>,<?php echo get_post_meta($org->ID, 'organisation_lng', true); ?>&z=18.00&sidebar=hidden&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
+      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/m/main?c=<?php echo get_post_meta($org->ID, $this->get_post_type() . '_lat', true); ?>,<?php echo get_post_meta($org->ID, $this->get_post_type() . '_lng', true); ?>&z=18.00&sidebar=hidden&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
 7           <br />
-           <a href="http://kartevonmorgen.org/" target="_blank"     rel="noopener noreferrer">zur karte</a>
+           <a href="https://kartevonmorgen.org/" target="_blank" rel="noopener noreferrer">zur karte</a>
        </iframe>
     <?php
 
@@ -136,7 +136,11 @@ class EntryTemplateHelper extends WPTemplateHelper
                         $element, 
                         $clazz, 
                         'float:left;width:110px');
-    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_city', true), $element, $clazz );
+    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 
+                          $this->get_post_type() . '_city', 
+                          true), 
+                        $element, 
+                        $clazz );
   }
 
   public function the_phone($element = 'div', $clazz = null)
@@ -146,7 +150,11 @@ class EntryTemplateHelper extends WPTemplateHelper
                         $element, 
                         $clazz, 
                         'float:left;width:110px');
-    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_phone', true), $element, $clazz );
+    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 
+                          $this->get_post_type() . '_phone', 
+                          true), 
+                        $element, 
+                        $clazz );
   }
 
   public function the_email($element = 'div', $clazz = null)
@@ -156,7 +164,11 @@ class EntryTemplateHelper extends WPTemplateHelper
                         $element, 
                         $clazz, 
                         'float:left;width:110px');
-    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_email', true), $element, $clazz );
+    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 
+                          $this->get_post_type() . '_email', 
+                          true), 
+                        $element, 
+                        $clazz );
   }
 
   public function the_website($element = 'div', $clazz = null)
@@ -166,6 +178,10 @@ class EntryTemplateHelper extends WPTemplateHelper
                         $element, 
                         $clazz, 
                         'float:left;width:110px');
-    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 'organisation_website', true), $element, $clazz );
+    $this->the_element( '&nbsp;' . get_post_meta($org->ID, 
+                          $this->get_post_type() . '_website', 
+                          true), 
+                        $element, 
+                        $clazz );
   }
 }

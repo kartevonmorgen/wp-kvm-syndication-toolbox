@@ -9,7 +9,6 @@
   */
 class WPOrganisation extends WPEntry
 {
-  private $_user_id;
   
   public function __construct() 
   {
@@ -21,14 +20,4 @@ class WPOrganisation extends WPEntry
     $module = $mc->get_module('wp-organisation');
     return $module->get_type();
   }
-
-	public function set_user_id( $user_id ) 
-  {
-		$this->_user_id = $user_id;
-	}
-
-	public function get_user_id() 
-  {
-		return $this->_user_id;
-	}
 }

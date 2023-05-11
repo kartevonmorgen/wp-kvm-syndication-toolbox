@@ -27,6 +27,8 @@ abstract class WPEntry
 	private $_categories = array();
 	private $_tags = array();
 	private $_location;
+
+  private $_user_id;
   
   public function __construct() 
   {
@@ -312,6 +314,15 @@ abstract class WPEntry
 		return $this->_location;
 	}
 
+	public function set_user_id( $user_id ) 
+  {
+		$this->_user_id = $user_id;
+	}
+
+	public function get_user_id() 
+  {
+		return $this->_user_id;
+	}
 
   private function add_line($caption, $value)
   {

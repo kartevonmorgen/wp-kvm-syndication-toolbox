@@ -28,11 +28,7 @@ class OrganisationPosttype
 
   protected function create_post_type_addons($args)
   {
-    $module = $this->get_current_module();
-    if(!$module->is_multiple_organisation_pro_user_allowed())
-    {
-      $args['capabilities'] = array('create_posts' => false);
-    }
+    $args['capabilities'] = array('create_posts' => false);
     return $args;
   }
 
