@@ -41,7 +41,7 @@ class WPKVMInterfaceModule extends WPAbstractModule
     $this->handle_entries->setup($loader);
 
     $loader->add_starter($this);
-    $loader->add_starter(new KVMInterfaceAdminControl());
+    $loader->add_starter(new KVMInterfaceAdminControl($this));
   }
 
   public function module_activate()
@@ -152,6 +152,6 @@ class WPKVMInterfaceModule extends WPAbstractModule
   public function get_kvm_fixed_project_tag()
   {
     return get_option($this->get_kvm_fixed_project_tag_id(),
-                      $this->get_kvm_fixed_tag());
+                      $this->get_kvm_fixed_tag() . '-project');
   }
 }

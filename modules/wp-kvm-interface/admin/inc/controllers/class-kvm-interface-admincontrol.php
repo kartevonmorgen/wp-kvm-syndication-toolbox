@@ -10,13 +10,13 @@
  * @copyright  No Copyright.
  * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
  */
-class KVMInterfaceAdminControl implements WPModuleStarterIF
+class KVMInterfaceAdminControl extends UIAbstractAdminControl 
+                               implements WPModuleStarterIF
 {
   public function start() 
   {
-    $mc = WPModuleConfiguration::get_instance();
-    $rootmodule = $mc->get_root_module();
-    $module = $mc->get_module('wp-kvm-interface');
+    $rootmodule = $this->get_root_module();
+    $module = $this->get_current_module();
 
     $page = new UISettingsPage('kvm-interface', 
                                'Karte von Morgen');
@@ -54,6 +54,18 @@ class KVMInterfaceAdminControl implements WPModuleStarterIF
                             'This tag is also used as the special organisation hashtag ' .
                             'on which your organisation/platform will be registered ' . 
                             'by the Karte von Morgen.');
+
+    if($this->is_module_enabled('wp-project'))
+    {
+      $field = $section->add_textfield(
+        $module->get_kvm_fixed_project_tag_id(),
+        'Fixed tag for projects');
+      $field->set_description('This tag will be added to the tags transported'
+                          . ' to the Karte von Morgen. Depend on the Tag ' 
+                          . ' in the Karte von Morgen it is possible to '
+                          . ' change the color of the pin on the map.');
+      $field->set_defaultvalue($module->get_kvm_fixed_tag() . '-project');
+    }
 
     if(!$rootmodule->are_developer_options_enabled())
     {

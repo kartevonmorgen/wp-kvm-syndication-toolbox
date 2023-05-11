@@ -7,23 +7,12 @@
  * @copyright  No Copyright.
  * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
  */
-class KVMInterfaceHandleEvents 
+class KVMInterfaceHandleEvents extends WPAbstractModuleProvider
 {
   public CONST KVM_EVENT_ID = 'kvm_event_id';
   public CONST KVM_UPLOAD = 'organisation_kvm_upload';
 
   private $eventsApi;
-  private $parent;
-
-  public function __construct($parent) 
-  {
-    $this->parent = $parent;
-  }
-
-  public function get_parent()
-  {
-    return $this->parent;
-  }
 
   public function setup($loader)
   {
@@ -59,9 +48,8 @@ class KVMInterfaceHandleEvents
         }
       });
 
-    $this->eventsApi = new OpenFairDBEventsApi(
-      $this->get_parent()->get_client(),
-      $this->get_parent()->get_config());
+    $module = $this->get_current_module();
+    $this->eventsApi = new OpenFairDBEventsApi($module);
 
   }
 
@@ -112,7 +100,8 @@ class KVMInterfaceHandleEvents
                         $meta_id, 
                         true);
 
-    $this->get_parent()->update_config();
+    $module = $this->get_current_module();
+    $module->update_config();
     $api = $this->getEventsApi();
 
     $wpLocation = $eiEvent->get_location();
@@ -123,10 +112,9 @@ class KVMInterfaceHandleEvents
       // because a lot of online events do not have
       // a location
       $orga_id = 0;
-      $mc = WPModuleConfiguration::get_instance();
-      if( $mc->is_module_enabled('wp-organisation'))
+      if( $this->is_module_enabled('wp-organisation'))
       {
-        $module = $mc->get_module('wp-organisation');
+        $module = $this->get_module('wp-organisation');
         $organisation_post = $module->get_organisation_by_user(
            $eiEvent->get_owner_user_id());
         $orga_id = $organisation_post->ID;
@@ -239,7 +227,8 @@ class KVMInterfaceHandleEvents
                         $meta_id, 
                         true);
 
-    $this->get_parent()->update_config();
+    $module = $this->get_current_module();
+    $module->update_config();
     $api = $this->getEventsApi();
 
     if(empty($id))
@@ -273,7 +262,8 @@ class KVMInterfaceHandleEvents
 
   public function get_events()
   {
-    $this->get_parent()->update_config();
+    $module = $this->get_current_module();
+    $module->update_config();
     $api = $this->getEventsApi();
     return $api->eventsGet(null, 10); 
   }

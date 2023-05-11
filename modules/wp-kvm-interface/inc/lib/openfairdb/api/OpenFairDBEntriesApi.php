@@ -329,7 +329,8 @@ class OpenFairDBEntriesApi extends AbstractOpenFairDBApi
 
   private function createEntry($body)
   {
-    return new KVMEntry($body);
+    $module = $this->getCurrentModule();
+    return new KVMEntry($module, $body);
   }
 
 

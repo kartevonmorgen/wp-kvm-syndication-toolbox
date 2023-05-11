@@ -26,7 +26,7 @@ class EntryMenuActions extends WPAbstractModuleProvider
     $root = $this->get_root_module();
     if($root->is_manual_post_save_actions())
     {
-      $tableAction = new UIPostTableAction('upload-to-kvm', 
+      $tableAction = new UIPostTableAction($type->get_id() . '-upload-to-kvm', 
                                            'Upload zu der Karte von morgen', 
                                            'Upload zu KVM', 
                                            $type->get_id(),
@@ -44,7 +44,7 @@ class EntryMenuActions extends WPAbstractModuleProvider
     }
 
     // Download
-    $tableAction = new UIPostTableAction('download-from-kvm', 
+    $tableAction = new UIPostTableAction($type->get_id() . '-download-from-kvm', 
                                          'Download von der Karte von morgen', 
                                          'Download von KVM', 
                                          $type->get_id(),
@@ -72,8 +72,8 @@ class EntryMenuActions extends WPAbstractModuleProvider
       return;
     }
 
-    // Reset KVM Log
-    $tableAction = new UIPostTableAction('reset-kvm-log', 
+      // Reset KVM Log
+      $tableAction = new UIPostTableAction($type->get_id() . '-reset-kvm-log',  
                                          'Reset KVM Log', 
                                          'Reset KVM Log', 
                                          $type->get_id(),

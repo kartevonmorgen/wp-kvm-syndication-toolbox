@@ -2,10 +2,13 @@
 
 class KVMEntry
 {
+  private $_current_module;
   private $_body = array();
 
-  public function __construct($body = array())
+  public function __construct($current_module, 
+                              $body = array())
   {
+    $this->_current_module = $current_module;
     $this->_body = $body;
     if(empty($this->_body['links']))
     {
@@ -15,6 +18,11 @@ class KVMEntry
         $this->_body['links'] = $body['custom'];
       }
     }
+  }
+
+  public function get_current_module()
+  {
+    return $this->_current_module;
   }
 
   public function get_body()
@@ -205,13 +213,32 @@ class KVMEntry
       }
     }
 
+    $module = $this->get_current_module();
+
     $fixed_tag = $this->convert_to_kvm_tag(
-                   get_option('kvm_fixed_tag'));
+                 $module->get_kvm_fixed_tag());
     if(!empty($fixed_tag))
     {
       if( ! in_array($fixed_tag, $tags) )
       {
         array_push($tags, $fixed_tag);
+      }
+    }
+
+    $mc = WPModuleConfiguration::get_instance();
+    if($mc->is_module_enabled('wp-project'))
+    {
+      if($wpEntry->get_type()->get_id() == WPEntryType::PROJECT )
+      {
+        $fixed_project_tag = $this->convert_to_kvm_tag(
+                             $module->get_kvm_fixed_project_tag());
+        if(!empty($fixed_project_tag))
+        {
+          if( ! in_array($fixed_project_tag, $tags) )
+          {
+            array_push($tags, $fixed_project_tag);
+          }
+        }
       }
     }
 

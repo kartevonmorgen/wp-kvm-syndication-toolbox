@@ -28,10 +28,14 @@ class ProjectAdminControl extends UIAbstractAdminControl
       return;
     }
 
-    $field = $section->add_checkbox($module->get_extend_the_content_for_single_project_id(), 
-                                    'Extend the content of the project detail view.');
-    $field->set_description('Extend the content of the project detail view with. ' . 
-                            'categories, tags, events, karte von morgen and contact data');
+
+    $field = $section->add_checkbox(
+       $module->get_extend_the_content_for_single_project_id(), 
+       'Extend the content of the project detail view.');
+    $field->set_description('Extend the content of the ' .
+                            'project detail view with. ' . 
+                            'categories, tags, events, ' .
+                            'karte von morgen and contact data');
     $field->set_defaultvalue(true);
 
     $page->register();

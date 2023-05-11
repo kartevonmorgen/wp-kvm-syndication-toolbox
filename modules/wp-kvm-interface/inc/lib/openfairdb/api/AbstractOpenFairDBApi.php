@@ -11,6 +11,8 @@
  */
 abstract class AbstractOpenFairDBApi
 {
+  protected $current_module;
+
   /**
    * @var OpenFairDBConfiguration
    */
@@ -25,12 +27,18 @@ abstract class AbstractOpenFairDBApi
    * @param ClientInterface           $client
    * @param OpenFairDBConfiguration   $config
    */
-  public function __construct(
-    ClientInterface $client = null,
-    OpenFairDBConfiguration $config = null)
+  public function __construct($current_module)
   {
+    $this->current_module = $current_module;
+    $client = $current_module->get_client(); 
+    $config = $current_module->get_config(); 
     $this->client = $client ?: new WordpressHttpClient();
     $this->config = $config ?: new OpenFairDBConfiguration();
+  }
+
+  public function getCurrentModule()
+  {
+    return $this->current_module;
   }
 
   /**

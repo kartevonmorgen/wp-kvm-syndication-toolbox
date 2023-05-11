@@ -7,22 +7,11 @@
  * @copyright  No Copyright.
  * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
  */
-class KVMInterfaceHandleEntries 
+class KVMInterfaceHandleEntries extends WPAbstractModuleProvider
 {
   public CONST KVM_ENTRY_ID = 'kvm_entry_id';
 
   private $entriesApi;
-  private $parent;
-
-  public function __construct($parent) 
-  {
-    $this->parent = $parent;
-  }
-
-  public function get_parent()
-  {
-    return $this->parent;
-  }
 
   public function setup($loader)
   {
@@ -32,15 +21,14 @@ class KVMInterfaceHandleEntries
 
   public function start() 
   {
-    $this->entriesApi = new OpenFairDBEntriesApi(
-      $this->get_parent()->get_client(),
-      $this->get_parent()->get_config());
-
+    $module = $this->get_current_module();
+    $this->entriesApi = new OpenFairDBEntriesApi($module);
   }
 
   public function save_entry($wpEntry)
   {
-    $this->get_parent()->update_config();
+    $module = $this->get_current_module();
+    $module->update_config();
     $api = $this->getEntriesApi();
 
     $id = $wpEntry->get_kvm_id();
@@ -77,7 +65,8 @@ class KVMInterfaceHandleEntries
     {
       try
       {
-        $entry = new KVMEntry();
+        $module = $this->get_current_module();
+        $entry = new KVMEntry($module);
         $entry->fill_entry($wpEntry);
         $id = $api->entriesPost($entry);
         $id = str_replace('"', '', $id);
@@ -140,7 +129,8 @@ class KVMInterfaceHandleEntries
    */
   public function get_entries()
   {
-    $this->get_parent()->update_config();
+    $module = $this->get_current_module();
+    $module->update_config();
     $api = $this->getEntriesApi();
     $kvmentries = $api->searchGet('0,0,50,50',null,null,
                           null,null,null, 10); 

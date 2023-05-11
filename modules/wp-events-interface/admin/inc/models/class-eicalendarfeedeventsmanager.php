@@ -136,6 +136,7 @@ class EICalendarFeedEventsManager extends EICalendarFeed
     {
       return null;
     }
+    $module = $mc->get_module('wp-organisation');
     return $module->get_organisation_by_user($userid);
   }
 
