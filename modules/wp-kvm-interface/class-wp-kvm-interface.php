@@ -72,6 +72,24 @@ class WPKVMInterfaceModule extends WPAbstractModule
   }
 
   /**
+   * Confirm an Entry in the OpenFairDB. so it 
+   * can be made visible on the KVM Map again.
+   */
+  public function confirm_entry($wpEntry)
+  {
+    $this->get_handle_entries()->confirm_entry($wpEntry);
+  }
+
+  /**
+   * Archive an Entry in the OpenFairDB. so it 
+   * is no longer visible on the KVM Map
+   */
+  public function archive_entry($wpEntry)
+  {
+    $this->get_handle_entries()->archive_entry($wpEntry);
+  }
+
+  /**
    * return: array of WPEntry
    */
   public function get_entries()
@@ -106,8 +124,10 @@ class WPKVMInterfaceModule extends WPAbstractModule
   public function update_config()
   {
     $config = $this->get_config();
-    $config->setHost( get_option('kvm_interface_fairdb_url'));
-    $config->setAccessToken( get_option('kvm_access_token'));
+    $config->setHost( $this->get_kvm_interface_fairdb_url());
+    $config->setAccessToken( $this->get_kvm_access_token());
+    $config->setUsername( $this->get_kvm_interface_fairdb_email());
+    $config->setPassword( $this->get_kvm_interface_fairdb_password());
   }
   
   private function get_handle_entries()
@@ -133,6 +153,48 @@ class WPKVMInterfaceModule extends WPAbstractModule
     }
     return $this->client;
   }
+
+  public function get_kvm_interface_fairdb_url_id()
+  {
+    return 'kvm_interface_fairdb_url';
+  }
+
+  public function get_kvm_interface_fairdb_url()
+  {
+    return get_option($this->get_kvm_interface_fairdb_url_id(),
+                      'https://dev.ofdb.io/v0'); 
+  }
+
+  public function get_kvm_access_token_id()
+  {
+    return 'kvm_access_token';
+  }
+
+  public function get_kvm_access_token()
+  {
+    return get_option( $this->get_kvm_access_token_id() );
+  }
+
+  public function get_kvm_interface_fairdb_email_id()
+  {
+    return 'kvm_interface_fairdb_email';
+  }
+
+  public function get_kvm_interface_fairdb_email()
+  {
+    return get_option($this->get_kvm_interface_fairdb_email_id());
+  }
+
+  public function get_kvm_interface_fairdb_password_id()
+  {
+    return 'kvm_interface_fairdb_password';
+  }
+
+  public function get_kvm_interface_fairdb_password()
+  {
+    return get_option($this->get_kvm_interface_fairdb_password_id());
+  }
+
 
   public function get_kvm_fixed_tag_id()
   {

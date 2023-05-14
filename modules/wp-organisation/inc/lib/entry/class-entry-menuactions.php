@@ -35,6 +35,16 @@ class EntryMenuActions extends WPAbstractModuleProvider
         new KVMUploadAction($this->get_current_module(),
                             $this->get_kvm_uploader()));
       $tableAction->setup($loader);
+
+      $tableAction = new UIPostTableAction($type->get_id() . '-archive-to-kvm', 
+                                           'Archivieren zu der Karte von morgen', 
+                                           'Archieveren zu KVM', 
+                                           $type->get_id(),
+                                           $type->get_title());
+      $tableAction->set_postaction_listener(
+        new KVMArchiveAction($this->get_current_module(),
+                             $this->get_kvm_uploader()));
+      $tableAction->setup($loader);
     }
     
     // Only Admins can download from the KVM
@@ -127,6 +137,15 @@ class KVMUploadAction extends KVMAction
   }
 }
 
+class KVMArchiveAction extends KVMAction
+{
+  public function action($post_id, $post)
+  {
+    $module = $this->get_current_module();
+    $archiver = new ArchiveWPEntryToKVM( $module );
+    $archiver->archive_entry($post_id, $post);
+  }
+}
 class KVMDownloadAction extends KVMAction
 {
   public function action($post_id, $post)

@@ -30,7 +30,7 @@ class KVMInterfaceAdminControl extends UIAbstractAdminControl
       'wenn an event is saved in the underlying active event calendar'
       );
 
-    $field = $section->add_textfield('kvm_interface_fairdb_url', 
+    $field = $section->add_textfield($module->get_kvm_interface_fairdb_url_id(), 
                                      'URL');
     $field->set_description('URL to the OpenFairDB database. ' .
                             'The Karte von Morgen is build on top of this database. ' . 
@@ -39,12 +39,20 @@ class KVMInterfaceAdminControl extends UIAbstractAdminControl
                             'The production database is: https://api.ofdb.io/v0/');
     $field->set_defaultvalue('https://dev.ofdb.io/v0');
 
-    $field = $section->add_textfield('kvm_access_token', 
+    $field = $section->add_textfield($module->get_kvm_access_token_id(), 
                                      'Access token');
     $field->set_description('This token is you become from the Karte von Morgen ' . 
                             'after you have registered you organisation there. ' .
                             'With this token it is possible to upload and download ' .
                             'events and organisations.'); 
+
+    $field = $section->add_textfield($module->get_kvm_interface_fairdb_email_id(), 
+                                     'Email');
+    $field->set_description('Emailadresse which is used for the login on OpenFairDB '); 
+
+    $field = $section->add_textfield($module->get_kvm_interface_fairdb_password_id(), 
+                                     'Password');
+    $field->set_description('Password which is used for the login on OpenFairDB '); 
 
     $field = $section->add_textfield(
                          $module->get_kvm_fixed_tag_id(), 

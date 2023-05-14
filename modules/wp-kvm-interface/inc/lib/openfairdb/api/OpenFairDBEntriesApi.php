@@ -245,6 +245,73 @@ class OpenFairDBEntriesApi extends AbstractOpenFairDBApi
     return $kvm_entries;
   }
 
+  public function confirmEntry($id, $comment)
+  {
+    $token = $this->login();
+    $this->placesReview($token, array($id), "confirmed", $comment);
+    //$this->logout($token);
+  }
+
+  public function archiveEntry($id, $comment)
+  {
+    $token = $this->login();
+    $this->placesReview($token, array($id), "archived", $comment);
+    //$this->logout($token);
+  }
+
+  public function placesReview($token, $ids, $status, $comment)
+  {
+    $request = $this->placesReviewRequest($token, $ids, $status, $comment);
+    $this->client->send($request);
+  }
+
+  protected function placesReviewRequest($token, $ids, $status, $comment)
+  {
+    // verify the required parameter 'ids' is set
+    if (empty($ids)) 
+    {
+      throw new InvalidArgumentException(
+                'Missing the required parameter $ids' .
+                ' when calling placesReviewRequest');
+    }
+    
+    // verify the required parameter 'status' is set
+    if (empty($status)) 
+    {
+      throw new InvalidArgumentException(
+                'Missing the required parameter $status' .
+                ' when calling placesReviewRequest');
+    }
+
+    // verify the required parameter 'comment' is set
+    if (empty($comment)) 
+    {
+      throw new InvalidArgumentException(
+                'Missing the required parameter $comment' .
+                ' when calling placesReviewRequest');
+    }
+
+    $idsString = implode($ids);
+    $body = array();
+    $body['status'] = $status;
+    $body['comment'] = $comment;
+
+    $resourcePath = '/places/' . $idsString . '/review';
+
+    $headers = array();
+    $headers['Content-Type'] = 'application/json';
+
+    return $this->getRequest('POST',
+                             $resourcePath, 
+                             $headers, 
+                             true,
+                             array(),
+                             $body,
+                             $token);
+  }
+  
+
+
   /**
    * Create request for operation 'searchGet'
    *
@@ -325,6 +392,69 @@ class OpenFairDBEntriesApi extends AbstractOpenFairDBApi
                              $headers, 
                              false, 
                              $queryParams);       
+  }
+
+  protected function login()
+  {
+    $request = $this->loginRequest();
+    $response = $this->client->send($request);
+    $statusCode = $response->getStatusCode();
+    if ($statusCode < 200 || $statusCode > 299) 
+    {
+      throw $this->createException($request, $response);
+    }
+    $responseBody = $response->getBody();
+
+    $body = json_decode($responseBody, true);
+    $token = $body['token'];
+    return $token;
+  }
+
+  protected function logout($token)
+  {
+    $request = $this->loginRequest($token);
+    $response = $this->client->send($request);
+    $statusCode = $response->getStatusCode();
+    if ($statusCode < 200 || $statusCode > 299) 
+    {
+      throw $this->createException($request, $response);
+    }
+  }
+
+  private function loginRequest()
+  {
+    $config = $this->getConfig();
+
+    $body = array();
+    $body['email'] = $config->getUsername();
+    $body['password'] = $config->getPassword();
+
+    $resourcePath = '/login';
+
+    $headers = array();
+    $headers['Content-Type'] = 'application/json';
+
+    return $this->getRequest('POST',
+                             $resourcePath, 
+                             $headers, 
+                             false,
+                             array(),
+                             $body);
+  }
+
+  private function logoutRequest($token)
+  {
+    $resourcePath = '/logout';
+
+    $headers = array();
+
+    return $this->getRequest('POST',
+                             $resourcePath, 
+                             $headers, 
+                             true,
+                             array(),
+                             null,
+                             $token);
   }
 
   private function createEntry($body)

@@ -12,6 +12,7 @@ class WPOrganisationModule extends WPAbstractModule
   {
     $loader->add_include('/inc/lib/kvm/class-upload-wpentry-to-kvm.php');
     $loader->add_include('/inc/lib/kvm/class-download-wpentry-from-kvm.php');
+    $loader->add_include('/inc/lib//kvm/class-archive-wpentry-to-kvm.php');
     
     $loader->add_include("/inc/lib/user/class-user-entry-helper.php");
 

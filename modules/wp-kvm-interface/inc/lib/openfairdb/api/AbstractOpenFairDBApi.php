@@ -57,7 +57,8 @@ abstract class AbstractOpenFairDBApi
                                 $headers, 
                                 $authorization = false, 
                                 $queryParams = [],
-                                $body = null)
+                                $body = null,
+                                $custom_authorization_key = null)
   {
     $httpBody = '';
     $config = $this->getConfig();
@@ -78,9 +79,16 @@ abstract class AbstractOpenFairDBApi
     } 
         
     // // this endpoint requires Bearer token
-    if ($authorization && $config->getAccessToken() !== null) 
+    if ($authorization) 
     {
-      $headers['Authorization'] = 'Bearer ' . $config->getAccessToken();
+      if( !empty($custom_authorization_key ))
+      {
+        $headers['Authorization'] = 'Bearer ' . $custom_authorization_key;
+      }
+      else if(!empty( $config->getAccessToken()))
+      {
+        $headers['Authorization'] = 'Bearer ' . $config->getAccessToken();
+      }
     }
 
     $defaultHeaders = [];

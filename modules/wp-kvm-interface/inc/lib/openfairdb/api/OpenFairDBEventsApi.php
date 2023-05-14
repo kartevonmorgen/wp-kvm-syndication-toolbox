@@ -51,10 +51,13 @@ class OpenFairDBEventsApi extends AbstractOpenFairDBApi
 
     $eiEvents = array();
     $eventsArr = json_decode($responseBody, true);
-    foreach($eventsArr as $event)
+    if(!empty($eventsArr))
     {
-      $eiEvent = $this->createEvent($event);
-      array_push( $eiEvents, $eiEvent);
+      foreach($eventsArr as $event)
+      {
+        $eiEvent = $this->createEvent($event);
+        array_push( $eiEvents, $eiEvent);
+      }
     }
     return $eiEvents;
   }

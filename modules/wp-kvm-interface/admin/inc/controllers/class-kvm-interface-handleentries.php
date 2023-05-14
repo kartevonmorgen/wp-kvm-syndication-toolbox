@@ -116,13 +116,62 @@ class KVMInterfaceHandleEntries extends WPAbstractModuleProvider
     }
 
     $this->handleOFDBException(
-      'Status Okey',
+      'Status Okay',
       $wpEntry,
       $id,
       null);
     return $id;
   }
 
+  /**
+   * Confirm an Entry in the OpenFairDB. so it 
+   * can be made visible on the KVM Map again.
+   */
+  public function confirm_entry($wpEntry, $comment)
+  {
+    $module = $this->get_current_module();
+    $module->update_config();
+    $api = $this->getEntriesApi();
+    $id = $wpEntry->get_kvm_id();
+
+    try
+    {
+      $api->confirmEntry($id);
+    }
+    catch(OpenFairDBApiException $e)
+    {
+      $this->handleOFDBException(
+        'archiveEntry',
+        $wpEntry,
+        $id,
+        $e);
+    }
+  }
+
+  /**
+   * Archive an Entry in the OpenFairDB. so it 
+   * is no longer visible on the KVM Map
+   */
+  public function archive_entry($wpEntry, $comment)
+  {
+    $module = $this->get_current_module();
+    $module->update_config();
+    $api = $this->getEntriesApi();
+    $id = $wpEntry->get_kvm_id();
+
+    try
+    {
+      $api->archiveEntry($id);
+    }
+    catch(OpenFairDBApiException $e)
+    {
+      $this->handleOFDBException(
+        'archiveEntry',
+        $wpEntry,
+        $id,
+        $e);
+    }
+  }
 
   /**
    * Method for Testing
