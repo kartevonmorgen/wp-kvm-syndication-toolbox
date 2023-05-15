@@ -9,6 +9,9 @@ abstract class WPTemplateHelper
   private $parent_elements = array();
   private $last_page = true;
 
+  private $default_subtitle_element = 'h4';
+  private $default_subtitle_style = 'clear:both';
+
   public function __construct($post_type)
   {
     $this->post_type = $post_type;
@@ -53,6 +56,23 @@ abstract class WPTemplateHelper
   }
 
   /**
+   * Sets the default element for subtitle,
+   * can be overrided by set_subtitle(..)
+   */
+  public function set_subtitle_element($element)
+  {
+    $this->default_subtitle_element = $element;
+  }
+  /**
+   * Sets the default style for subtitle,
+   * can be overrided by set_subtitle(..)
+   */
+  public function set_subtitle_style($style)
+  {
+    $this->default_subtitle_style = $style;
+  }
+
+  /**
    * Show the title of a post
    */
   public function the_title($element = 'h3', 
@@ -80,14 +100,20 @@ abstract class WPTemplateHelper
    * Show a subtitle into the post
    */
   public function the_subtitle($subtitle, 
-                               $element = 'h4', 
+                               $element = null, 
                                $clazz = null, 
                                $style = null)
   {
     if(empty($style))
     {
-      $style = 'style="clear:both"';
+      $style = $this->default_subtitle_style;
     }
+
+    if(empty($element))
+    {
+      $element = $this->default_subtitle_element;
+    }
+
     $this->the_element( $subtitle, $element, $clazz, $style );
   }
 
@@ -252,9 +278,10 @@ abstract class WPTemplateHelper
   public function the_element($value, 
                               $element = 'p', 
                               $clazz = null,
-                              $style = null)
+                              $style = null,
+                              $href = null)
   {
-    $this->the_begin($element, $clazz, $style);
+    $this->the_begin($element, $clazz, $style, $href);
     echo '' . $value;
     $this->the_end();
   }
@@ -265,10 +292,12 @@ abstract class WPTemplateHelper
    */ 
   public function the_begin($element = 'p', 
                             $clazz = null, 
-                            $style = null)
+                            $style = null,
+                            $href = null)
   {
     $clazz_css = '';
     $style_css = '';
+    $href_css = '';
     array_push($this->parent_elements, $element);
 
     if(!empty($clazz))
@@ -281,12 +310,18 @@ abstract class WPTemplateHelper
       $style_css = ' style="' . $style . '"';
     }
 
+    if(!empty($href))
+    {
+      $href_css = ' href="' . $href . '"';
+    }
+
+
     if(count($this->parent_elements) > 1)
     {
       echo '  ';
     }
     
-    echo "<" . $element . $clazz_css . $style_css . ">";
+    echo "<" . $element . $clazz_css . $style_css . $href_css . ">";
     if($element == 'p')
     {
       echo "\n";

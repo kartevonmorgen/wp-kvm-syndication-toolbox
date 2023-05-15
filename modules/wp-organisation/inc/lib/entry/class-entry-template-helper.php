@@ -2,6 +2,8 @@
 
 class EntryTemplateHelper extends WPTemplateHelper
 {
+  private $current_projects = array();
+
   public function show()
   {
     while($this->has_next())
@@ -29,6 +31,12 @@ class EntryTemplateHelper extends WPTemplateHelper
       {
         $this->the_subtitle('Schlagwörter');
         $this->the_tags();
+      }
+      if($this->has_projects())
+      {
+        $this->the_subtitle('Projekte');
+        $this->the_projects();
+        $this->the_linebreak();
       }
       if($this->has_events())
       {
@@ -115,6 +123,67 @@ class EntryTemplateHelper extends WPTemplateHelper
                              $format_footer);
   }
 
+  public function has_projects()
+  {
+    $mc = WPModuleConfiguration::get_instance();
+    if(! $mc->is_module_enabled('wp-project'))
+    {
+      return false;
+    }
+
+    // We only want to show projects of an Organisation
+    // so if it is a project, we do not have sub projects
+    // or something like that.
+    if($this->get_post_type() == WPEntryType::PROJECT)
+    {
+      return false;
+    }
+
+    $org = $this->current();
+
+    $args = array(
+      'numberposts'   =>  -1,
+      'post_type'     =>  WPEntryType::PROJECT,
+      'author'        =>  $org->post_author,
+      'orderby'       =>  'post_title',
+      'order'         =>  'ASC' );
+    $this->current_projects = get_posts( $args );
+    return !empty($this->current_projects);
+  }
+
+  public function the_projects($element = 'div', 
+                               $clazz = null, 
+                               $style = null)
+  {
+    $this->the_begin($element, $clazz, $style);
+    
+    foreach($this->current_projects as $project)
+    {
+      $this->the_project($project);
+    }
+
+    $this->the_end();
+  }
+
+  protected function the_project($project)
+  {
+    $this->the_begin('p', null, 'margin-top:0.4em;margin-bottom:0px;text-align:left');
+    $this->the_element(get_the_title($project), 'a', 
+                                     null, null, 
+                                     get_permalink($project));
+    echo '</br>';
+    $this->the_begin('i');
+    $this->the_element('' .
+        get_post_meta($project->ID, 'project_address', true) .
+        ', ' .
+        get_post_meta($project->ID, 'project_city', true),
+      'span');
+    $this->the_end();
+    $this->the_end();
+  }
+
+
+
   public function the_address($element = 'div', $clazz = null)
   {
     $org = $this->current();
@@ -169,6 +238,18 @@ class EntryTemplateHelper extends WPTemplateHelper
                           true), 
                         $element, 
                         $clazz );
+  }
+
+  public function the_email_protected($element = 'div', $clazz = null)
+  {
+    $org = $this->current();
+    $this->the_element( 'Email:', 
+                        $element, 
+                        $clazz, 
+                        'float:left;width:110px');
+    ?>
+      <div>&nbsp;<img src="/wp-content/plugins/wp-kvm-syndication-toolbox/inc/lib/img/text-to-image.php?text=<?php echo tti_text_encode(get_post_meta(get_the_ID(), $this->get_post_type() . '_email', true)); ?>"/></div>
+    <?php
   }
 
   public function the_website($element = 'div', $clazz = null)
