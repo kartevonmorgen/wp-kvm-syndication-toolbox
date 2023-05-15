@@ -51,7 +51,8 @@ class WPOrganisationModule extends WPAbstractModule
     $menuActions = new EntryMenuActions($this, $kvmUploader);
     $menuActions->setup($loader);
     
-
+    $menuActions = new ArchiveWPEntryToKVM($this);
+    $menuActions->setup($loader);
     
     $loader->add_action( 'admin_menu', $this, 'remove_menus', 999 );
 
