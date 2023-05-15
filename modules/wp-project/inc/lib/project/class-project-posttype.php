@@ -31,7 +31,51 @@ class ProjectPosttype
   }
 
 
-  protected function create_post_type_metabox1_addons($ui_metabox)
+  protected function metabox1_addfields($ui_metabox)
   {
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_address', 
+                                         'Strasse und Nr.'));
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_zipcode', 
+                                         'Postleitzahl'));
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_city', 
+                                         'Ort'));
+    $field = $ui_metabox->add_textfield('project_lat', 'Latitude');
+    $field->set_disabled(true);
+    $field = $ui_metabox->add_textfield('project_lng', 'Longitude');
+    $field->set_disabled(true);
+  }
+
+  protected function metabox2_addfields($ui_metabox)
+  {
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_firstname', 'Vorname'));
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_lastname', 'Nachname'));
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_phone', 'Telefon'));
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_email', 'Email'));
+    $ui_metabox->add_field(
+      new UIMetaboxFieldWithDefaultValue('project_website', 'Webseite'));
   }
 }
+
+  class UIMetaboxFieldWithDefaultValue extends UIMetaboxField
+  {
+    public function get_defaultvalue($post)
+    {
+      $id = $this->get_id();
+      $id = str_replace('project_', 'organisation_', $id);
+
+      $args = array(
+        'numberposts'   =>  1,
+        'post_type'     =>  WPEntryType::ORGANISATION,
+        'author'        =>  $post->post_author);
+      $orgs = get_posts( $args );
+      $org = reset($orgs);
+      return get_post_meta( $org->ID, $id, true );
+    }
+  }

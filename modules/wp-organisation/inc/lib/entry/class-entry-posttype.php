@@ -28,7 +28,27 @@ abstract class EntryPosttype
     return $args;
   }
 
-  protected abstract function create_post_type_metabox1_addons($ui_metabox);
+  protected function metabox1_addfields($ui_metabox)
+  {
+    $slug = $this->get_type()->get_id();
+    $ui_metabox->add_textfield($slug . '_address', 'Strasse und Nr.');
+    $ui_metabox->add_textfield($slug . '_zipcode', 'Postleitzahl');
+    $ui_metabox->add_textfield($slug . '_city', 'Ort');
+    $field = $ui_metabox->add_textfield($slug . '_lat', 'Latitude');
+    $field->set_disabled(true);
+    $field = $ui_metabox->add_textfield($slug . '_lng', 'Longitude');
+    $field->set_disabled(true);
+  }
+
+  protected function metabox2_addfields($ui_metabox)
+  {
+    $slug = $this->get_type()->get_id();
+    $ui_metabox->add_textfield($slug . '_firstname', 'Vorname');
+    $ui_metabox->add_textfield($slug . '_lastname', 'Nachname');
+    $ui_metabox->add_textfield($slug . '_phone', 'Telefon');
+    $ui_metabox->add_textfield($slug . '_email', 'Email');
+    $ui_metabox->add_textfield($slug . '_website', 'Webseite');
+  }
 
   function create_post_type() 
   {
@@ -63,25 +83,14 @@ abstract class EntryPosttype
                                 'Kontaktdaten',
                                 $slug);
 
-    $this->create_post_type_metabox1_addons($ui_metabox);
+    $this->metabox1_addfields($ui_metabox);
 
-    $ui_metabox->add_textfield($slug . '_address', 'Strasse und Nr.');
-    $ui_metabox->add_textfield($slug . '_zipcode', 'Postleitzahl');
-    $ui_metabox->add_textfield($slug . '_city', 'Ort');
-    $field = $ui_metabox->add_textfield($slug . '_lat', 'Latitude');
-    $field->set_disabled(true);
-    $field = $ui_metabox->add_textfield($slug . '_lng', 'Longitude');
-    $field->set_disabled(true);
     $ui_metabox->register();
 
     $ui_metabox = new UIMetabox($slug . '_contactperson_metabox',
                                 'Kontaktperson',
                                 $slug);
-    $ui_metabox->add_textfield($slug . '_firstname', 'Vorname');
-    $ui_metabox->add_textfield($slug . '_lastname', 'Nachname');
-    $ui_metabox->add_textfield($slug . '_phone', 'Telefon');
-    $ui_metabox->add_textfield($slug . '_email', 'Email');
-    $ui_metabox->add_textfield($slug . '_website', 'Webseite');
+    $this->metabox2_addfields($ui_metabox);
     $ui_metabox->register();
 
     if ($this->is_module_enabled('wp-kvm-interface')) 

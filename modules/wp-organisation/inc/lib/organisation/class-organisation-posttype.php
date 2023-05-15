@@ -32,7 +32,7 @@ class OrganisationPosttype
     return $args;
   }
 
-  protected function create_post_type_metabox1_addons($ui_metabox)
+  protected function metabox1_addfields($ui_metabox)
   {
     $field = $ui_metabox->add_dropdownfield('organisation_type', 
                                             'Organisationstype');
@@ -42,5 +42,7 @@ class OrganisationPosttype
       $field->add_value($type->get_id(), $type->get_name());
     }
     $field->set_defaultvalue(WPEntryTypeType::INITIATIVE);
+
+    parent::metabox1_addfields($ui_metabox);
   }
 }

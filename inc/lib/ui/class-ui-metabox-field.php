@@ -70,7 +70,7 @@ class UIMetaboxField
       }
       return $value;
     }
-    return $this->get_defaultvalue();
+    return $this->get_defaultvalue($post);
   }
 
   public function get_values()
@@ -175,7 +175,7 @@ class UIMetaboxField
     $this->_defaultvalue = $defaultvalue;
   }
 
-  public function get_defaultvalue()
+  public function get_defaultvalue($post)
   {
     return $this->_defaultvalue;
   }
