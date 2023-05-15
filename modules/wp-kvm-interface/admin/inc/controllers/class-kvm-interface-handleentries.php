@@ -136,7 +136,7 @@ class KVMInterfaceHandleEntries extends WPAbstractModuleProvider
 
     try
     {
-      $api->confirmEntry($id);
+      $api->confirmEntry($id, $comment);
     }
     catch(OpenFairDBApiException $e)
     {
@@ -161,7 +161,7 @@ class KVMInterfaceHandleEntries extends WPAbstractModuleProvider
 
     try
     {
-      $api->archiveEntry($id);
+      $api->archiveEntry($id, $comment);
     }
     catch(OpenFairDBApiException $e)
     {

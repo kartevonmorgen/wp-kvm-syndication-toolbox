@@ -143,7 +143,12 @@ class KVMArchiveAction extends KVMAction
   {
     $module = $this->get_current_module();
     $archiver = new ArchiveWPEntryToKVM( $module );
-    $archiver->archive_entry($post_id, $post);
+    $archiver->archive_entry($post_id, 
+                             $post, 
+                             'Automatically archived by ' . 
+                             get_site_url() . 
+                             'Wordpress ' . $post->post_type . 
+                             ' (WP.ID=' . $post_id );
   }
 }
 class KVMDownloadAction extends KVMAction

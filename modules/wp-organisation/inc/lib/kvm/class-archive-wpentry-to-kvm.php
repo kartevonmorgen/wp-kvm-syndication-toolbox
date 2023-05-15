@@ -35,7 +35,13 @@ class ArchiveWPEntryToKVM
       return;
     }
 
-    $this->archive_entry($post_id, $post);
+    $this->archive_entry($post_id, 
+                         $post, 
+                         'Automatically archived by ' .
+                         get_site_url() . ' because ' . 
+                         'correspondending ' .
+                         'Wordpress ' . $type . ' (WP.ID=' . $post_id . 
+                         ') is trashed');
   }
 
 
@@ -45,7 +51,8 @@ class ArchiveWPEntryToKVM
    * Is not in use yet.
    */
   public function confirm_entry($entry_post_id, 
-                                $entry_post)
+                                $entry_post,
+                                $comment)
   {
     if (!$this->is_module_enabled('wp-kvm-interface')) 
     { 
@@ -68,14 +75,15 @@ class ArchiveWPEntryToKVM
     }
 
     $kvminterface = $this->get_module('wp-kvm-interface');
-    $kvminterface->confirm_entry($wpEntry);
+    $kvminterface->confirm_entry($wpEntry, $comment);
   }
 
   /**
    * Archive an Entry to the KVM, so it is no longer visible there
    */
   public function archive_entry($entry_post_id, 
-                                $entry_post)
+                                $entry_post,
+                                $comment)
   {
     if (!$this->is_module_enabled('wp-kvm-interface')) 
     { 
@@ -83,7 +91,7 @@ class ArchiveWPEntryToKVM
       return;
     }
 
-    $helper = $this->create_helper();
+    $helper = $this->create_helper($entry_post_id);
     $wpEntry = $this->create_type();
     $this->fill_entry_postmeta($helper, 
                                $wpEntry, 
@@ -98,10 +106,10 @@ class ArchiveWPEntryToKVM
     }
 
     $kvminterface = $this->get_module('wp-kvm-interface');
-    $kvminterface->archive_entry($wpEntry);
+    $kvminterface->archive_entry($wpEntry, $comment);
   }
 
-  private function create_helper()
+  private function create_helper($entry_post_id)
   {
     $helper = new WPMetaFieldsHelper($entry_post_id);
     $type = $this->get_type();

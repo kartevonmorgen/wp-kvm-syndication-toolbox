@@ -75,18 +75,18 @@ class WPKVMInterfaceModule extends WPAbstractModule
    * Confirm an Entry in the OpenFairDB. so it 
    * can be made visible on the KVM Map again.
    */
-  public function confirm_entry($wpEntry)
+  public function confirm_entry($wpEntry, $comment)
   {
-    $this->get_handle_entries()->confirm_entry($wpEntry);
+    $this->get_handle_entries()->confirm_entry($wpEntry, $comment);
   }
 
   /**
    * Archive an Entry in the OpenFairDB. so it 
    * is no longer visible on the KVM Map
    */
-  public function archive_entry($wpEntry)
+  public function archive_entry($wpEntry, $comment)
   {
-    $this->get_handle_entries()->archive_entry($wpEntry);
+    $this->get_handle_entries()->archive_entry($wpEntry, $comment);
   }
 
   /**
