@@ -71,7 +71,7 @@ class EntryTemplateHelper extends WPTemplateHelper
     return $mc->is_module_enabled('wp-kvm-interface');
   }
 
-  public function the_kvm($element = 'div', $clazz = null, $style = null)
+  public function the_kvm($main = 'main', $element = 'div', $clazz = null, $style = null)
   {
     $mc = WPModuleConfiguration::get_instance();
     $module = $mc->get_module('wp-kvm-interface');
@@ -83,7 +83,7 @@ class EntryTemplateHelper extends WPTemplateHelper
 
     $this->the_begin('div', null, 'text-align:left');
     ?>
-      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/m/main?c=<?php echo get_post_meta($org->ID, $this->get_post_type() . '_lat', true); ?>,<?php echo get_post_meta($org->ID, $this->get_post_type() . '_lng', true); ?>&z=18.00&sidebar=hidden&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
+      <iframe style="display: inline-block;" src=" https://www.kartevonmorgen.org/m/<?php echo $main ?>?c=<?php echo get_post_meta($org->ID, $this->get_post_type() . '_lat', true); ?>,<?php echo get_post_meta($org->ID, $this->get_post_type() . '_lng', true); ?>&z=18.00&sidebar=hidden&search=%23<?php echo $module->get_kvm_fixed_tag(); ?>" width="100%" height="300">
 7           <br />
            <a href="https://kartevonmorgen.org/" target="_blank" rel="noopener noreferrer">zur karte</a>
        </iframe>
