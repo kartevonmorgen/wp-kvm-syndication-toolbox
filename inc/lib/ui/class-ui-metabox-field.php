@@ -315,6 +315,67 @@ class UIMetaboxTextAreaField extends UIMetaboxField
     $value = esc_attr( $this->get_value($post) );
     echo "<p>$title</p>";
 	  echo "<textarea id='$id' name='$id' rows='4' cols='50' type='textarea' $disabled_text>$value</textarea>";
-}
   }
+}
 
+/** 
+ * UIMetaboxDateField
+ * implementation of the UIMetaboxField with a Datepicker box
+ * Stored as Unixtimestamp
+ *
+ * @author   Sjoerd Takken
+ * @copyright  No Copyright.
+ * @license    GNU/GPLv2, see https://www.gnu.org/licenses/gpl-2.0.html
+ */
+class UIMetaboxDateField extends UIMetaboxField
+{
+  function show_value($post)
+  {
+    $id = $this->get_id();
+    $title = $this->get_title();
+    $description = $this->get_description();
+    $disabled_text = $this->get_disabled_text();
+    $value = esc_attr( $this->get_value($post) );
+    echo "<p>$title</p>";
+    echo "<input style='width:300px' type='datetime-local' name='$id' value='$value' $disabled_text/>";
+    if(!empty($description))
+    {
+      echo "<br/><span style='font-size:0,8 em'><em>$description</em></span>";
+    }
+  }
+    
+  public function get_value($post)
+  {
+    $unixtime = parent::get_value($post);
+    if(empty($unixtime) || !is_numeric($unixtime))
+    {
+      return null;
+    }
+    $dt = new DateTime(
+      date( 'Y-m-d H:i:s', $unixtime ),
+      new DateTimeZone('UTC'));
+    $localtimezone = wp_timezone();
+    $dt->setTimezone( $localtimezone );
+    return $dt->format( 'Y-m-d\\TH:i' );
+  }
+    
+  public function save_value($post_id, $value = null)
+  {
+    if(empty($value))
+    {
+      if(array_key_exists ( $this->get_id() , $_POST ))
+      {
+        $value = $_POST[$this->get_id()];
+      }
+    }
+
+    if(empty($value))
+    {
+      parent::save_value($post_id, $value);
+      return;
+    }
+    $timezone = wp_timezone();
+    $dt = new DateTime($value, $timezone );
+    parent::save_value($post_id, $dt->getTimestamp());
+  }
+}

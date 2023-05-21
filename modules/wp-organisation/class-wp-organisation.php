@@ -19,6 +19,8 @@ class WPOrganisationModule extends WPAbstractModule
     $loader->add_include('/inc/lib/entry/class-entry-menuactions.php');
     $loader->add_include('/inc/lib/entry/class-entry-posttype.php');
     $loader->add_include('/inc/lib/entry/class-entry-search-behaviour.php');
+    $loader->add_include('/inc/lib/entry/class-entry-expirator.php');
+    $loader->add_include('/inc/lib/entry/class-entry-cron-expirator.php');
     $loader->add_include('/inc/lib/entry/class-entry-template-helper.php');
     $loader->add_include('/inc/lib/entry/class-wpentry-type-factory.php');
     $loader->add_include('/inc/lib/entry/class-wpentry-type.php');

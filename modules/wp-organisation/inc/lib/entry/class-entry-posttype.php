@@ -50,6 +50,10 @@ abstract class EntryPosttype
     $ui_metabox->add_textfield($slug . '_website', 'Webseite');
   }
 
+  protected function before_metaboxes_added()
+  {
+  }
+
   function create_post_type() 
   {
     $slug = $this->get_type()->get_id();
@@ -78,6 +82,8 @@ abstract class EntryPosttype
       'map_meta_cap'       => true );
    
     $args = $this->create_post_type_addons($args);
+
+    $this->before_metaboxes_added();
 
     $ui_metabox = new UIMetabox($slug . '_contact_metabox',
                                 'Kontaktdaten',
@@ -117,6 +123,7 @@ abstract class EntryPosttype
 
       $ui_metabox->register();
     }
+
 
 
     register_post_type( $slug, $args );

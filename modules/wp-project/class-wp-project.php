@@ -5,6 +5,8 @@
  */
 class WPProjectModule extends WPAbstractModule 
 {
+  private $_cron_expirator;
+
   public function setup_includes($loader)
   {
     $loader->add_include('/inc/lib/project/class-project-posttype.php');
@@ -17,6 +19,12 @@ class WPProjectModule extends WPAbstractModule
 
   public function setup($loader)
   {
+    $this->_cron_expirator = new EntryCronExpirator($this, 
+      'project_expirator',
+      'hourly');
+    $this->_cron_expirator->setup($loader);
+    $this->_cron_expirator->schedule();
+
     $templates = new RegisterProjectTemplates($this);
     $templates->setup($loader);
 
@@ -31,8 +39,11 @@ class WPProjectModule extends WPAbstractModule
     $menuActions = new EntryMenuActions($this, $kvmUploader);
     $menuActions->setup($loader);
 
-    $menuActions = new ArchiveWPEntryToKVM($this);
-    $menuActions->setup($loader);
+    $archiver = new ArchiveWPEntryToKVM($this);
+    $archiver->setup($loader);
+
+    $expirator = new EntryExpirator($this);
+    $expirator->setup($loader);
     
     $loader->add_action( 'admin_menu', $this, 'remove_menus', 999 );
 
@@ -44,14 +55,23 @@ class WPProjectModule extends WPAbstractModule
 
   public function module_activate()
   {
+		flush_rewrite_rules();
+
+		if ( !current_user_can( 'activate_plugins' ) ) 
+    {
+      return;
+    }
+    $this->_cron_expirator->schedule();
   }
 
   public function module_deactivate()
   {
+    $this->_cron_expirator->stop();
   }
 
   public function module_uninstall()
   {
+    $this->_cron_expirator->stop();
   }
 
   public function get_type()
@@ -71,6 +91,18 @@ class WPProjectModule extends WPAbstractModule
     return get_option(
       $this->get_extend_the_content_for_single_project_id(), 
       true);
+  }
+
+  public function get_cron_expiration_messages_id()
+  {
+    return 'project_cron_expiration_messages';
+  }
+
+  public function get_cron_expiration_messages()
+  {
+    return get_option(
+      $this->get_project_cron_expiration_messages_id(),
+      '');
   }
 
   public function get_project_by_user($user_id)

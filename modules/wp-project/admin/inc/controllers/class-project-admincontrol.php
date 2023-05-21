@@ -38,6 +38,13 @@ class ProjectAdminControl extends UIAbstractAdminControl
                             'karte von morgen and contact data');
     $field->set_defaultvalue(true);
 
+    $section = $page->add_section('wplib_section_two', 'Project logging');
+    $field = $section->add_textarea(
+      $module->get_cron_expiration_messages_id(), 
+      'Last message expiration');
+    $field->set_description('Last message from hourly ' . 
+      'cron job projects which passed the expiration date');
+
     $page->register();
   }
 }

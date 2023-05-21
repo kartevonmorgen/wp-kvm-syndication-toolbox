@@ -8,6 +8,9 @@ class ArchiveWPEntryToKVM
     $loader->add_action('trashed_post', 
                         $this, 
                         'trashed_post');
+    $loader->add_action('publish_to_draft', 
+                        $this, 
+                        'draft_post');
   }
 
   public function get_type()
@@ -42,6 +45,28 @@ class ArchiveWPEntryToKVM
                          'correspondending ' .
                          'Wordpress ' . $type . ' (WP.ID=' . $post_id . 
                          ') is trashed');
+  }
+
+  public function draft_post( $post )
+  {
+    if(empty($post))
+    {
+      return;
+    }
+
+    $type = $this->get_type();
+    if($type->get_id() !== $post->post_type)
+    {
+      return;
+    }
+
+    $this->archive_entry($post->ID, 
+                         $post, 
+                         'Automatically archived by ' .
+                         get_site_url() . ' because ' . 
+                         'correspondending ' .
+                         'Wordpress ' . $type . ' (WP.ID=' . $post->ID . 
+                         ') is set to draft');
   }
 
 

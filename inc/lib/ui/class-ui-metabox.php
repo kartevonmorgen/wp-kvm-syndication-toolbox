@@ -13,16 +13,24 @@ class UIMetabox
 {
   private $_title;
   private $_posttype;
+  private $_context;
+  private $_priority;
   private $_id;
   private $_description = '';
 
   private $_fields = array();
 
-  public function __construct($id, $title, $posttype)
+  public function __construct($id, 
+                              $title, 
+                              $posttype, 
+                              $context = 'advanced',
+                              $priority = 'default')
   {
     $this->_id = $id;
     $this->_title = $title;
     $this->_posttype = $posttype;
+    $this->_context = $context;
+    $this->_priority = $priority;
   }
 
   public function register()
@@ -55,6 +63,12 @@ class UIMetabox
                                                  $field_title) );
   }
 
+  public function add_datefield($field_id, $field_title)
+  {
+    return $this->add_field( new UIMetaboxDateField($field_id, 
+                                                 $field_title) );
+  }
+
   public function add_textarea($field_id, $field_title)
   {
     return $this->add_field( new UIMetaboxTextAreaField($field_id, 
@@ -76,9 +90,11 @@ class UIMetabox
   public function add_metabox()
   {
     add_meta_box($this->get_id(),
-                 __( $this->get_title(), 'site'),
-                 array( $this, 'metabox_callback'),
-                 $this->get_posttype());
+               __( $this->get_title(), 'site'),
+               array( $this, 'metabox_callback'),
+               $this->get_posttype(),
+               $this->get_context(),
+               $this->get_priority());
   }
 
   public function metabox_callback($post)
@@ -163,6 +179,16 @@ class UIMetabox
   public function get_posttype()
   {
     return $this->_posttype;
+  }
+
+  public function get_context()
+  {
+    return $this->_context;
+  }
+
+  public function get_priority()
+  {
+    return $this->_priority;
   }
 
   public function get_nonce_field_id()

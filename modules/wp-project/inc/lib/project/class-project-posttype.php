@@ -61,6 +61,16 @@ class ProjectPosttype
     $ui_metabox->add_field(
       new UIMetaboxFieldWithDefaultValue('project_website', 'Webseite'));
   }
+
+  protected function before_metaboxes_added()
+  {
+    $ui_metabox = new UIMetabox('project_expirator_metabox',
+                                'Ablaufdatum',
+                                'project');
+    $field = $ui_metabox->add_checkbox('project_expiration_enabled', 'Ablaufdatum aktiv');
+    $field = $ui_metabox->add_datefield('project_expiration_date', 'Ablaufdatum');
+    $ui_metabox->register();
+  }
 }
 
   class UIMetaboxFieldWithDefaultValue extends UIMetaboxField
@@ -76,6 +86,10 @@ class ProjectPosttype
         'author'        =>  $post->post_author);
       $orgs = get_posts( $args );
       $org = reset($orgs);
+      if(empty($org))
+      {
+        return null;
+      }
       return get_post_meta( $org->ID, $id, true );
     }
   }
