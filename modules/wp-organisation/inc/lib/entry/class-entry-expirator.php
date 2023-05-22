@@ -54,7 +54,7 @@ class EntryExpirator
     $id = $post->ID;
     $expirationDateEnabled = get_post_meta($id, $cid_enabled, true);
     $expirationDate = get_post_meta($id, $cid, true);
-    if(!$expirationDateEnabled || empty($expirationDate))
+    if($expirationDateEnabled !== 'on' || empty($expirationDate))
     {
       $display = '-';
     }
