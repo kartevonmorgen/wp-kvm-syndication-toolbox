@@ -101,6 +101,12 @@ class DownloadWPEntryFromKVM
     }
     */
 
+    if( ! empty( $wpEntry->get_openinghours()))
+    {
+      $args[$slug . '_openinghours'] = 
+        $wpEntry->get_openinghours();
+    }
+
     $this->fill_location($wpEntry->get_location(), 
                          $post_id);
   }

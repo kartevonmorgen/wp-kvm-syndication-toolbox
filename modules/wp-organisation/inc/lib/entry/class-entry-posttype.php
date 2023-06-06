@@ -38,9 +38,19 @@ abstract class EntryPosttype
     $field->set_disabled(true);
     $field = $ui_metabox->add_textfield($slug . '_lng', 'Longitude');
     $field->set_disabled(true);
+
   }
 
   protected function metabox2_addfields($ui_metabox)
+  {
+    $slug = $this->get_type()->get_id();
+    $ui_metabox->add_openinghoursfield($slug . '_openinghours', '( Eingabe 00:00 bis 00:00 bedeutet Geschlossen ) ');
+    $field = $ui_metabox->add_textfield($slug . '_openinghours', 'Gespeichert im Datenbank');
+    $field->set_register(false);
+    $field->set_disabled(true);
+  }
+
+  protected function metabox3_addfields($ui_metabox)
   {
     $slug = $this->get_type()->get_id();
     $ui_metabox->add_textfield($slug . '_firstname', 'Vorname');
@@ -90,13 +100,19 @@ abstract class EntryPosttype
                                 $slug);
 
     $this->metabox1_addfields($ui_metabox);
+    $ui_metabox->register();
 
+    $ui_metabox = new UIMetabox($slug . '_openinghours_metabox',
+                                'Öffnungszeiten',
+                                $slug);
+
+    $this->metabox2_addfields($ui_metabox);
     $ui_metabox->register();
 
     $ui_metabox = new UIMetabox($slug . '_contactperson_metabox',
                                 'Kontaktperson',
                                 $slug);
-    $this->metabox2_addfields($ui_metabox);
+    $this->metabox3_addfields($ui_metabox);
     $ui_metabox->register();
 
     if ($this->is_module_enabled('wp-kvm-interface')) 

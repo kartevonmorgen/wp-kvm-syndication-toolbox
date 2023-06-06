@@ -48,7 +48,7 @@ class ProjectPosttype
     $field->set_disabled(true);
   }
 
-  protected function metabox2_addfields($ui_metabox)
+  protected function metabox3_addfields($ui_metabox)
   {
     $ui_metabox->add_field(
       new UIMetaboxFieldWithDefaultValue('project_firstname', 'Vorname'));

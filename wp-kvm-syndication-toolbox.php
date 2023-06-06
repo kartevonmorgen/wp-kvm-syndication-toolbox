@@ -175,11 +175,20 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/osm/class-osm-nominatim.php' );
     $loader->add_include('/inc/lib/osm/class-osm-nominatim-cache.php' );
 
+    // -- Opening Hours --
+    $loader->add_include('/inc/lib/openinghours/class-openinghours.php' );
+    $loader->add_include('/inc/lib/openinghours/class-openinghours-day.php' );
+    $loader->add_include('/inc/lib/openinghours/class-openinghours-day-type.php' );
+    $loader->add_include('/inc/lib/openinghours/class-openinghours-day-types.php' );
+    $loader->add_include('/inc/lib/openinghours/class-openinghours-timerange.php' );
+    $loader->add_include('/inc/lib/openinghours/class-openinghours-timerange-set.php' );
+
     // -- Module Provider --
     $loader->add_include('/inc/lib/module/class-wp-abstractmoduleprovider.php');
     
     // -- UI Tools Metabox --
     $loader->add_include('/inc/lib/ui/class-ui-metabox-field.php' );
+    $loader->add_include('/inc/lib/ui/class-ui-metabox-openinghours-field.php' );
     $loader->add_include('/inc/lib/ui/class-ui-metabox.php' );
 
 

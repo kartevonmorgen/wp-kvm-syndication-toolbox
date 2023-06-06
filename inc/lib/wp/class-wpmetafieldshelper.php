@@ -48,6 +48,15 @@ class WPMetaFieldsHelper
     return $this->_post_id;
   }
 
+  /**
+   * Allow the possibility to manipulate the _POST
+   */
+  public function set_in_memory_value($k, $value)
+  {
+    $key = $this->get_prefix() . $k;
+    $_POST[$key] = $value;
+  }
+
   public function get_value($k)
   {
     $key = $this->get_prefix() . $k;
@@ -103,6 +112,7 @@ class WPMetaFieldsHelper
     }
     return $_POST[$key];
   }
+
 
   private function get_in_db_value($key)
   {

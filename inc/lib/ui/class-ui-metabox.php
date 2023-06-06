@@ -69,6 +69,12 @@ class UIMetabox
                                                  $field_title) );
   }
 
+  public function add_openinghoursfield($field_id, $field_title)
+  {
+    return $this->add_field( new UIMetaboxOpeningHoursField($field_id, 
+                                                            $field_title) );
+  }
+
   public function add_textarea($field_id, $field_title)
   {
     return $this->add_field( new UIMetaboxTextAreaField($field_id, 

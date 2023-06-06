@@ -20,6 +20,7 @@ abstract class WPEntry
   private $_contact_lastname;
   private $_contact_phone;
   private $_contact_email;
+  private $_openinghours;
   private $_image_url;
   private $_image_link_url;
 
@@ -165,6 +166,16 @@ abstract class WPEntry
     }
     return $link->get_url();
 	}
+
+  public function set_openinghours($openinghours)
+  {
+    $this->_openinghours = $openinghours;
+  }
+
+  public function get_openinghours()
+  {
+    return $this->_openinghours;
+  }
 
   public function set_origin_url( $origin_url )
   {

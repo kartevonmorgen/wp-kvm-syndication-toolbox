@@ -63,6 +63,7 @@ class UploadWPEntryToKVM
     $helper->add_field('_phone');
     $helper->add_field('_website');
     $helper->add_field('_email');
+    $helper->add_field('_openinghours');
     $helper->add_field('_address');
     $helper->add_field('_zipcode');
     $helper->add_field('_city');
@@ -76,6 +77,8 @@ class UploadWPEntryToKVM
       // in momory values (_POST[key]) available
       return;
     }
+
+    // TODO: convert Openinghours from Memory Values to key
 
     /*
     $logger = new PostMetaLogger(
@@ -211,6 +214,20 @@ class UploadWPEntryToKVM
       $wpEntry->set_contact_email($value);
     }
 
+    if($helper->has_in_memory_values())
+    {
+      $oh = new OpeningHours();
+      $key =$oh->extract_key_from_post(
+        $helper->get_prefix() . '_openinghours');
+      $helper->set_in_memory_value('_openinghours', $key);
+    }
+
+    $value = $helper->get_value( '_openinghours');
+    if( ! empty( $value))
+    {
+      $wpEntry->set_openinghours($value);
+    }
+
     $wpEntry->set_location(
       $this->create_location_with_helper($helper, $post));
   }
@@ -231,6 +248,7 @@ class UploadWPEntryToKVM
     $helper->add_field('_phone');
     $helper->add_field('_website');
     $helper->add_field('_email');
+    $helper->add_field('_openinghours');
     $helper->add_field('_address');
     $helper->add_field('_zipcode');
     $helper->add_field('_city');

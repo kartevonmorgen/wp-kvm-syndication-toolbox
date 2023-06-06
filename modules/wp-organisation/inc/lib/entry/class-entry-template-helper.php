@@ -60,10 +60,78 @@ class EntryTemplateHelper extends WPTemplateHelper
       $this->the_linebreak();
       $this->the_email();
       $this->the_website();
+      if($this->has_openinghours())
+      {
+        $this->the_subtitle('Öffnungszeiten');
+        $this->the_linebreak();
+        $this->the_openinghours();
+      }
     }
   }
 
-  
+  public function has_openinghours()
+  {
+    $org = $this->current();
+    $key = get_post_meta($org->ID, 
+                         $this->get_post_type() . '_openinghours', 
+                         true); 
+    $oh = new OpeningHours();
+    $oh->set_key($key);
+    return $oh->has_openinghours();
+  }
+
+  public function the_openinghours($element = 'div', $clazz = null)
+  {
+    $org = $this->current();
+    $key = get_post_meta($org->ID, 
+                         $this->get_post_type() . '_openinghours', 
+                         true); 
+    $oh = new OpeningHours();
+    $oh->set_key($key);
+    foreach($oh->get_days() as $day)
+    {
+      $this->the_begin($element, $clazz);
+      $this->the_openinghours_day( $day, $element, $clazz);
+      $this->the_end();
+    }
+  } 
+
+  private function the_openinghours_day($day, $element, $clazz)
+  {
+    $day_title = $day->get_day_type()->get_title();
+    $this->the_element( $day_title, 
+                        $element, 
+                        $clazz, 
+                        'margin-top:2px;float:left;width:110px');
+
+    $str = null;
+    if($day->is_closed())
+    {
+      $this->the_element( 'Geschlossen', 
+                          $element, 
+                          $clazz,
+                          'margin-top:2px;box-sizing: content-box;padding: 0.3em 0px;font-size: 0.7em;font-style: italic' );
+    }
+    else
+    {
+      foreach($day->get_timeranges() as $timerange)
+      {
+        if($str == null)
+        {
+          $str = '';
+        }
+        else
+        {
+          $str .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+        $str .= $timerange->to_friendly_string(); 
+      }
+      $this->the_element( $str, 
+                          $element, 
+                          $clazz,
+                          'margin-top:2px' );
+    }
+  }
 
   public function has_kvm()
   {

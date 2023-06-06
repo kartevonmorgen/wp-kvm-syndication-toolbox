@@ -51,6 +51,7 @@ class KVMEntry
     $wpOrganisation->set_id( $this->_body['id'] );
     $wpOrganisation->set_name( $this->_body['title'] );
     $wpOrganisation->set_description( $this->_body['description'] );
+    $wpOrganisation->set_openinghours( $this->_body['opening_hours'] );
 
     $wpLocHelper = new WPLocationHelper();
     $wpLocation = new WPLocation();
@@ -132,6 +133,7 @@ class KVMEntry
     $this->_body['telephone'] = $wpEntry->get_contact_phone();
     $this->_body['email'] = $wpEntry->get_contact_email();
     $this->_body['homepage'] = $wpEntry->get_contact_website();
+    $this->_body['opening_hours'] = $wpEntry->get_openinghours();
 
     if(!empty( $wpEntry->get_image_url()))
     {
