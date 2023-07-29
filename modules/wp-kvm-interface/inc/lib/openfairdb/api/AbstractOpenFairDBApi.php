@@ -9,10 +9,8 @@
  *
  * @author   Sjoerd Takken
  */
-abstract class AbstractOpenFairDBApi
+abstract class AbstractOpenFairDBApi extends WPAbstractModuleProvider
 {
-  protected $current_module;
-
   /**
    * @var OpenFairDBConfiguration
    */
@@ -29,7 +27,7 @@ abstract class AbstractOpenFairDBApi
    */
   public function __construct($current_module)
   {
-    $this->current_module = $current_module;
+    parent::__construct( $current_module );
     $client = $current_module->get_client(); 
     $config = $current_module->get_config(); 
     $this->client = $client ?: new WordpressHttpClient();
@@ -38,7 +36,7 @@ abstract class AbstractOpenFairDBApi
 
   public function getCurrentModule()
   {
-    return $this->current_module;
+    return $this->get_current_module();
   }
 
   /**

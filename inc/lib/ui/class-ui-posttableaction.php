@@ -2,6 +2,7 @@
 
 class UIPostTableAction extends UITableAction
 {
+  private $_create_post = false;
   private $_posttype;
   private $_listener;
 
@@ -39,6 +40,16 @@ class UIPostTableAction extends UITableAction
   public function get_postaction_listener()
   {
     return $this->_listener;
+  }
+
+  public function set_create_post($create_post )
+  {
+    $this->_create_post = $create_post;
+  }
+
+  public function is_create_post()
+  {
+    return $this->_create_post;
   }
 
   public function setup($loader)
@@ -124,8 +135,16 @@ class UIPostTableAction extends UITableAction
     }
     if( empty($post_id) )
     {
-      $this->do_no_post_action();
-      return;  
+      if( $this->is_create_post())
+      {
+        $post_id = $this->create_post_action();
+      }
+      else
+      {
+        $this->do_no_post_action();
+        return;  
+      }
+
     }
 
     $post = get_post($post_id);
@@ -179,11 +198,44 @@ class UIPostTableAction extends UITableAction
     return;
   }
 
+  protected function create_post_action()
+  {
+    $title = $this->get_entity_title();
+    $post_type = $this->get_posttype();
+    $post_title = 'New ' . $title;
+    $post_slug = 'new_' . $post_type;
+
+    $post = get_page_by_path( $post_slug, OBJECT, $post_type );
+    if(!empty($post))
+    {
+      $post_id = $post->ID;
+      return $post_id;
+    }
+
+    // Create post object
+    $post = array(
+      'post_title' => wp_strip_all_tags( $post_title ),
+      'post_content'  => 'None ' ,
+      'post_type'  => $post_type, 
+      'post_name'  => $post_slug, 
+      // 'post_status'   => 'publish',
+    );
+
+    // Insert the post into the database
+    $post_id = wp_insert_post( $post );
+    return $post_id;
+  }
+
   private function do_fields_action($post)
   {
     foreach($this->get_fields() as $field)
     {
-      $field_value = $_GET[$field->get_id()];
+      $field_value = null;
+      if(array_key_exists ( $field->get_id() , $_GET ))
+      {
+        $field_value = $_GET[$field->get_id()];
+      }
+
       if(empty($field_value))
       {
         $this->do_fields_not_filled_action($post);

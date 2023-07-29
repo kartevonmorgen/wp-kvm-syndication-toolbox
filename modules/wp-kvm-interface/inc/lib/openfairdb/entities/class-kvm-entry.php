@@ -1,14 +1,13 @@
 <?php
 
-class KVMEntry
+class KVMEntry extends WPAbstractModuleProvider
 {
-  private $_current_module;
   private $_body = array();
 
   public function __construct($current_module, 
                               $body = array())
   {
-    $this->_current_module = $current_module;
+    parent::__construct($current_module);
     $this->_body = $body;
     if(empty($this->_body['links']))
     {
@@ -18,11 +17,6 @@ class KVMEntry
         $this->_body['links'] = $body['custom'];
       }
     }
-  }
-
-  public function get_current_module()
-  {
-    return $this->_current_module;
   }
 
   public function get_body()
@@ -45,13 +39,60 @@ class KVMEntry
     return $this->_body['id'];
   }
 
-  public function create_organisation()
+  public function get_title()
   {
-    $wpOrganisation = new WPOrganisation();
-    $wpOrganisation->set_id( $this->_body['id'] );
-    $wpOrganisation->set_name( $this->_body['title'] );
-    $wpOrganisation->set_description( $this->_body['description'] );
-    $wpOrganisation->set_openinghours( $this->_body['opening_hours'] );
+    return $this->_body['title'];
+  }
+
+  private function initialize_wpentry()
+  {
+    if(empty($this->_body['tags']))
+    {
+      return new WPOrganisation();
+    }
+
+    if(!$this->is_module_enabled('wp-project'))
+    {
+      return new WPOrganisation();
+    }
+
+    $module = $this->get_current_module();
+    $fixed_project_tag = $module->get_kvm_fixed_project_tag();
+
+    foreach($this->_body['tags'] as $tag)
+    {
+      if(trim($tag) === trim($fixed_project_tag))
+      {
+        return new WPProject();
+      }
+    }
+    return new WPOrganisation();
+  }
+
+  public function has_fixed_tag()
+  {
+    $module = $this->get_current_module();
+    if(!empty($this->_body['tags']))
+    {
+      foreach($this->_body['tags'] as $tag)
+      {
+        $fixed_tag = $module->get_kvm_fixed_tag();
+        if(trim($tag) === trim($fixed_tag))
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public function create_wpentry()
+  {
+    $wpEntry = $this->initialize_wpentry();
+    $wpEntry->set_id( $this->_body['id'] );
+    $wpEntry->set_name( $this->_body['title'] );
+    $wpEntry->set_description( $this->_body['description'] );
+    $wpEntry->set_openinghours( $this->_body['opening_hours'] );
 
     $wpLocHelper = new WPLocationHelper();
     $wpLocation = new WPLocation();
@@ -71,14 +112,14 @@ class KVMEntry
     $wpLocation->set_lon( $this->_body['lng'] );
     $wpLocation->set_lat( $this->_body['lat'] );
 
-    $wpOrganisation->set_location($wpLocation);
+    $wpEntry->set_location($wpLocation);
 
     if(!empty($this->_body['image_url']))
     {
-      $wpOrganisation->set_image_url( $this->_body['image_url']);
+      $wpEntry->set_image_url( $this->_body['image_url']);
       if(!empty($this->_body['image_link_url']))
       {
-        $wpOrganisation->set_image_link_url( $this->_body['image_link_url']);
+        $wpEntry->set_image_link_url( $this->_body['image_link_url']);
       }
     }
 
@@ -86,17 +127,30 @@ class KVMEntry
     {
       $wpLink = new WPLink('contact_website', 
                            $this->_body['homepage']); 
-      $wpOrganisation->add_link($wpLink);
+      $wpEntry->add_link($wpLink);
     }
-    $wpOrganisation->set_links($this->get_wp_links());
+    $wpEntry->set_links($this->get_wp_links());
 
 
+    $module = $this->get_current_module();
     if(!empty($this->_body['tags']))
     {
       foreach($this->_body['tags'] as $tag)
       {
+        if($wpEntry->get_type() != WPEntryType::PROJECT)
+        {
+          // Do not add the spezial Tag for projects, it 
+          // is done by the project module itself because
+          // the type is defined by a project
+          $fixed_project_tag = $module->get_kvm_fixed_project_tag();
+          if(trim($tag) === trim($fixed_project_tag))
+          {
+            continue;
+          }
+        }
+
         $wpTag = new WPTag($tag, $tag);
-        $wpOrganisation->add_tag($wpTag);
+        $wpEntry->add_tag($wpTag);
       }
     }
 
@@ -106,24 +160,30 @@ class KVMEntry
       {
         if( $cat == '77b3c33a92554bcf8e8c2c86cedd6f6f' )
         {
-          $wpOrganisation->set_type_type_id(WPEntryTypeType::COMPANY);
+          $wpEntry->set_type_type_id(WPEntryTypeType::COMPANY);
           break;
         }
         if( $cat == '2cd00bebec0c48ba9db761da48678134' )
         {
-          $wpOrganisation->set_type_type_id(WPEntryTypeType::INITIATIVE);
+          $wpEntry->set_type_type_id(WPEntryTypeType::INITIATIVE);
           break;
         }
       }
     }
 
-    // TODO: Fill elements füther
+    // If the Download is done from the Project Module
+    // it is always a Initiative
+    if($wpEntry->get_type() == WPEntryType::PROJECT)
+    {
+      $wpEntry->set_type_type_id(WPEntryTypeType::INITIATIVE);
+    }
 
+    // TODO: Fill elements füther
     if(!empty($this->_body['version']))
     {
-      $wpOrganisation->set_kvm_version( $this->_body['version'] );
+      $wpEntry->set_kvm_version( $this->_body['version'] );
     }
-    return $wpOrganisation;
+    return $wpEntry;
   }
 
   public function fill_entry($wpEntry)
@@ -227,8 +287,7 @@ class KVMEntry
       }
     }
 
-    $mc = WPModuleConfiguration::get_instance();
-    if($mc->is_module_enabled('wp-project'))
+    if($this->is_module_enabled('wp-project'))
     {
       if($wpEntry->get_type()->get_id() == WPEntryType::PROJECT )
       {

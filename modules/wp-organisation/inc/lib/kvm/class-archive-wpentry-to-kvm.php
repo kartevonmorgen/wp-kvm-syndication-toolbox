@@ -33,7 +33,7 @@ class ArchiveWPEntryToKVM
     }
 
     $type = $this->get_type();
-    if($type->get_id() !== $post->post_type)
+    if(trim($type->get_id()) !== ($post->post_type))
     {
       return;
     }

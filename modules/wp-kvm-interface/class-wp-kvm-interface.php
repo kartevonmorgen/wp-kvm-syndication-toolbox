@@ -90,6 +90,15 @@ class WPKVMInterfaceModule extends WPAbstractModule
   }
 
   /**
+   * return: array of WPEntry for the specified BBox Region 
+   * defined in the Settings 
+   */
+  public function get_entries_by_bbox_for_region()
+  {
+    return $this->get_handle_entries()->get_entries_by_bbox_for_region();
+  }
+
+  /**
    * return: array of WPEntry
    */
   public function get_entries()
@@ -216,4 +225,15 @@ class WPKVMInterfaceModule extends WPAbstractModule
     return get_option($this->get_kvm_fixed_project_tag_id(),
                       $this->get_kvm_fixed_tag() . '-project');
   }
+  
+  public function get_kvm_boundingbox_region_id()
+  {
+    return 'kvm_boundingbox_region';
+  }
+
+  public function get_kvm_boundingbox_region()
+  {
+    return get_option( $this->get_kvm_boundingbox_region_id(), '47.5,6.53,55.0,15.0' );
+  }
+
 }

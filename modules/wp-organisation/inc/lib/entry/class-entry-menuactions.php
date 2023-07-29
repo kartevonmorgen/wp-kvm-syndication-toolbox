@@ -17,7 +17,8 @@ class EntryMenuActions extends WPAbstractModuleProvider
 
   public function setup($loader)
   {
-    $type = $this->get_current_module()->get_type();
+    $current_module = $this->get_current_module(); 
+    $type = $current_module->get_type();
 
     $this->reset_log_action($loader);
 
@@ -32,7 +33,7 @@ class EntryMenuActions extends WPAbstractModuleProvider
                                            $type->get_id(),
                                            $type->get_title());
       $tableAction->set_postaction_listener(
-        new KVMUploadAction($this->get_current_module(),
+        new KVMUploadAction($current_module,
                             $this->get_kvm_uploader()));
       $tableAction->setup($loader);
 
@@ -42,13 +43,15 @@ class EntryMenuActions extends WPAbstractModuleProvider
                                            $type->get_id(),
                                            $type->get_title());
       $tableAction->set_postaction_listener(
-        new KVMArchiveAction($this->get_current_module(),
+        new KVMArchiveAction($current_module,
                              $this->get_kvm_uploader()));
       $tableAction->setup($loader);
     }
-    
-    // Only Admins can download from the KVM
-    if(!current_user_can('manage_options'))
+
+    // Only Admins can download from the KVM for Organisations
+    // for Projects everyone can do.
+    if($type->get_id() === WPEntryType::ORGANISATION
+      && !current_user_can('manage_options'))
     {
       return;
     }
@@ -59,12 +62,18 @@ class EntryMenuActions extends WPAbstractModuleProvider
                                          'Download von KVM', 
                                          $type->get_id(),
                                          $type->get_title());
-    $field = new UIMetaboxField($type->get_id() . '_kvm_id', 'KVM Id');
+
+    $field = new KVMEntriesDropDownField($type->get_id() . '_kvm_id', 'KVM Id',$this);
     $field->set_description('Download ' . $type . ' für dieser KVM Id');
+    
     $tableAction->add_field($field);
     $tableAction->set_postaction_listener(
       new KVMDownloadAction($this->get_current_module(),
                             $this->get_kvm_uploader()));
+    if(WPEntryType::PROJECT == $type->get_id())
+    {
+      $tableAction->set_create_post(true);
+    }
     $tableAction->setup($loader);
   }
 
@@ -100,6 +109,47 @@ class EntryMenuActions extends WPAbstractModuleProvider
         }
       });
     $tableAction->setup($loader);
+  }
+}
+
+class KVMEntriesDropDownField extends UIMetaboxDropDownField
+{
+  private $_parent;
+
+  public function __construct($id, $title, $parent)
+  {
+    parent::__construct($id, $title);
+    $this->_parent = $parent;
+  }
+
+  public function get_parent()
+  {
+    return $this->_parent;
+  }
+
+  public function get_values()
+  {
+    $parent = $this->get_parent();
+    if (!$parent->is_module_enabled('wp-kvm-interface')) 
+    { 
+      return parent::get_values();
+    }
+    $kvminterface = $parent->get_module('wp-kvm-interface');
+    
+    if(empty(parent::get_values()))
+    {
+      $entries = $kvminterface->get_entries_by_bbox_for_region();
+      foreach($entries as $entry)
+      {
+        if($entry->has_fixed_tag())
+        {
+          continue;
+        }
+        $this->add_value( $entry->get_id(), 
+          $entry->get_title() . ' (' . $entry->get_id() . ')');
+      }
+    } 
+    return parent::get_values();
   }
 }
 
@@ -164,7 +214,7 @@ class KVMDownloadAction extends KVMAction
 
       $module = $this->get_current_module();
       $downloader = new DownloadWPEntryFromKVM( $module );
-      $downloader->download($post_id, $post, $kvm_id); 
+      $downloader->download($post_id, $post); 
     }
     finally
     {

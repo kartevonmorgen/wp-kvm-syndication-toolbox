@@ -197,6 +197,13 @@ class OpenFairDBEntriesApi extends AbstractOpenFairDBApi
                              $body);
   }
 
+  public function searchGetByBBox($bbox = null)
+  {
+    return $this->searchGet($bbox, 
+                     array('77b3c33a92554bcf8e8c2c86cedd6f6f', 
+                           '2cd00bebec0c48ba9db761da48678134'));
+  }
+
   /**
    * Operation searchGet
    *
@@ -235,11 +242,11 @@ class OpenFairDBEntriesApi extends AbstractOpenFairDBApi
     $responseBody = $response->getBody();
 
     $body = json_decode($responseBody, true);
-    $wpOrganisationArr = $body['visible'];
+    $wpEntryArr = $body['visible'];
     $kvm_entries = array();
-    foreach($wpOrganisationArr as $wpOrganisationData)
+    foreach($wpEntryArr as $wpEntryData)
     {
-      $kvm_entry = $this->createEntry($wpOrganisationData);
+      $kvm_entry = $this->createEntry($wpEntryData);
       array_push( $kvm_entries, $kvm_entry);
     }
     return $kvm_entries;

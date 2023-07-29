@@ -173,6 +173,15 @@ class KVMInterfaceHandleEntries extends WPAbstractModuleProvider
     }
   }
 
+  public function get_entries_by_bbox_for_region()
+  {
+    $module = $this->get_current_module();
+    $module->update_config();
+    $bbox = $module->get_kvm_boundingbox_region();
+    $api = $this->getEntriesApi();
+    return $api->searchGetByBBox($bbox);
+  }
+
   /**
    * Method for Testing
    */
@@ -200,7 +209,7 @@ class KVMInterfaceHandleEntries extends WPAbstractModuleProvider
       $entries = $api->entriesGet($ids);
       foreach($entries as $entry)
       {
-        array_push($organisations, $entry->create_organisation());
+        array_push($organisations, $entry->create_wpentry());
       }
       return $organisations;
     }

@@ -75,13 +75,17 @@ class UIMetaboxField
 
   public function get_values()
   {
-    return $this->_values;
+    $values = $this->_values;
+    usort($values, function($a, $b) {
+      return strcasecmp( $a->get_description(), $b->get_description());
+    });
+    return $values;
   }
 
   public function add_value($key, $description)
   {
     array_push($this->_values, 
-               new UISettingsFieldValue($key, $description));
+      new UISettingsFieldValue($key, $description));
   }
 
   /**

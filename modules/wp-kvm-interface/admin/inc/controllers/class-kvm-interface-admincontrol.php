@@ -75,6 +75,17 @@ class KVMInterfaceAdminControl extends UIAbstractAdminControl
       $field->set_defaultvalue($module->get_kvm_fixed_tag() . '-project');
     }
 
+    $field = $section->add_textfield(
+                         $module->get_kvm_boundingbox_region_id(), 
+                         'Bounding box of the region on the Map');
+    $field->set_description('Bounding box of the region, it is used ' .
+                            'to pick up entries from the region, which ' .
+                            'are added directly on the Karte von Morgen ' .
+                            'but not in Wordpress. They can be downloaded ' .
+                            'to Wordpress (format: latitude-1,longitude-1,latitude-2,longitude-2');
+    $field->set_defaultvalue('47.5,6.53,55.0,15.0');
+
+
     if(!$rootmodule->are_developer_options_enabled())
     {
       $page->register();

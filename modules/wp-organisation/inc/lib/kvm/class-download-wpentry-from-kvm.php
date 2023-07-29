@@ -8,6 +8,11 @@ class DownloadWPEntryFromKVM
     return $this->get_current_module()->get_type();
   }
 
+  public function get_type_id()
+  {
+    return $this->get_type()->get_id();
+  }
+
   public function download($entry_post_id, $entry_post)
   {
     if (!$this->is_module_enabled('wp-kvm-interface')) 
@@ -25,7 +30,7 @@ class DownloadWPEntryFromKVM
       return;
     }
 
-    $kvm_id = reset($post_meta['entry_kvm_id']);
+    $kvm_id = reset($post_meta[$this->get_type_id() . '_kvm_id']);
     if(empty($kvm_id))
     {
       echo '<p>Karte von Morgen Entry Id not setted '.
@@ -164,6 +169,8 @@ class DownloadWPEntryFromKVM
     {
       $ipost['post_title'] = 
         $wpEntry->get_name();
+      $ipost['post_name'] = 
+        sanitize_title( $wpEntry->get_name() );
     }
 
     if(!empty($wpEntry->get_description()))
