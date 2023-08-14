@@ -87,15 +87,15 @@ class PSR7AdminControl implements WPModuleStarterIF
       {
         $uri = '';
         $uri .= get_option('osm_nominatim_url', OsmNominatim::DEFAULT_URL);
-        $uri .= '/search/';
+        $uri .= '/search?q=';
         $uri .= get_option('osm_nominatim_address', '');
-        $uri .= ' ';
+        $uri .= ', ';
         $uri .= get_option('osm_nominatim_zip', '');
-        $uri .= ' ';
+        $uri .= ', ';
         $uri .= get_option('osm_nominatim_city', '');
-        $uri .= ' ';
+        $uri .= ', ';
         $uri .= get_option('osm_nominatim_country', '');
-        $uri .= '?format=xml&addressdetails=1';
+        $uri .= '&format=xml&addressdetails=1';
         if(empty($uri))
         {
           return 'No URI found';

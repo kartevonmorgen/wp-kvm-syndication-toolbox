@@ -25,9 +25,9 @@ class OsmNominatim
   private function fill_location_freetextformat_osm($wpLocation)
   {
     $uri = get_option('osm_nominatim_url', self::DEFAULT_URL);
-    $uri .= '/search/';
+    $uri .= '/search?q=';
     $uri .= trim($wpLocation->get_freetextformat_osm());
-    $uri .= '?format=xml&addressdetails=1';
+    $uri .= '&format=xml&addressdetails=1';
     $uri .= '&countrycodes=' . $wpLocation->get_country_code();
     $wpLocation->set_freetextformat_osm(null);
     return $this->do_request('place', $wpLocation, $uri);
@@ -36,7 +36,7 @@ class OsmNominatim
   private function fill_location_freetextformat_local($wpLocation)
   {
     $uri = get_option('osm_nominatim_url', self::DEFAULT_URL);
-    $uri .= '/search/';
+    $uri .= '/search?q=';
 
     $addressUri = '';
     if(empty($wpLocation->get_street()))
@@ -61,24 +61,27 @@ class OsmNominatim
       
     if(!empty($wpLocation->get_zip()))
     {
+      $addressUri .=',';
       $addressUri .= $wpLocation->get_zip();
       $addressUri .=' ';
     }
 
     if(!empty($wpLocation->get_city()))
     {
+      $addressUri .=',';
       $addressUri .= $wpLocation->get_city();
       $addressUri .=' ';
     }
 
     if(!empty($wpLocation->get_country_code()))
     {
+      $addressUri .=',';
       $addressUri .= $wpLocation->get_country_code();
       $addressUri .=' ';
     }
 
     $uri .= trim($addressUri);
-    $uri .= '?format=xml&addressdetails=1';
+    $uri .= '&format=xml&addressdetails=1';
     $uri .= '&countrycodes=' . $wpLocation->get_country_code();
     return $this->do_request('place', $wpLocation, $uri);
   }
@@ -90,7 +93,7 @@ class OsmNominatim
     $wpLocation->set_lon($lon);
 
     $uri = get_option('osm_nominatim_url', self::DEFAULT_URL);
-    $uri .= '/reverse/';
+    $uri .= '/reverse';
     $uri .= '?format=xml&addressdetails=1';
     $uri .= '&countrycodes=' . $wpLocation->get_country_code();
     $uri .= '&lat=' . $lat;
