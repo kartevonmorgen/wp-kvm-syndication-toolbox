@@ -16,7 +16,7 @@ class ICalVEventRecurringDate
 	 *
 	 * @var string
 	 */
-	var $rules = "";
+	var $rules = '';
 
 	/**
 	 * start date in Unix Timestamp format (local timezone)
@@ -26,7 +26,7 @@ class ICalVEventRecurringDate
 	var $startdate = null;
 
 	/**
-	 * repeating frequency type (i.e. "y" for yearly, "m" for monthly)
+	 * repeating frequency type (i.e. 'y' for yearly, 'm' for monthly)
 	 *
 	 * @var string
 	 */
@@ -154,7 +154,7 @@ class ICalVEventRecurringDate
  * @param array $exdates array of exception dates
  * @param string $tzid timezone of event (using PHP timezones)
  */
-	function __construct($rules, $startdate, $exdates = array(),$timezone = new DateTimeZone("UTC"))
+	function __construct($rules, $startdate, $exdates = array(),$timezone = new DateTimeZone('UTC'))
   {
     $this->setMaxPeriodInDays(356);
     $this->dateHelper = new ICalDateHelper();
@@ -168,113 +168,113 @@ class ICalVEventRecurringDate
                            ,$tzid) );
 			}
 	
-			$rules=str_replace("\'","",$rules);
+			$rules=str_replace('\'','',$rules);
 			$this->rules = $rules;
 			if($startdate == null){
 				// if not specified, use start date of beginning of last year
 				$tdate=getdate();
-				$startdate=mktime(0,0,0,1,1,$tdate["year"] - 1);
+				$startdate=mktime(0,0,0,1,1,$tdate['year'] - 1);
 			}
 			$this->startdate = $startdate;
 			$this->tzid = $timezone->getName();
 			$this->exdates = $exdates;
 	
-			$rules=explode(";", $rules);
-			$ruletype = "";
+			$rules=explode(';', $rules);
+			$ruletype = '';
 			foreach($rules as $rule){
-				$item=explode("=",$rule);
-				//echo $item[0] . "=" . $item[1] . "<br/>\n";
+				$item=explode('=',$rule);
+				//echo $item[0] . '=' . $item[1] . '<br/>\n';
 				switch($item[0]){
-					case "FREQ":
+					case 'FREQ':
 						switch($item[1]){
-							case "YEARLY":
-								$this->freq="y";
+							case 'YEARLY':
+								$this->freq='y';
 								break;
-							case "MONTHLY":
-								$this->freq="m";
+							case 'MONTHLY':
+								$this->freq='m';
 								break;
-							case "WEEKLY":
-								$this->freq="w";
+							case 'WEEKLY':
+								$this->freq='w';
 								break;
-							case "DAILY":
-								$this->freq="d";
+							case 'DAILY':
+								$this->freq='d';
 								break;
-							case "HOURLY":
-								$this->freq="h";
+							case 'HOURLY':
+								$this->freq='h';
 								break;
-							case "MINUTELY":
-								$this->freq="i";
+							case 'MINUTELY':
+								$this->freq='i';
 								break;
-							case "SECONDLY":
-								$this->freq="s";
+							case 'SECONDLY':
+								$this->freq='s';
 								break;
 						}
 						break;
-					case "INTERVAL":
+					case 'INTERVAL':
 						$this->interval = $item[1];
 						break;
-					case "BYSECOND":
-						$this->bysecond = explode(",",$item[1]);
+					case 'BYSECOND':
+						$this->bysecond = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "BYMINUTE":
-						$this->byminute = explode(",",$item[1]);
+					case 'BYMINUTE':
+						$this->byminute = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "BYHOUR":
-						$this->byhour = explode(",",$item[1]);
+					case 'BYHOUR':
+						$this->byhour = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "BYDAY":
-						$this->byday = explode(",",$item[1]);
+					case 'BYDAY':
+						$this->byday = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "BYMONTHDAY":
-						$this->bymonthday = explode(",",$item[1]);
+					case 'BYMONTHDAY':
+						$this->bymonthday = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "BYMONTH":
-						$this->bymonth = explode(",",$item[1]);
+					case 'BYMONTH':
+						$this->bymonth = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "BYYEAR":
-						$this->byyear = explode(",",$item[1]);
+					case 'BYYEAR':
+						$this->byyear = explode(',',$item[1]);
 						$ruletype = $item[0];
 						break;
-					case "COUNT":
+					case 'COUNT':
 						$this->count = intval($item[1]);
-						$this->repeatmode = "c";
+						$this->repeatmode = 'c';
 						break;
-					case "BYSETPOS":
-						$this->bysetpos = explode(",",$item[1]);
+					case 'BYSETPOS':
+						$this->bysetpos = explode(',',$item[1]);
 						break;
-					case "UNTIL":
+					case 'UNTIL':
 						$this->until = $this->getDateHelper()->fromiCaltoUnixDateTime($item[1], $timezone);
-						$this->repeatmode = "u";
+						$this->repeatmode = 'u';
 						break;
 				}
 			}
 			if(count($this->bysetpos) > 0){
 				switch($ruletype){
-					case "BYYEAR":
+					case 'BYYEAR':
 						$this->byyear = $this->bySetPos($this->byyear,$this->bysetpos);
 						break;
-					case "BYMONTH":
+					case 'BYMONTH':
 						$this->bymonth = $this->bySetPos($this->bymonth,$this->bysetpos);
 						break;
-					case "BYMONTHDAY":
+					case 'BYMONTHDAY':
 						$this->bymonthday = $this->bySetPos($this->bymonthday,$this->bysetpos);
 						break;
-					case "BYDAY":
+					case 'BYDAY':
 						$this->byday = $this->bySetPos($this->byday,$this->bysetpos);
 						break;
-					case "BYHOUR":
+					case 'BYHOUR':
 						$this->byhour = $this->bySetPos($this->byhour,$this->bysetpos);
 						break;
-					case "BYMINUTE":
+					case 'BYMINUTE':
 						$this->byminute = $this->bySetPos($this->byminute,$this->bysetpos);
 						break;
-					case "BYSECOND":
+					case 'BYSECOND':
 						$this->bysecond = $this->bySetPos($this->bysecond,$this->bysetpos);
 						break;
 				}
@@ -362,7 +362,7 @@ class ICalVEventRecurringDate
  */
 	function debug($level, $msg){
 		if($this->debug >= $level)
-			echo $msg . "<br/>\n";
+			echo $msg . '<br/>\n';
 	}
 	
 /**
@@ -375,9 +375,9 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function byYear($startdate, $enddate, &$rdates, $tzid="UTC"){
-		self::debug(1,"byYear(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+	private function byYear($startdate, $enddate, &$rdates, $tzid='UTC'){
+		self::debug(1,'byYear(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$count = 0;
 		if(count($this->byyear) > 0){
 			foreach($this->byyear as $year){
@@ -394,7 +394,7 @@ class ICalVEventRecurringDate
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byMonth($startdate, $enddate, $rdates, $tzid);
-		self::debug(1,"byYear() returned " . $count );
+		self::debug(1,'byYear() returned ' . $count );
 		return $count;
 	}
 	
@@ -408,15 +408,15 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function byMonth($startdate, $enddate, &$rdates, $tzid="UTC")
+	private function byMonth($startdate, $enddate, &$rdates, $tzid='UTC')
   {
-		self::debug(1,"byMonth(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+		self::debug(1,'byMonth(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$count = 0;
 		if(count($this->bymonth) > 0){
 			foreach($this->bymonth as $month){
 				$t = getdate($startdate);
-				$wdate = mktime($t["hours"],$t["minutes"],$t["seconds"],$month,$t["mday"],$t["year"]);
+				$wdate = mktime($t['hours'],$t['minutes'],$t['seconds'],$month,$t['mday'],$t['year']);
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$count = $this->byMonthDay($wdate, $enddate, $rdates, $tzid);
 					if($count == 0) {
@@ -428,7 +428,7 @@ class ICalVEventRecurringDate
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byMonthDay($startdate, $enddate, $rdates, $tzid);
-		self::debug(1,"byMonth() returned " . $count );
+		self::debug(1,'byMonth() returned ' . $count );
 		return $count;
 	}
 
@@ -442,19 +442,19 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function byMonthDay($startdate, $enddate, &$rdates, $tzid="UTC")
+	private function byMonthDay($startdate, $enddate, &$rdates, $tzid='UTC')
   {
-		self::debug(1,"byMonthDay(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+		self::debug(1,'byMonthDay(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$count = 0;
-		self::debug(1,"start date: " . $this->getDateHelper()->toSqlDateTime($startdate));
+		self::debug(1,'start date: ' . $this->getDateHelper()->toSqlDateTime($startdate));
 		if(count($this->bymonthday) > 0){
 			foreach($this->bymonthday as $day){
 				$day = intval($day);
 				$t = getdate($startdate);
 				$wdate = mktime($t['hours'],$t['minutes'],$t['seconds'],$t['mon'],$day,$t['year']);
-				self::debug(2,"mktime(" . $t['hours'] . ", " . $t['minutes']
-				. ", " . $t['mon'] . ", " . $day . ", " . $t['year'] . ") returned $wdate");
+				self::debug(2,'mktime(' . $t['hours'] . ', ' . $t['minutes']
+				. ', ' . $t['mon'] . ', ' . $day . ', ' . $t['year'] . ') returned $wdate');
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$count = $this->byDay($wdate, $enddate, $rdates, $tzid);
 					if($count == 0) {
@@ -465,10 +465,10 @@ class ICalVEventRecurringDate
 			}
 		}
 		else if(!$this->maxDates($rdates)) {
-			self::debug(1,"start date: " . $this->getDateHelper()->toSqlDateTime($startdate));
+			self::debug(1,'start date: ' . $this->getDateHelper()->toSqlDateTime($startdate));
 			$count = $this->byDay($startdate, $enddate, $rdates, $tzid);
 		}
-		self::debug(1,"byMonthDay() returned " . $count );
+		self::debug(1,'byMonthDay() returned ' . $count );
 		return $count;
 	}
 	
@@ -482,31 +482,31 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function byDay($startdate, $enddate, &$rdates, $tzid="UTC"){
-		self::debug(1,"byDay(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+	private function byDay($startdate, $enddate, &$rdates, $tzid='UTC'){
+		self::debug(1,'byDay(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$days = array(
-			"SU" => 0,
-			"MO" => 1,
-			"TU" => 2,
-			"WE" => 3,
-			"TH" => 4,
-			"FR" => 5,
-			"SA" => 6);
+			'SU' => 0,
+			'MO' => 1,
+			'TU' => 2,
+			'WE' => 3,
+			'TH' => 4,
+			'FR' => 5,
+			'SA' => 6);
 		$idays = array(
-			0 => "SU",
-			1 => "MO",
-			2 => "TU",
-			3 => "WE",
-			4 => "TH",
-			5 => "FR",
-			6 => "SA");
+			0 => 'SU',
+			1 => 'MO',
+			2 => 'TU',
+			3 => 'WE',
+			4 => 'TH',
+			5 => 'FR',
+			6 => 'SA');
 	
 		$count = 0;
 		if(count($this->byday) > 0){
 			if(empty($this->byday[0]))
 			{
-				$this->byday[0] = $idays[date("w",$startdate)];
+				$this->byday[0] = $idays[date('w',$startdate)];
 			}
 			foreach($this->byday as $tday){
 				$t = getdate($startdate);
@@ -514,18 +514,18 @@ class ICalVEventRecurringDate
 				if(strlen($day) < 2)
 				{
 					// missing start day, use current date for DOW
-					$day = $idays[date("w",$startdate)];
+					$day = $idays[date('w',$startdate)];
 				}
 				if(strlen($tday) > 2) {
 					$imin = 1;
 					$imax = 5; // max # of occurances in a month
 					if(strlen($tday) > 2)
 						$imin = $imax = substr($tday,0,strlen($tday) - 2);
-					self::debug(2,"imin: $imin, imax: $imax, tday: $tday, day: $day, daynum: {$days[$day]}");
+					self::debug(2,'imin: $imin, imax: $imax, tday: $tday, day: $day, daynum: {$days[$day]}');
 					for($i = $imin; $i <= $imax; $i++){
 						$wdate = $this->getDateHelper()->getDateFromDay($startdate,$i-1,$days[$day],$tzid);
-						self::debug(2,"getDateFromDay(" . $this->getDateHelper()->toSqlDateTime($startdate)
-							. ",$i,{$days[$day]}) returned " . $this->getDateHelper()->toSqlDateTime($wdate));
+						self::debug(2,'getDateFromDay(' . $this->getDateHelper()->toSqlDateTime($startdate)
+							. ',$i,{$days[$day]}) returned ' . $this->getDateHelper()->toSqlDateTime($wdate));
 						if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 							$count = $this->byHour($wdate, $enddate, $rdates);
 							if($count == 0){
@@ -538,19 +538,19 @@ class ICalVEventRecurringDate
 				}
 				else {
 					// day of week version
-					$startdate_dow = date("w",$startdate);
+					$startdate_dow = date('w',$startdate);
 					$datedelta = $days[$day] - $startdate_dow;
-					self::debug(2, "start_dow: $startdate_dow, datedelta: $datedelta");
+					self::debug(2, 'start_dow: $startdate_dow, datedelta: $datedelta');
 					if($datedelta >= 0)
 					{
 						$wdate = $this->getDateHelper()->addDate($startdate,0,0,0,0,$datedelta,0,$this->tzid);
-						self::debug(2, "wdate: " . $this->getDateHelper()->toSqlDateTime($wdate));
+						self::debug(2, 'wdate: ' . $this->getDateHelper()->toSqlDateTime($wdate));
 						if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 							$count = $this->byHour($wdate, $enddate, $rdates);
 							if($count == 0){
 								$rdates[] = $wdate;
 								$count++;
-								self::debug(2,"adding date " . $this->getDateHelper()->toSqlDateTime($wdate) );
+								self::debug(2,'adding date ' . $this->getDateHelper()->toSqlDateTime($wdate) );
 							}
 						}
 					}
@@ -559,7 +559,7 @@ class ICalVEventRecurringDate
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byHour($startdate, $enddate, $rdates);
-		self::debug(1,"byDay() returned " . $count );
+		self::debug(1,'byDay() returned ' . $count );
 		return $count;
 	}
 
@@ -573,15 +573,15 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function byHour($startdate, $enddate, &$rdates, $tzid="UTC"){
-		self::debug(1,"byHour(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+	private function byHour($startdate, $enddate, &$rdates, $tzid='UTC'){
+		self::debug(1,'byHour(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$count = 0;
 		if(count($this->byhour) > 0){
 			foreach($this->byhour as $hour){
 				$t = getdate($startdate);
-				$wdate = mktime($hour,$t["minutes"],$t["seconds"],$t["mon"],$t["mday"],$t["year"]);
-				self::debug(2,"checking date/time " . $this->getDateHelper()->toSqlDateTime($wdate));
+				$wdate = mktime($hour,$t['minutes'],$t['seconds'],$t['mon'],$t['mday'],$t['year']);
+				self::debug(2,'checking date/time ' . $this->getDateHelper()->toSqlDateTime($wdate));
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$count = $this->byMinute($wdate, $enddate, $rdates);
 					if($count == 0) {
@@ -593,7 +593,7 @@ class ICalVEventRecurringDate
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->byMinute($startdate, $enddate, $rdates);
-		self::debug(1,"byHour() returned " . $count );
+		self::debug(1,'byHour() returned ' . $count );
 		return $count;
 	}
 
@@ -607,14 +607,14 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function byMinute($startdate, $enddate, &$rdates, $tzid="UTC"){
-		self::debug(1,"byMinute(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+	private function byMinute($startdate, $enddate, &$rdates, $tzid='UTC'){
+		self::debug(1,'byMinute(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$count = 0;
 		if(count($this->byminute) > 0){
 			foreach($this->byminute as $minute){
 				$t = getdate($startdate);
-				$wdate = mktime($t["hours"],$minute,$t["seconds"],$t["mon"],$t["mday"],$t["year"]);
+				$wdate = mktime($t['hours'],$minute,$t['seconds'],$t['mon'],$t['mday'],$t['year']);
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$count = $this->bySecond($wdate, $enddate, $rdates);
 					if($count == 0) {
@@ -626,7 +626,7 @@ class ICalVEventRecurringDate
 		}
 		else if(!$this->maxDates($rdates))
 			$count = $this->bySecond($startdate, $enddate, $rdates);
-		self::debug(1,"byMinute() returned " . $count );
+		self::debug(1,'byMinute() returned ' . $count );
 		return $count;
 	}
 /**
@@ -639,21 +639,21 @@ class ICalVEventRecurringDate
  *
  * @return integer count of dates
  */
-	private function bySecond($startdate, $enddate, &$rdates, $tzid="UTC"){
-		self::debug(1,"bySecond(" . $this->getDateHelper()->toSqlDateTime($startdate) . ","
-			. $this->getDateHelper()->toSqlDateTime($enddate) . "," . count($rdates) . " dates)");
+	private function bySecond($startdate, $enddate, &$rdates, $tzid='UTC'){
+		self::debug(1,'bySecond(' . $this->getDateHelper()->toSqlDateTime($startdate) . ','
+			. $this->getDateHelper()->toSqlDateTime($enddate) . ',' . count($rdates) . ' dates)');
 		$count = 0;
 		if(count($this->bysecond) > 0){
 			foreach($this->bysecond as $second){
 				$t = getdate($startdate);
-				$wdate = mktime($t["hours"],$t["minutes"],$second,$t["mon"],$t["mday"],$t["year"]);
+				$wdate = mktime($t['hours'],$t['minutes'],$second,$t['mon'],$t['mday'],$t['year']);
 				if($startdate <= $wdate && $wdate < $enddate && !$this->maxDates($rdates)){
 					$rdates[] = $wdate;
 					$count++;
 				}
 			}
 		}
-		self::debug(1,"bySecond() returned " . $count );
+		self::debug(1,'bySecond() returned ' . $count );
 		return $count;
 	}
 
@@ -670,12 +670,12 @@ class ICalVEventRecurringDate
     {
       return true;
     }
-		else if($this->repeatmode == "c" && count($rdates) >= $this->count)
+		else if($this->repeatmode == 'c' && count($rdates) >= $this->count)
     {
 			return true; // exceeded count
     }
 		else if(count($rdates) > 0 && 
-            $this->repeatmode == "u" && 
+            $this->repeatmode == 'u' && 
             $rdates[count($rdates) - 1] > $this->until)
     {
 			return true; //past date
@@ -692,63 +692,63 @@ class ICalVEventRecurringDate
  */	
 	public function getDates($maxdate = null){
 		//$this->debug = 2;
-		self::debug(1,"getDates()");
+		self::debug(1,'getDates()');
 		$nextdate = $enddate = $this->startdate;
 		$rdates = array();
 		$done = false;
 		$eventcount = 0;
 		$loopcount = 0;
-		self::debug(2,"freq: " . $this->freq . ", interval: " . $this->interval);
+		self::debug(2,'freq: ' . $this->freq . ', interval: ' . $this->interval);
 		while(!$done){
-			self::debug(1,"<b>*** Frequency ({$this->freq}) loop pass $loopcount ***</b>");
+			self::debug(1,'<b>*** Frequency ({$this->freq}) loop pass $loopcount ***</b>');
 			switch($this->freq){
-			case "y":
+			case 'y':
 				if($eventcount > 0)
 				{
 					$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,0,0,$this->interval,$this->tzid);
-					self::debug(2,"addDate() returned " . $this->getDateHelper()->toSqlDateTime($nextdate));
+					self::debug(2,'addDate() returned ' . $this->getDateHelper()->toSqlDateTime($nextdate));
 					if(!empty($this->byday)){
 						$t = getdate($nextdate);
-						$nextdate = gmmktime($t["hours"],$t["minutes"],$t["seconds"],$t["mon"],1,$t["year"]);
+						$nextdate = gmmktime($t['hours'],$t['minutes'],$t['seconds'],$t['mon'],1,$t['year']);
 					}
-					self::debug(2,"nextdate set to $nextdate (". $this->getDateHelper()->toSQLDateTime($nextdate) . ")");
+					self::debug(2,'nextdate set to $nextdate ('. $this->getDateHelper()->toSQLDateTime($nextdate) . ')');
 				}
 				$enddate=$this->getDateHelper()->addDate($nextdate,0,0,0,0,0,1);
 				break;
-			case "m":
+			case 'm':
 				if($eventcount > 0)
 				{
 					
 					$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,$this->interval,0,0,$this->tzid);
-					self::debug(2,"addDate() returned " . $this->getDateHelper()->toSqlDateTime($nextdate));
+					self::debug(2,'addDate() returned ' . $this->getDateHelper()->toSqlDateTime($nextdate));
 				}
 				if(count($this->byday) > 0)
 				{
 					$t = getdate($nextdate);
-					if($t["mday"] > 28)
+					if($t['mday'] > 28)
 					{
 						//check for short months when using month by day, make sure we do not overshoot the counter and skip a month
 						$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,$this->interval,0,0,$this->tzid);
 						$t2 = getdate($nextdate);
-						if($t2["mday"] < $t["mday"])
+						if($t2['mday'] < $t['mday'])
 						{
 							// oops, skipped a month, backup to previous month
-							$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,0,$t2["mday"] - $t["mday"],0,$this->tzid);
+							$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,0,$t2['mday'] - $t['mday'],0,$this->tzid);
 						}
 					}
 					$t = getdate($nextdate);
-					$nextdate = mktime($t["hours"],$t["minutes"],$t["seconds"],$t["mon"],1,$t["year"]);
+					$nextdate = mktime($t['hours'],$t['minutes'],$t['seconds'],$t['mon'],1,$t['year']);
 				}
-				self::debug(2,"nextdate set to $nextdate (". $this->getDateHelper()->toSQLDateTime($nextdate) . ")");
+				self::debug(2,'nextdate set to $nextdate ('. $this->getDateHelper()->toSQLDateTime($nextdate) . ')');
 				$enddate=$this->getDateHelper()->addDate($nextdate,0,0,0,$this->interval,0,0);
 				break;
-			case "w":
+			case 'w':
 				if($eventcount == 0)
 					$nextdate=$nextdate;
 				else {
 					$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,0,$this->interval*7,0,$this->tzid);
 					if(count($this->byday) > 0){
-						$dow = date("w", $nextdate);
+						$dow = date('w', $nextdate);
 						// move to beginning of week (Sunday)
 						$bow = 0;
 						$diff = $bow - $dow;
@@ -756,11 +756,11 @@ class ICalVEventRecurringDate
 							$diff = $diff - 7;
 						$nextdate = $this->getDateHelper()->addDate($nextdate,0,0,0,0,$diff,0);
 					}
-					self::debug(2,"nextdate set to $nextdate (". $this->getDateHelper()->toSQLDateTime($nextdate) . ")");
+					self::debug(2,'nextdate set to $nextdate ('. $this->getDateHelper()->toSQLDateTime($nextdate) . ')');
 				}
 				$enddate=$this->getDateHelper()->addDate($nextdate,0,0,0,0,$this->interval*7,0);
 				break;
-			case "d":
+			case 'd':
 				$nextdate=($eventcount==0?$nextdate:
 					$this->getDateHelper()->addDate($nextdate,0,0,0,0,$this->interval,0,$this->tzid));
 				$enddate=$this->getDateHelper()->addDate($nextdate,0,0,0,0,1,0);
@@ -791,10 +791,10 @@ class ICalVEventRecurringDate
 			if($loopcount >= 2036)
       {
 				$done = true;
-				throw new Exception("Infinite loop detected in getDates()");
+				throw new Exception('Infinite loop detected in getDates()');
 			}
 		}
-		if($this->repeatmode == "u" && $rdates[count($rdates) - 1] > $this->until)
+		if($this->repeatmode == 'u' && $rdates[count($rdates) - 1] > $this->until)
     {
 			// erase last item
 			array_pop($rdates);
@@ -813,18 +813,18 @@ class ICalVEventRecurringDate
 				$excount++;
 			}
 		}
-		self::debug(1,"getDates() returned " . count($rdates) . " dates, removing $dups duplicates, $excount exceptions");
+		self::debug(1,'getDates() returned ' . count($rdates) . ' dates, removing $dups duplicates, $excount exceptions');
 	
 	
 		if($this->debug >= 2)
 		{
-			self::debug(2,"Recurring Dates:");
+			self::debug(2,'Recurring Dates:');
 			foreach($rdates as $rdate)
 			{
 				$d = getdate($rdate);
-				self::debug(2,$this->getDateHelper()->toSQLDateTime($rdate) . " " . $d["wday"] ); 
+				self::debug(2,$this->getDateHelper()->toSQLDateTime($rdate) . ' ' . $d['wday'] ); 
 			}
-			self::debug(2,"Exception Dates:");
+			self::debug(2,'Exception Dates:');
 			foreach($this->exdates as $exdate)
 			{
 				self::debug(2, $this->getDateHelper()->toSQLDateTime($exdate));
