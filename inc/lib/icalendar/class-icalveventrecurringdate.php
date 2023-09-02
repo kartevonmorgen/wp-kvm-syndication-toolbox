@@ -154,8 +154,16 @@ class ICalVEventRecurringDate
  * @param array $exdates array of exception dates
  * @param string $tzid timezone of event (using PHP timezones)
  */
-	function __construct($rules, $startdate, $exdates = array(),$timezone = new DateTimeZone('UTC'))
+	function __construct($rules, $startdate, $exdates,$timezone)
   {
+    if(empty($exdates))
+    {
+      $exdates = array();
+    }
+    if(empty($timezone))
+    {
+      $timezone = new DateTimeZone('UTC');
+    }
     $this->setMaxPeriodInDays(356);
     $this->dateHelper = new ICalDateHelper();
 		if(strlen($rules) > 0){
