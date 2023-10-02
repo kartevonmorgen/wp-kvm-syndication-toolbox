@@ -1,6 +1,9 @@
 # KVM Syndication Toolbox for Organisations and Events
 
-This plugin is constructed out of different modules:
+## Installation
+To install this Plugin in your-wordpress-Seite.de/wp-admin/plugin-install.php download the zip-file from the latest release https://github.com/kartevonmorgen/wp-kvm-syndication-toolbox/releases and make sure, that the zip-files name is just "wp-kvm-syndication-toolbox.zip" without any v1.1 or -main Ending. 
+
+## This plugin is constructed out of different modules:
 
 1. The Base module contains helper classes and basic functionallity which is used by the different modules.
 2. The Events interface module gives a common interface to different Calendar Plugins supported by Wordpress( The Events Manager, Events Calendar, All In One Events Calendar).
