@@ -1,24 +1,16 @@
 # KVM Syndication Toolbox for Organisations and Events
 
-This plugin is constructed out of different modules.
+This plugin is constructed out of different modules:
 
-There is the Base module which contains helper classes and basic functionallity which is used by the different modules.
+1. The Base module contains helper classes and basic functionallity which is used by the different modules.
+2. The Events interface module gives a common interface to different Calendar Plugins supported by Wordpress( The Events Manager, Events Calendar, All In One Events Calendar).
+3. The Events feed importer module  imports events from other websites to this website.
+4. The Organisation module makes it possible to register an Organisation.
+5. The KVM interface module makes it possible to upload and download Organisations and Events to the Karte von Morgen.
+6. With the User register module (if enabled), users can register themselves und their Organisation. So the Organisation Module must be enabled to use this Module.
+7. With the Dashboard items module it is possible to create custom messages on the Dashboard. Here we can show users that have logged in, what they can do in the admin area. 
 
-Then there is the Events interface module. This module gives a common interface to different Calendar Plugins supported by Wordpress( The Events Manager, Events Calendar, All In One Events Calendar).
-
-Then we have the Events feed importer module. The importer imports events from other websites to this website.
-
-Then we have the Organisation module. This Module makes it possible to register an Organisation.
-
-Then we have the KVM interface module. This Module makes it possible to upload and download Organisations and Events to the Karte von Morgen.
-
-Then we have the User register module. When this module is enabled, users can register themselves und their Organisation. So the Organisation Module must be enabled to use this Module.
-
-Then we habe the Dashboard items module. With this module it is possible to create custom messages on the Dashboard. Here we can show users that have logged in, what they can do in the admin area. 
-
-The Base module can be find directly in the root of the plugin.
-
-The other modules are find under the modules directory.
+The Base module can be find directly in the root of the plugin. The other modules are find under the modules directory.
 
 To get access to a module the following code can be used:
 
@@ -204,8 +196,11 @@ This modul enables uploading and downloading events and organisations to and fro
 ### Karte von Morgen (settings)
 
 * URL: This is the URL to the OpenFairDB database. The Karte von Morgen is build on top of this database. Default it is setted to the Development database: https://dev.ofdb.io/v0. The productions database is: https://api.ofdb.io/v0/
-* Access token: This token is you become from the Karte von Morgen after you have registered you organisation there. With this token it is possible to upload and download events and organisations. 
+  * For testing purpose use: https://dev.ofdb.io/v0
+* Access token: This token you become from the Karte von Morgen after you have registered you organisation there (Write a mail to info@kartevonmorgen.org). With this token it is possible to upload and download events and organisations.
+  * For testing purpuse use this token: 24vGG9gyYuVanmjJBJCRzZ51Qt5GBYGxkEGu1BxNQhQBgQ7
 * Fixed tag: Gives uploaded events and entries a fixed tag so they all can be found by this tag. This tag is also used as the special organisation hashtag on which your organisation/platform will be registered by the Karte von Morgen
+  * For testing purpuse use: test
 
 ## Dashboard items
 
