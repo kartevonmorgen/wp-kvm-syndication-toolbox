@@ -125,6 +125,11 @@ class WPKVMInterfaceModule extends WPAbstractModule
     return $this->get_handle_events()->event_deleted($eiEvent);
   }
 
+  public function get_event_by_id($kvmId)
+  {
+    return $this->get_handle_events()->get_event_by_id($kvmId);
+  }
+
   public function get_events()
   {
     return $this->get_handle_events()->get_events();

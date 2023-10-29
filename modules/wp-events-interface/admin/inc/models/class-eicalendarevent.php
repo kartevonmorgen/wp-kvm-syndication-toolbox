@@ -106,7 +106,7 @@ class EICalendarEvent
     }
     else if ( is_numeric( $date ) )
     {
-      return $date;
+      return intval($date);
     }
     elseif ( strtotime( $date ) !== FALSE )
     {

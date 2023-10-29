@@ -241,6 +241,10 @@ abstract class EICalendarFeed
 
   public function register_for_kartevonmorgen()
   {
+    if(empty($this->get_posttype()) || 'none' == $this->get_posttype())
+    {
+      return;
+    }
     $ui_metabox = new UIMetabox('kvm_metabox', 
                                 'Karte von Morgen',
                                 $this->get_posttype());

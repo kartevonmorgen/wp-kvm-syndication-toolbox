@@ -33,8 +33,10 @@ class OpenFairDBEventsApi extends AbstractOpenFairDBApi
   public function eventsGet($bbox = null, $limit = null, 
                             $tag = null, 
                             $start_min = null, $start_max = null, 
-                            $text = null, $created_by = null)
+                            $text = null)
   {
+    $created_by = get_option('admin_email');
+
     $request = $this->eventsGetRequest($bbox, $limit, 
                                        $tag, 
                                        $start_min, $start_max, 
@@ -129,7 +131,7 @@ class OpenFairDBEventsApi extends AbstractOpenFairDBApi
     return $this->getRequest('GET',
                              $resourcePath, 
                              $headers, 
-                             false, 
+                             true, 
                              $queryParams);       
   }
 

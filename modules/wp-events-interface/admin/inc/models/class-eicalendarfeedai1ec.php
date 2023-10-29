@@ -15,6 +15,54 @@ if ( ! class_exists( 'EICalendarFeedAi1ec' ) ) {
   */
 class EICalendarFeedAi1ec extends EICalendarFeed 
 {
+  /** 
+   * Add a listener when an event is saved.
+   *
+   * @param listener EIEventSavedListenerIF
+   */
+  public function add_event_saved_listener($listener)
+  {
+    parent::add_event_saved_listener($listener);
+
+    if ( ! has_action( 'ai1ec_event_saved', 
+             array( $this, 'ai1ec_event_saved' ) ))
+    {
+      add_filter( 'ai1ec_event_saved', 
+        array( $this, 'ai1ec_event_saved' ), 10, 3 );
+    }
+  }
+
+  public function ai1ec_event_saved($post_id, $event, $update)
+  {
+    $this->fire_event_saved($post_id);
+  }
+
+  /** 
+   * Add a listener when an event is deleted.
+   *
+   * @param listener EIEventDeletedListenerIF
+   */
+  public function add_event_deleted_listener($listener)
+  {
+    parent::add_event_deleted_listener($listener);
+
+    if ( !has_action( 'trashed_post', array( $this, 'aio_event_deleted' ) ))
+    {
+      add_action('trashed_post', array( $this, 'aio_event_trashed' ) );
+    }
+  }
+
+  public function aio_event_trashed($post_id)
+  {
+    $event = get_post($post_id);
+    if(empty($event))
+    {
+      // It is not an Event
+      return;
+    }
+    $this->fire_event_deleted($event_id);
+  }
+
   /**
    * Delete the underlying EICalendarEvent object 
    * for a determinated event_id.
@@ -28,16 +76,26 @@ class EICalendarFeedAi1ec extends EICalendarFeed
 
   /**
    * Retrieve the EICalendarEvent object for a determinated
-   * event_id.
-   * NOT IMPLEMENTED YET
+   * event_id -> post_id.
    *
-   * @param $event_id int
+   * @param $event_id int: is post_id
    * @return EICalendarEvent
    */
   public function get_event_by_event_id( $event_id ) 
   {
-    // NOT IMPLEMENTED YET
-    return null;
+    $ai1ec_registry = apply_filters( 'ai1ec_registry', false );
+    if(!$ai1ec_registry)
+    {
+      return null;
+    }
+
+	  $search = $ai1ec_registry->get( 'model.search' );
+    $event = $search->get_event($event_id);
+	  $post = get_post( $event->get( 'post_id' ) );
+    
+    $eiEvent = $this->convert_to_eievent($post, $event);
+
+    return $eiEvent;
   }
 
   /**
@@ -51,8 +109,13 @@ class EICalendarFeedAi1ec extends EICalendarFeed
    */
   public function get_events( $start_date, $end_date, $event_cat=NULL) 
   {
-    global $ai1ec_registry;
     $retval = array();
+
+    $ai1ec_registry = apply_filters( 'ai1ec_registry', false );
+    if(!$ai1ec_registry)
+    {
+      return $retval;
+    }
 
 	  $start_time = $ai1ec_registry->get( 'date.time' );
 	  $end_time = $ai1ec_registry->get( 'date.time' );
@@ -231,7 +294,11 @@ class EICalendarFeedAi1ec extends EICalendarFeed
 
   public function get_posttype()
   {
-    return AI1EC_POST_TYPE;
+    if(defined('AI1EC_POST_TYPE'))
+    {
+      return AI1EC_POST_TYPE;
+    }
+    return 'ai1ec_event';
   }
 
   public function is_feed_available() 

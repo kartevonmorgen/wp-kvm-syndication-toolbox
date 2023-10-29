@@ -18,6 +18,7 @@ class UIMetabox
   private $_id;
   private $_description = '';
 
+  private $_fieldprefix = '';
   private $_fields = array();
 
   public function __construct($id, 
@@ -31,6 +32,11 @@ class UIMetabox
     $this->_posttype = $posttype;
     $this->_context = $context;
     $this->_priority = $priority;
+  }
+
+  public function set_prefix($fieldprefix)
+  {
+    $this->_fieldprefix = $fieldprefix;
   }
 
   public function register()
@@ -59,38 +65,44 @@ class UIMetabox
 
   public function add_textfield($field_id, $field_title)
   {
-    return $this->add_field( new UIMetaboxField($field_id, 
-                                                 $field_title) );
+    return $this->add_field( 
+      new UIMetaboxField($this->_fieldprefix . $field_id, 
+                         $field_title) );
   }
 
   public function add_datefield($field_id, $field_title)
   {
-    return $this->add_field( new UIMetaboxDateField($field_id, 
-                                                 $field_title) );
+    return $this->add_field( 
+      new UIMetaboxDateField($this->_fieldprefix . $field_id, 
+                             $field_title) );
   }
 
   public function add_openinghoursfield($field_id, $field_title)
   {
-    return $this->add_field( new UIMetaboxOpeningHoursField($field_id, 
-                                                            $field_title) );
+    return $this->add_field( 
+      new UIMetaboxOpeningHoursField($this->_fieldprefix . $field_id, 
+                                     $field_title) );
   }
 
   public function add_textarea($field_id, $field_title)
   {
-    return $this->add_field( new UIMetaboxTextAreaField($field_id, 
-                                                         $field_title) );
+    return $this->add_field( 
+      new UIMetaboxTextAreaField($this->_fieldprefix . $field_id, 
+                                 $field_title) );
   }
 
   public function add_dropdownfield($field_id, $field_title)
   {
-    return $this->add_field( new UIMetaboxDropDownField($field_id, 
-                                                         $field_title));
+    return $this->add_field( 
+      new UIMetaboxDropDownField($this->_fieldprefix . $field_id, 
+                                 $field_title));
   }
 
   public function add_checkbox($field_id, $field_title)
   {
-    return $this->add_field( new UIMetaboxCheckBoxField($field_id, 
-                                                         $field_title));
+    return $this->add_field( 
+      new UIMetaboxCheckBoxField($this->_fieldprefix . $field_id, 
+                                 $field_title));
   }
 
   public function add_metabox()

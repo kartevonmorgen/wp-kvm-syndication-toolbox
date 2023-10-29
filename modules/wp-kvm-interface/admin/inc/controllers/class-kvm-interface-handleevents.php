@@ -72,19 +72,6 @@ class KVMInterfaceHandleEvents extends WPAbstractModuleProvider
       return;
     }
 
-    if($post_status !== 'publish')
-    {
-      // Only update if the post is published
-      $this->handleOFDBException(
-        'Hochladen zu der Karte von Morgen '.
-        'geht nicht, die Veranstaltung ' . 
-        'ist nicht Veröffentlicht.',
-        $eiEvent,
-        $id,
-        null);
-      return;
-    }
-
     $meta_id = self::KVM_EVENT_ID;
     // By recurring Events it can happen that
     // we have multiple Events in KVM and one
@@ -99,6 +86,19 @@ class KVMInterfaceHandleEvents extends WPAbstractModuleProvider
     $id = get_post_meta($eiEvent->get_post_id(), 
                         $meta_id, 
                         true);
+
+    if($post_status !== 'publish')
+    {
+      // Only update if the post is published
+      $this->handleOFDBException(
+        'Hochladen zu der Karte von Morgen '.
+        'geht nicht, die Veranstaltung ' . 
+        'ist nicht Veröffentlicht.',
+        $eiEvent,
+        $id,
+        null);
+      return;
+    }
 
     $module = $this->get_current_module();
     $module->update_config();
@@ -117,14 +117,17 @@ class KVMInterfaceHandleEvents extends WPAbstractModuleProvider
         $module = $this->get_module('wp-organisation');
         $organisation_post = $module->get_organisation_by_user(
            $eiEvent->get_owner_user_id());
-        $orga_id = $organisation_post->ID;
+        if(!empty($organisation_post))
+        {
+          $orga_id = $organisation_post->ID;
 
-        $iske = new UploadWPEntryToKVM($module);
-        $wpLocation = $iske->create_location(
-                               $orga_id, 
-                               $organisation_post,
-                               true);
-        $eiEvent->set_location($wpLocation);
+          $iske = new UploadWPEntryToKVM($module);
+          $wpLocation = $iske->create_location(
+                                 $orga_id, 
+                                 $organisation_post,
+                                 true);
+          $eiEvent->set_location($wpLocation);
+        }
       }
     }
 
@@ -211,7 +214,6 @@ class KVMInterfaceHandleEvents extends WPAbstractModuleProvider
     }
 
     $meta_id = self::KVM_EVENT_ID;
-    
     // By recurring Events it can happen that
     // we have multiple Events in KVM and one
     // post in the event calendar.
@@ -266,6 +268,14 @@ class KVMInterfaceHandleEvents extends WPAbstractModuleProvider
     $module->update_config();
     $api = $this->getEventsApi();
     return $api->eventsGet(null, 10); 
+  }
+
+  public function get_event_by_id($kvmId)
+  {
+    $module = $this->get_current_module();
+    $module->update_config();
+    $api = $this->getEventsApi();
+    return $api->eventsIdGet($kvmId); 
   }
 
   public function getEventsApi()

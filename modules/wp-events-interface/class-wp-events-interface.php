@@ -22,6 +22,7 @@ class WPEventsInterfaceModule extends WPAbstractModule
     $loader->add_include('/admin/inc/models/class-eicalendarfeed.php' );
 
     // -- Models for Supported plugins --
+    $loader->add_include('/admin/inc/models/class-eicalendarfeedsimpleevents.php' );
     $loader->add_include('/admin/inc/models/class-eicalendarfeedai1ec.php' );
     $loader->add_include('/admin/inc/models/class-eicalendarfeedeventsmanager.php' );
     $loader->add_include('/admin/inc/models/class-eicalendarfeedtheeventscalendar.php' );

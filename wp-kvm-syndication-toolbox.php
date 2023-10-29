@@ -34,6 +34,7 @@ include_once( dirname( __FILE__ ) . '/modules/wp-events-interface/class-wp-event
 include_once( dirname( __FILE__ ) . '/modules/wp-events-feed-importer/class-wp-events-feed-importer.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-kvm-interface/class-wp-kvm-interface.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-organisation/class-wp-organisation.php');
+include_once( dirname( __FILE__ ) . '/modules/wp-simple-events/class-wp-simple-events.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-project/class-wp-project.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-dashboard-posts/class-wp-dashboard-posts.php');
 include_once( dirname( __FILE__ ) . '/modules/wp-user-register/class-wp-user-register.php');
@@ -64,6 +65,12 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
                              'Das Events Interface Module wird benutzt um die Veranstaltungen ' .
                              'auf dem aktivierte Veranstaltungsplugin abzuspeichern. ' .
                              'Das Events Feed Importer Modul unterstützt ESS Feeds und das iCal Feeds. ');
+    $se_module = $this->add_module(new WPSimpleEventsModule('Simple events'));
+    $se_module->set_description('Dieses Module erstellt eine einfache  ' .
+                               'Veranstaltungskalendar, dadurch kann man  ' .
+                               'versichten auf eine Event Calendar Plugin ' . 
+                               'und diese benutzen im Events Interface ' .
+                               'und Feed Importer');
     
     $kvm_module = $ei_module->add_module(new WPKVMInterfaceModule('Karte von morgen'));
     $kvm_module->set_description('Der Karte von morgen Schnittstelle sorgt dafür das Veranstaltungen und ' .

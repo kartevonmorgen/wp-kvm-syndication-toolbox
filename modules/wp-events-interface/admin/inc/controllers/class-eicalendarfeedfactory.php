@@ -21,9 +21,11 @@ class EICalendarFeedFactory
   public function __construct()
   {
     $this->supported_plugins = array(
+      'SimpleEvents',
       'Ai1ec',
       'EventsManager',
       'TheEventsCalendar');
+    $this->create_available_calendar_feeds();
   }
 
   /**
@@ -39,8 +41,10 @@ class EICalendarFeedFactory
       if ( class_exists( $class_name ) ) 
       {
 	      $feed = new $class_name;
+        error_log( 'init feed ' . $class_name);
 	      if ( $feed->is_feed_available() )
         {
+          error_log( 'do init feed ' . $class_name);
           $feed->init();
 	        array_push($this->load_available_calendarfeeds, $feed);
         }
