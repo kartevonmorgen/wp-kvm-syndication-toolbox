@@ -41,10 +41,8 @@ class EICalendarFeedFactory
       if ( class_exists( $class_name ) ) 
       {
 	      $feed = new $class_name;
-        error_log( 'init feed ' . $class_name);
 	      if ( $feed->is_feed_available() )
         {
-          error_log( 'do init feed ' . $class_name);
           $feed->init();
 	        array_push($this->load_available_calendarfeeds, $feed);
         }

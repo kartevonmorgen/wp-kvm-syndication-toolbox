@@ -71,6 +71,8 @@ abstract class WPAbstractPlugin extends WPAbstractModule
 
   public function do_activate()
   {
+    $this->setup_modules();
+
     $this->do_setup_includes();
     $this->do_load_includes();
 

@@ -160,7 +160,7 @@ abstract class WPAbstractModule
                         $this, 
                         'do_module_activation_deactivation', 
                         10, 
-                        2);
+                        3);
 
     $this->setup($loader);
     foreach($this->get_modules_enabled() as $module)
@@ -169,7 +169,9 @@ abstract class WPAbstractModule
     }
   }
 
-  function do_module_activation_deactivation($old_value, $value)
+  function do_module_activation_deactivation($old_value, 
+                                             $value, 
+                                             $optionname)
   {
     // If a module is enabled, we habe to call module_activation
     if(!$old_value && $value)
@@ -228,6 +230,10 @@ abstract class WPAbstractModule
   final public function do_module_activate()
   {
     $this->module_activate();
+    foreach($this->get_modules_enabled() as $module)
+    {
+      $module->do_module_activate();
+    }
   }
 
   final public function do_module_deactivate()

@@ -80,9 +80,6 @@ class WPEventsFeedImporterModule extends WPAbstractModule
       return;
     }
 
-    $plugin = $_REQUEST[ 'plugin' ];
-    check_admin_referer( "activate-plugin_{$plugin}" );
-
     $role = get_role( 'administrator' );
     $role->add_cap( 'manage_event_feeds');
     $role->add_cap( 'manage_other_event_feeds');
