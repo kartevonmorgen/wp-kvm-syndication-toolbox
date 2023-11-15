@@ -184,6 +184,16 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     {
       $eiEvent->set_contact_website( $value );
     }
+
+
+    $post_categories = wp_get_post_categories( $post->ID, 
+                                               array( 'fields' => 'all' ) );
+		$eiEvent->set_categories( 
+      WPCategory::create_categories($post_categories));
+
+    $post_tags = wp_get_post_tags( $post->ID );
+    $eiEvent->set_tags( WPTag::create_tags($post_tags));
+
     return $eiEvent;
   }
 
@@ -250,6 +260,9 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     {
       wp_update_post($postarr);
     }
+    
+    $this->save_event_categories($post_id, $eiEvent);
+    $this->save_event_tags($post_id, $eiEvent);
 
     $result = new EICalendarEventSaveResult();
     $result->set_event_id( $post_id );
@@ -291,6 +304,69 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     $postarr['meta_input'] = $meta;
     return $postarr;
 
+  }
+
+  private function save_event_categories($post_id, $eiEvent)
+  {
+    $term_cat_ids = array();
+    foreach( $eiEvent->get_categories() as $cat )
+    {
+      $cat_term = get_term_by( 'slug', 
+                               $cat->get_slug(), 
+                               'category' );
+      if ( empty ( $cat_term ))
+      {
+        $term_array = wp_insert_term( $cat->get_name(), 
+                                      'category',
+                                      array( 'slug' => $cat->get_slug(),
+                                             'name' => $cat->get_name() ));
+        if ( intval( $term_array['term_id'] ) > 0 )
+        {
+          array_push( $term_cat_ids, intval( $term_array['term_id'] ));
+        }
+      }
+      else
+      {
+        if ( intval( $cat_term->term_id ) > 0 )
+        {
+          array_push( $term_cat_ids, intval( $cat_term->term_id ) );
+        }
+      }
+    }
+    wp_set_post_categories($post_id, $term_cat_ids);
+
+  }
+
+  private function save_event_tags($post_id, $eiEvent)
+  {
+
+    $term_tag_ids = array();
+    foreach( $eiEvent->get_tags() as $tag )
+    {
+      $tag_term = get_term_by( 'slug', 
+                                    $tag->get_slug(), 
+                                    'post_tag' );
+      if ( empty ( $tag_term ))
+      {
+        $term_array = wp_insert_term( $tag->get_name(), 
+                                      'post_tag',
+                                   array( 'slug' => $tag->get_slug(),
+                                          'name' => $tag->get_name() ));
+        if ( intval( $term_array['term_id'] ) > 0 )
+        {
+          array_push( $term_tag_ids, intval( $term_array['term_id'] ));
+        }
+      }
+      else
+      {
+        if ( intval( $tag_term->term_id ) > 0 )
+        {
+          array_push( $term_tag_ids, intval( $tag_term->term_id ) );
+        }
+      }
+    }
+
+    wp_set_post_tags($post_id, $term_tag_ids);
   }
 
   public function get_description() 

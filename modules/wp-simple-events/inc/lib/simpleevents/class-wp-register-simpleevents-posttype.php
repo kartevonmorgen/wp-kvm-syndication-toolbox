@@ -52,7 +52,8 @@ class WPRegisterSimpleEventsPosttype
       'supports'            => array( 'title', 'editor', 'author'),
       'has_archive'         => false,
       'rewrite'             => array( 'slug' => $posttype . 's' ),
-      'query_var'           => false);
+      'query_var'           => false,
+      'taxonomies' => array('post_tag', 'category'));
 
     $ui_metabox = new UIMetabox($posttype . '_dates_metabox',
                                 'Dates',
