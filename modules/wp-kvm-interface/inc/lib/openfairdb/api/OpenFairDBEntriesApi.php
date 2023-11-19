@@ -229,7 +229,7 @@ class OpenFairDBEntriesApi extends AbstractOpenFairDBApi
                             $ids = null, 
                             $tags = null, 
                             $status = null, 
-                            $limit = null)
+                            $limit = 10000)
   {
     $request = $this->searchGetRequest($bbox, $categories, $text, $ids, $tags, $status, $limit);
 
