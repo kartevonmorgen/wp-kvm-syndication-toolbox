@@ -46,6 +46,7 @@ class UIMetabox
       add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
       add_action( 'save_post', array( $this, 'save_metabox' ) );
     }
+   // add_action( 'rest_api_init', array( $this, 'register_rest_api_fields' ));
   }
 
   public function register_now()
@@ -169,6 +170,26 @@ class UIMetabox
     }
   }
 
+  public function register_rest_api_fields()
+  {
+    foreach($this->get_fields() as $field)
+    {
+      register_rest_field( $field->get_id(), 
+                           $this->get_id(),
+                           array( 'get_callback' => 
+                             array($this, 'get_rest_api_value'),
+                             null,
+                             null));
+
+    }
+  }
+  
+  public function get_rest_api_value($object, $field_id, $request)
+  {
+    $field = $this->get_field_by_id($field_id);
+    return $field->get_value();
+  }
+
   public function set_description($description)
   {
     $this->_description = $description;
@@ -182,6 +203,18 @@ class UIMetabox
   public function get_fields()
   {
     return $this->_fields;
+  }
+
+  public function get_field_by_id($id)
+  {
+    foreach($this->get_fields() as $field)
+    {
+      if($id == $field->get_id())
+      {
+        return $field;
+      }
+    }
+    return null;
   }
 
   public function get_id()

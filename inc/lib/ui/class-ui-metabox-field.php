@@ -204,6 +204,11 @@ class UIMetaboxField
     return $this->_escape_html;
   }
 
+  public function get_type()
+  {
+    return 'string';
+  }
+
 }
 
 /** 
@@ -297,6 +302,11 @@ class UIMetaboxCheckBoxField extends UIMetaboxField
   public function is_checkbox()
   {
     return true;
+  }
+
+  public function get_type()
+  {
+    return 'boolean';
   }
 
 }

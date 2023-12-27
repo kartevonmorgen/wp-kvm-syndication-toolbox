@@ -47,7 +47,9 @@ class WPProjectModule extends WPAbstractModule
     
     $loader->add_action( 'admin_menu', $this, 'remove_menus', 999 );
 
-    $loader->add_starter(new ProjectPosttype($this));
+    $projectPostType = new ProjectPosttype($this);
+    $projectPostType->setup($loader);
+    $loader->add_starter($projectPostType);
     $loader->add_starter(new ProjectAdminControl($this));
 
     $loader->add_starter($templates);

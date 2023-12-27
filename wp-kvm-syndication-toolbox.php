@@ -165,7 +165,11 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/http/class-client-interface.php');
     $loader->add_include('/inc/lib/http/class-wordpress-http-client.php');
 
+    // -- Module Provider --
+    $loader->add_include('/inc/lib/module/class-wp-abstractmoduleprovider.php');
+    
     // -- WP Helper Classes --
+    $loader->add_include('/inc/lib/wp/class-wp-abstractposttype.php');
     $loader->add_include('/inc/lib/wp/class-wpentry.php' );
     $loader->add_include('/inc/lib/wp/class-wpentry-type-type.php');
     $loader->add_include('/inc/lib/wp/class-wporganisation.php' );
@@ -190,9 +194,6 @@ class WPKVMSyndicationToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/openinghours/class-openinghours-timerange.php' );
     $loader->add_include('/inc/lib/openinghours/class-openinghours-timerange-set.php' );
 
-    // -- Module Provider --
-    $loader->add_include('/inc/lib/module/class-wp-abstractmoduleprovider.php');
-    
     // -- UI Tools Metabox --
     $loader->add_include('/inc/lib/ui/class-ui-metabox-field.php' );
     $loader->add_include('/inc/lib/ui/class-ui-metabox-openinghours-field.php' );

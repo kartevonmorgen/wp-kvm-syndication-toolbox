@@ -1,16 +1,18 @@
 <?php
 
 abstract class EntryPosttype 
-  extends WPAbstractModuleProvider
+  extends WPAbstractPosttype
   implements WPModuleStarterIF
 { 
-  public function setup_actions($loader)
-  {
-  }
-
   public function start()
   {
     $this->create_post_type();
+  }
+
+
+  public function get_id()
+  {
+    return $this->get_type()->get_id();
   }
 
   public function get_type()
@@ -30,7 +32,7 @@ abstract class EntryPosttype
 
   protected function metabox1_addfields($ui_metabox)
   {
-    $slug = $this->get_type()->get_id();
+    $slug = $this->get_id();
     $ui_metabox->add_textfield($slug . '_address', 'Strasse und Nr.');
     $ui_metabox->add_textfield($slug . '_zipcode', 'Postleitzahl');
     $ui_metabox->add_textfield($slug . '_city', 'Ort');
@@ -43,7 +45,7 @@ abstract class EntryPosttype
 
   protected function metabox2_addfields($ui_metabox)
   {
-    $slug = $this->get_type()->get_id();
+    $slug = $this->get_id();
     $ui_metabox->add_openinghoursfield($slug . '_openinghours', '( Eingabe 00:00 bis 00:00 bedeutet Geschlossen ) ');
     $field = $ui_metabox->add_textfield($slug . '_openinghours', 'Gespeichert im Datenbank');
     $field->set_register(false);
@@ -52,7 +54,7 @@ abstract class EntryPosttype
 
   protected function metabox3_addfields($ui_metabox)
   {
-    $slug = $this->get_type()->get_id();
+    $slug = $this->get_id();
     $ui_metabox->add_textfield($slug . '_firstname', 'Vorname');
     $ui_metabox->add_textfield($slug . '_lastname', 'Nachname');
     $ui_metabox->add_textfield($slug . '_phone', 'Telefon');
@@ -66,7 +68,7 @@ abstract class EntryPosttype
 
   function create_post_type() 
   {
-    $slug = $this->get_type()->get_id();
+    $slug = $this->get_id();
 
     $args = array(
       'labels'             => $this->create_labels(),
@@ -84,6 +86,9 @@ abstract class EntryPosttype
       'show_in_rest'       => true,
       'taxonomies'         => array( 'category', 'post_tag' ),
       'supports'           => array( 'title', 
+                                     // custom-fields is 
+                                     // needed to get it in rest api
+                                     'custom-fields', 
                                      'editor', 
                                      'author', 
                                      'thumbnail', 
@@ -100,20 +105,20 @@ abstract class EntryPosttype
                                 $slug);
 
     $this->metabox1_addfields($ui_metabox);
-    $ui_metabox->register();
+    $this->register_metabox($ui_metabox);
 
     $ui_metabox = new UIMetabox($slug . '_openinghours_metabox',
                                 'Öffnungszeiten',
                                 $slug);
 
     $this->metabox2_addfields($ui_metabox);
-    $ui_metabox->register();
+    $this->register_metabox($ui_metabox);
 
     $ui_metabox = new UIMetabox($slug . '_contactperson_metabox',
                                 'Kontaktperson',
                                 $slug);
     $this->metabox3_addfields($ui_metabox);
-    $ui_metabox->register();
+    $this->register_metabox($ui_metabox);
 
     if ($this->is_module_enabled('wp-kvm-interface')) 
     { 
@@ -137,12 +142,11 @@ abstract class EntryPosttype
                                          'Nicht hochladen zu der Karte von morgen');
       $field->set_defaultvalue(false);
 
-      $ui_metabox->register();
+      $this->register_metabox($ui_metabox);
     }
-
-
 
     register_post_type( $slug, $args );
   }
+
 
 }

@@ -58,7 +58,10 @@ class WPOrganisationModule extends WPAbstractModule
     
     $loader->add_action( 'admin_menu', $this, 'remove_menus', 999 );
 
-    $loader->add_starter(new OrganisationPosttype($this));
+    $orgaPostType = new OrganisationPosttype($this);
+    $orgaPostType->setup($loader);
+    $loader->add_starter($orgaPostType);
+      
     $loader->add_starter(new OrganisationAdminControl($this));
 
     $loader->add_starter($templates);
