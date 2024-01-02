@@ -12,10 +12,14 @@ class WPSimpleEventsModule extends WPAbstractModule
   {
     $loader->add_include("/inc/lib/simpleevents/class-wp-register-simpleevents-posttype.php");
     $loader->add_include("/inc/lib/simpleevents/class-wp-simpleevents-queryhelper.php");
+    $loader->add_include("/inc/lib/simpleevents/class-wp-simpleevents-table-columns.php");
   }
 
   public function setup($loader)
   {
+    $table = new WpSimpleEventsTableColumns($this);
+    $table->setup($loader);
+
     $posttype = new WPRegisterSimpleEventsPosttype($this);
     $posttype->setup($loader);
     $loader->add_starter($posttype);

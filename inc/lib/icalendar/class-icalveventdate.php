@@ -74,6 +74,11 @@ class ICalVEventDate
       $this->setDate(true);
 
     }
+    $value = $vLine->get_parameter('TZID');
+    if(!empty($value))
+    {
+      $timezone = new DateTimeZone($value);
+    }
     $value = $vLine->get_value();
     $dateValues = explode(',', $value);
     foreach($dateValues as $dateValue)
