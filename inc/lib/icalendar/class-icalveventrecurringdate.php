@@ -164,6 +164,7 @@ class ICalVEventRecurringDate
     {
       $timezone = new DateTimeZone('UTC');
     }
+	  $this->tzid = $timezone->getName();
     $this->setMaxPeriodInDays(356);
     $this->dateHelper = new ICalDateHelper();
 		if(strlen($rules) > 0){
@@ -173,18 +174,25 @@ class ICalVEventRecurringDate
 				$exdates[$i] = $this->getDateHelper()->toUnixDateTime(
                          $this->getDateHelper()->toLocalDateTime(
                            $this->getDateHelper()->toSQLDateTime($exdates[$i])
-                           ,$tzid) );
+                           ,$this->tzid) );
 			}
 	
 			$rules=str_replace('\'','',$rules);
 			$this->rules = $rules;
-			if($startdate == null){
+      if($startdate == null)
+      {
 				// if not specified, use start date of beginning of last year
 				$tdate=getdate();
 				$startdate=mktime(0,0,0,1,1,$tdate['year'] - 1);
 			}
+      else
+      { 
+				$startdate = $this->getDateHelper()->toUnixDateTime(
+                       $this->getDateHelper()->toLocalDateTime(
+                         $this->getDateHelper()->toSQLDateTime($startdate)
+                           ,$this->tzid) );
+      }
 			$this->startdate = $startdate;
-			$this->tzid = $timezone->getName();
 			$this->exdates = $exdates;
 	
 			$rules=explode(';', $rules);
@@ -839,6 +847,14 @@ class ICalVEventRecurringDate
 			}
 			//exit;
 		}
+    
+    for($i = 0; $i < count($rdates); $i++)
+    {
+      $rdates[$i] = $this->getDateHelper()->toUnixDateTime(
+                      $this->getDateHelper()->toUTCDateTime(
+                        $this->getDateHelper()->toSqlDateTime($rdates[$i])
+                           ,$this->tzid) );
+    }
 	
 		return $rdates;
 	}

@@ -476,22 +476,19 @@ class ICalDateHelper
 	 */
 	function toUTCDateTime($sqldate, $tzid = "UTC" ){
 
-		date_default_timezone_set("UTC");
 		try
 		{
-			$date = new DateTime($sqldate, $tzid);
+			$timezone = new DateTimeZone($tzid);
 		}
 		catch(Exception $e)
 		{
 			// bad time zone specified
 			return $sqldate;
 		}
-		$offset = $date->getOffsetFromGMT();
-		if($offset >= 0)
-			$date->sub(new DateInterval("PT".$offset."S"));
-		else
-			$date->add(new DateInterval("PT".abs($offset)."S"));
-		return $date->toSql(true);
+		$ldate = self::toUnixDateTime($sqldate);
+		$daydatetime = new DateTime("@" . $ldate);
+		$tzoffset = $timezone->getOffset($daydatetime);
+		return self::toSqlDateTime($ldate - $tzoffset);
 	}
 
 	/**
