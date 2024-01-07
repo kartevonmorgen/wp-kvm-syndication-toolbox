@@ -111,9 +111,10 @@ class SSFeeds extends WPAbstractModuleProvider
                             'then disable the linkurl check');
     
     $field = $ui_metabox->add_checkbox('ss_define_location_by_geo', 
-                                       'Define the location by GEO coordinates');
-    $field->set_description('Define the location by GEO Coordinates ' . 
-                            'if they are already delivered in the feed');
+                                       'Define the address by GEO coordinates from the feed');
+    $field->set_description('Define the address (street, ZIP, city, ' .
+                            'country) by GEO Coordinates from the feed, ' . 
+                            'even if the address is already provided in the feed');
     $field->set_defaultvalue(true);
     
     $field = $ui_metabox->add_dropdownfield(
