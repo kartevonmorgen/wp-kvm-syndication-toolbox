@@ -10,8 +10,8 @@
 class WPKVMInterfaceModule extends WPAbstractModule
                            implements WPModuleStarterIF
 {
-  private $handleEvents;
-  private $handleEntries;
+  private $handle_events;
+  private $handle_entries;
   private $config;
   private $client;
 

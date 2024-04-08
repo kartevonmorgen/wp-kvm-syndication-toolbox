@@ -167,6 +167,12 @@ The contactperson can also be filled. If the user can register itself (if the mo
 
 If the Organisation is saved and published the it will automatically uploaded to the Karte von Morgen if this module is enabled.
 
+### Projects
+
+Like Organisations it is also possible to define Projects. This module depends on organisations, because one organisation can habe many projects.
+
+If the Karte von Morgen module is enabled you can set there a fixed tag for projects which will be added to the project when uploaded to the Karte von Morgen. On the Karte von Morgen the pin on the map can be made visible in another color. 
+
 ## User register (Benutzer registrieren)
 
 This module makes it possible for Users to register themselves und their Organisation. In the "User register items" part you can define which fields will be on the User register from.
@@ -202,7 +208,8 @@ This modul enables uploading and downloading events and organisations to and fro
   * For testing purpose use: https://dev.ofdb.io/v0
 * Access token: This token you become from the Karte von Morgen after you have registered you organisation there (Write a mail to info@kartevonmorgen.org). With this token it is possible to upload and download events and organisations.
   * For testing purpuse use this token: 24vGG9gyYuVanmjJBJCRzZ51Qt5GBYGxkEGu1BxNQhQBgQ7
-* Fixed tag: Gives uploaded events and entries a fixed tag so they all can be found by this tag. This tag is also used as the special organisation hashtag on which your organisation/platform will be registered by the Karte von Morgen
+* Fixed tag: Gives uploaded events and entries a fixed tag so they all can be found by this tag. This tag is also used as the special organisation hashtag on which your organisation/platform will be registered by the Karte von Morgen.
+* Fixed tag for projects: Gives uploaded projects (if the project module is enabled) a fixed tag so they all can be found by this tag. This tag can also be used to change the color of the pin on the Karte von Morgen.
   * For testing purpuse use: test
 
 ## Dashboard items
@@ -224,9 +231,5 @@ In the Noptin Newsletter use the [[events]] tag to import the event list automat
 ### Newsletter lists
 
 As an addition to Noptin, different Lists of Subscribers are also supported and can be enabled in the Settings of the module (KVM Syndication Toolbox -> Newsletter Interface), then lists can be added under (KVM Syndication Toolbox -> Newsletter lists). Then they will be automatically added to the Noptin Plugin.
-
-## Commons Booking Extensions
-
-Gives Commons Booking the oppertunity to duplicate Timeframes for all the articles.
 
 2 Dezember 2022, Sjoerd Takken
