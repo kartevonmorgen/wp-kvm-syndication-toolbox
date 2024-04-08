@@ -8,6 +8,18 @@ class WPOrganisationModule extends WPAbstractModule
   private $_entry_type_types = array();
   private $_entry_type_factory = null;
 
+  public function __construct()
+  {
+    parent::__construct('Organisation');
+    $this->set_description('Der Karte von morgen Schnittstelle sorgt dafür das Veranstaltungen und ' .
+                           'Organisation auf die Karte von morgen hochgeladen werden ' .
+                           'Veranstaltungen werden über Das Events interface geladen und weiter ' .
+                           'gegeben an der Karte von morgen. ' .
+                           'Die Initiativen werden aus dem Initiative-Modul geladen und weiter gegeben ' . 
+                           'an der Karte von morgen. ');
+
+  }
+
   public function setup_includes($loader)
   {
     $loader->add_include('/inc/lib/kvm/class-upload-wpentry-to-kvm.php');

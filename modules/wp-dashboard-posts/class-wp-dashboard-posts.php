@@ -8,6 +8,15 @@
  */
 class WPDashboardPostsModule extends WPAbstractModule
 {
+  public function __construct()
+  {
+    parent::__construct('Dashboard Beiträge');
+    $this->set_description('Das Modul ermöglicht es, Beitrage ' .
+                           'für das Dashboard zu erstellen ' .
+                           'und entfernt die Standard Wordpress Ansicht');
+  }
+  
+
   public function setup_includes($loader)
   {
     $loader->add_include("/inc/lib/dashboard/class-wp-register-dashboard-posttype.php");

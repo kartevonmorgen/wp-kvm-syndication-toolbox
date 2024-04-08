@@ -7,6 +7,17 @@ class WPProjectModule extends WPAbstractModule
 {
   private $_cron_expirator;
 
+  public function __construct()
+  {
+    parent::__construct('Projekte');
+    $this->set_description('Das Projekte Modul ermöglich die Eingabe ' .
+                           'von Projekte für ein Organisation ' .
+                           'inklusiv Eingabe von Kontaktdaten und Kontaktperson ' .
+                           'Wenn das Karte von morgen Modul aktiviert ist ' . 
+                           'wird das Projekt als Initiative ' .
+                           'hochgeladen zu der Karte von morgen ');
+  }
+
   public function setup_includes($loader)
   {
     $loader->add_include('/inc/lib/project/class-project-posttype.php');
@@ -74,6 +85,11 @@ class WPProjectModule extends WPAbstractModule
   public function module_uninstall()
   {
     $this->_cron_expirator->stop();
+  }
+
+  public function get_parent_classname()
+  {
+    return 'WPOrganisationModule';
   }
 
   public function get_type()

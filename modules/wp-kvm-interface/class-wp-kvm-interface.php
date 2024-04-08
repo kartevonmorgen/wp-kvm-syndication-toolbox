@@ -15,6 +15,17 @@ class WPKVMInterfaceModule extends WPAbstractModule
   private $config;
   private $client;
 
+  public function __construct()
+  {
+    parent::__construct('Karte von morgen');
+    $this->set_description('Der Karte von morgen Schnittstelle sorgt dafür das Veranstaltungen ' .
+                           'und Organisation auf die Karte von morgen hochgeladen werden ' .
+                           'Veranstaltungen werden über Das Events interface geladen und ' .
+                           'weiter gegeben an der Karte von morgen. ' .
+                           'Die Organisationen werden aus dem Organisation-Modul geladen und ' . 
+                           'weiter gegeben an der Karte von morgen. ');
+  }
+
   public function setup_includes($loader)
   {
     // -- OpenFairDB API --
@@ -63,6 +74,11 @@ class WPKVMInterfaceModule extends WPAbstractModule
     $mc = WPModuleConfiguration::get_instance();
     $eiInterface = $mc->get_module('wp-events-interface');
     $eiInterface->register_for_kartevonmorgen();
+  }
+
+  public function get_parent_classname()
+  {
+    return 'WPEventsInterfaceModule';
   }
 
   public function save_entry($wpEntry)

@@ -43,6 +43,17 @@ abstract class WPAbstractModule
     return $this->_name;
   }
 
+  public function get_parent_classname()
+  {
+    if($this->is_root_module())
+    {
+      return null;
+    }
+    $mc = WPModuleConfiguration::get_instance();
+    $root = $mc->get_root_module();
+    return get_class($root);
+  }
+
   public function set_description($description)
   {
     return $this->_description = $description;
@@ -65,7 +76,7 @@ abstract class WPAbstractModule
 
   public function is_root_module()
   {
-    return empty($this->get_parent_module());
+    return false;
   }
 
   public function add_module($module)

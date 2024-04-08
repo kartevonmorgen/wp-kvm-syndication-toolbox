@@ -8,6 +8,16 @@
  */
 class WPSimpleEventsModule extends WPAbstractModule
 {
+  public function __construct()
+  {
+    parent::__construct('Simple Events');
+    $this->set_description('Dieses Module erstellt eine einfache  ' .
+                           'Veranstaltungskalendar, dadurch kann man  ' .
+                           'versichten auf eine Event Calendar Plugin ' .
+                           'und diese benutzen im Events Interface ' .
+                           'und Feed Importer');
+  }
+
   public function setup_includes($loader)
   {
     $loader->add_include("/inc/lib/simpleevents/class-wp-register-simpleevents-posttype.php");

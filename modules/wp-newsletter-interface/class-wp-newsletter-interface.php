@@ -11,6 +11,13 @@ class WPNewsletterInterfaceModule extends WPAbstractModule
 {
   private $_newsletterAdapterFactory;
 
+  public function __construct()
+  {
+    parent::__construct('Newsletter Interface');
+    $this->set_description('Das Modul kann events in ein Newsletter importieren ' . 
+                           'und unterstützt mehrere Newsletter Plugins in Wordpress ');
+  }
+
   public function setup_includes($loader)
   {
     $loader->add_include("/inc/lib/newsletter/class-wp-newsletter-adapter-factory.php");

@@ -2,6 +2,14 @@
 
 class WPUserRegisterModule extends WPAbstractModule
 {
+  public function __construct()
+  {
+    parent::__construct('Benutzer registrieren');
+    $this->set_description('Das Modul sorgt dafür das Benutzer ' . 
+                           'sich gleich mit ihre Organisation ' .
+                           'registrieren können. ');
+  }
+
   public function setup_includes($loader)
   {
     $loader->add_include("/inc/lib/user/class-user-menuactions.php");
@@ -70,6 +78,11 @@ class WPUserRegisterModule extends WPAbstractModule
 
   public function module_uninstall()
   {
+  }
+
+  public function get_parent_classname()
+  {
+    return 'WPOrganisationModule';
   }
 
   public function get_publish_organisation_after_approve_id()

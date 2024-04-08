@@ -10,6 +10,20 @@
 class WPEventsInterfaceModule extends WPAbstractModule 
                               implements WPModuleStarterIF
 {
+  public function __construct()
+  {
+    parent::__construct('Events Interface');
+    $this->set_description('Das Events interface sorgt dafür das ' .
+                           'weitere Module eine eindeutige Schnittstelle ' .
+                           'haben um Veranstaltungen zu speichern ' .
+                           'oder zu lesen ohne zu wissen welche ' .
+                           'Wordpress Plugin für ' .
+                           'Veranstaltungen benutzt wird. Im Moment werden die folgende ' . 
+                           'Veranstaltung Plugins unterstutzt: ' .
+                           'Events Manager (lesen und schreiben), Events Calendar (lesen), ' .
+                           'All in One Events Calendar (lesen)');
+  }
+
   private $_eiCalFactory;
 
   public function setup_includes($loader)

@@ -110,6 +110,11 @@ abstract class WPAbstractPlugin extends WPAbstractModule
   {
   }
 
+  public function is_root_module()
+  {
+    return true;
+  }
+
 }
 
 function plugin_do_uninstall()

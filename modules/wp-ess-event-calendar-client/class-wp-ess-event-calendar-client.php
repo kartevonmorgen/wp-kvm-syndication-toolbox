@@ -9,6 +9,18 @@ if ( !defined( 'ESS_SECURE') ) {define( 'ESS_SECURE',((!empty($_SERVER['HTTPS'])
 class WPESSEventCalendarClientModule extends WPAbstractModule
                                      implements WPModuleStarterIF
 {
+  public function __construct()
+  {
+    parent::__construct('ESS Event Calendar client');
+    $this->set_description('Das Modul kann auf einem Client ' . 
+                           'benutzt werden um Veranstaltungen ' .
+                           'als ESS-Feed zur Verführung ' .
+                           'zu stellen. Die können dann auf ' .
+                           'eine andere Webseite mit dem ' .
+                           'Events feed importer ' .
+                           'importiert werden über ESS');
+  }
+
   public function setup_includes($loader)
   {
     // -- View --
@@ -59,7 +71,9 @@ class WPESSEventCalendarClientModule extends WPAbstractModule
       return;
     }
 
-    $plugin = isset( $_REQUEST[ 'plugin' ] ) ? $_REQUEST[ 'plugin' ] : $this->get_plugin_id();
+    $mc = WPModuleConfiguration::get_instance();
+    $root = $mc->get_root_module();
+    $plugin = isset( $_REQUEST[ 'plugin' ] ) ? $_REQUEST[ 'plugin' ] : $root->get_plugin_id();
 
     // Checks Permissions
     check_admin_referer( "deactivate-plugin_{$plugin}" );
@@ -74,5 +88,10 @@ class WPESSEventCalendarClientModule extends WPAbstractModule
 
     // Checks Permissions
     check_admin_referer( 'bulk-plugins' );
+  }
+
+  public function get_parent_classname()
+  {
+    return 'WPEventsInterfaceModule';
   }
 }

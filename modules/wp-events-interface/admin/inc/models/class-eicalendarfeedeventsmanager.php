@@ -84,6 +84,7 @@ class EICalendarFeedEventsManager extends EICalendarFeed
 
   public function init()
   {
+
     add_filter('em_event_output', 
                array( $this, 'em_event_output'), 10, 4);
 

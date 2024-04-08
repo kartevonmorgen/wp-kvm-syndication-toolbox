@@ -25,6 +25,16 @@ class WPEventsFeedImporterModule extends WPAbstractModule
   private $_ssfeeds;
   private $_importer_factory;
 
+  public function __construct()
+  {
+    parent::__construct('Events feed importer');
+    $this->set_description('Der Events feed importer sorgt dafür das Veranstaltungen ' .
+                           'über Feeds importiert werden können. ' .
+                           'Das Events Interface Module wird benutzt um die Veranstaltungen ' .
+                           'auf dem aktivierte Veranstaltungsplugin abzuspeichern. ' .
+                           'Das Events Feed Importer Modul unterstützt ESS Feeds und das iCal Feeds. ');
+  }
+
   public function setup_includes($loader)
   {
     // Action for updating the feed
@@ -129,6 +139,11 @@ class WPEventsFeedImporterModule extends WPAbstractModule
   public function start()
   {
     $this->_importer_factory = new SSImporterFactory($this);
+  }
+  
+  public function get_parent_classname()
+  {
+    return 'WPEventsInterfaceModule';
   }
 
   private function set_ssfeeds($ssfeeds)
