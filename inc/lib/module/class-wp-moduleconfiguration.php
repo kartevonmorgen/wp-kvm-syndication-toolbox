@@ -49,11 +49,19 @@ class WPModuleConfiguration
 
   public function get_module($id)
   {
+    if( !array_key_exists($id, $this->_modules))
+    {
+      return null;
+    }
     return $this->get_modules()[$id];
   }
 
   public function is_module_enabled($id)
   {
+    if( !array_key_exists($id, $this->_modules))
+    {
+      return false;
+    }
     $module = $this->get_module($id);
     if(empty($module))
     {

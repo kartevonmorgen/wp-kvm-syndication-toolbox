@@ -108,6 +108,12 @@ class EICalendarFeedEventsManager extends EICalendarFeed
     $ui_metabox->add_textfield('contact_phone', 'Telefon');
     $ui_metabox->register();
 
+    $mc = WPModuleConfiguration::get_instance();
+    if(!$mc->is_module_enabled('wp-organisation'))
+    {
+      return;
+    }
+
     $ui_metabox = new UIMetabox('em_cooperation_partners', 
                                 'Kooperationspartner',
                                 $this->get_posttype());
