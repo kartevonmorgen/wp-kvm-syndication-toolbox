@@ -179,7 +179,14 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
     $uid = $vEvent->get_uid();
     $uid = $uid . $slug_suffix;
 
-    $enddate = $startdate + ($vEvent->get_dt_enddate() - $vEvent->get_dt_startdate());
+    $vEventEndDate = $vEvent->get_dt_enddate();
+    if(empty($vEventEndDate))
+    {
+      // Set vEventEndDate one hour after startdate if no EndDate is given
+      $vEventEndDate = $vEvent->get_dt_startdate() + (60 * 60);
+    }
+
+    $enddate = $startdate + ($vEventEndDate - $vEvent->get_dt_startdate());
     $eiEvent->set_uid(sanitize_title($uid));
     $eiEvent->set_slug(sanitize_title($uid));
     $eiEvent->set_title($vEvent->get_summary());

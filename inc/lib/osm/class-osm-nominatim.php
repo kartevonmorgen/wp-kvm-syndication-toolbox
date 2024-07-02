@@ -121,7 +121,7 @@ class OsmNominatim
       return $wpLocation;
     }
     
-    $request = new SimpleRequest('get', $uri);
+    $request = new SimpleRequest('get', $uri, array('referer' => get_bloginfo( 'url' )));
     $response = $this->client->send($request);
     if( $response->getStatusCode() !== 200 )
     {

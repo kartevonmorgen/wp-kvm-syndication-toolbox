@@ -10,7 +10,7 @@
 class LogResult
 {
   private $_result;
-  private $_text;
+  private $_message;
   
   public function __construct($result, $message = '') 
   {

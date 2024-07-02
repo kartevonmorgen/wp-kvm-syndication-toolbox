@@ -12,6 +12,7 @@
   */
 abstract class SSAbstractImport extends WPAbstractModuleProvider
 {
+  private $_feed;
   private $_feed_url;
   private $_importtype;
   private $_feed_update_daily = false;

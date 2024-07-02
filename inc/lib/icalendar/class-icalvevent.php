@@ -301,6 +301,14 @@ class ICalVEvent
         $this->set_recurring_exdates(
           $vEventDate->getTimestamps());
         break;
+      case 'RDATE':
+        $vEventDate = new ICalVEventDate($this->get_logger(), $vLine);
+        $vEventDate->parse();
+        $this->set_recurring(true);
+        $dates = $this->get_recurring_dates();
+        $this->set_recurring_dates( 
+          array_merge( $dates, $vEventDate->getTimestamps()));
+        break;
       case 'LAST_MODIFIED':
         $vEventDate = new ICalVEventDate($this->get_logger(), $vLine);
         $vEventDate->parse();

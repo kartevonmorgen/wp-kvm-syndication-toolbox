@@ -13,6 +13,9 @@ class ICalVEventLocation
 
   private $online;
   private $onlinelink;
+
+  private $location;
+  
   private $result;
 
   public function __construct($logger, $vLine)
