@@ -142,6 +142,11 @@ class SSFeeds extends WPAbstractModuleProvider
                                         'Filtered tags');
     $field->set_description('Only events with one of these tags will be imported ' .
                             'You can give a comma seperated list for multiple tags');
+
+    $field = $ui_metabox->add_textfield('ss_feed_filtered_categories', 
+                                        'Filtered categories');
+    $field->set_description('Only events with one of these categories will be imported ' .
+                            'You can give a comma seperated list for multiple categories (slugs)');
     $field = $ui_metabox->add_textfield('ss_feed_include_tags', 
                                         'Include tags');
     $field->set_description('Include this tags for every event ' .
@@ -149,17 +154,24 @@ class SSFeeds extends WPAbstractModuleProvider
                             'You can give a comma seperated ' . 
                             'list for multiple tags');
 
+    $field = $ui_metabox->add_checkbox('ss_feed_extended_graphql', 
+                                       'Only GraphQL: Will the GraphQL Query be extended ');
+    $field->set_description('The GraphQL Query will be extended with "excategories" ' .
+                            'this will NOT work for Queries to Mobilizon ');
+
     $field = $ui_metabox->add_textfield('ss_feed_filtered_mobgroups', 
-                                        'Only Mobilizon: Filter groups');
+                                        'Only GraphQL: Filter mobilizon groups');
     $field->set_description('Only events from one of these groups ' . 
                             'will be imported ' .
                             'You can give a comma seperated list ' .
                             'for multiple groups');
 
+
     $field = $ui_metabox->add_checkbox('ss_feed_include_mobgroup', 
-                                       'Only Mobilizon: Convert group to tag');
+                                       'Only GraphQL: Convert group to tag');
     $field->set_description('The Mobilizon group will be added as a tag to ' .
                             'the event ');
+
 
     $ui_metabox->register();
 

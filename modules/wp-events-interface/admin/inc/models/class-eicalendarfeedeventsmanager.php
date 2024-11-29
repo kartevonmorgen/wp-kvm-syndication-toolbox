@@ -361,6 +361,16 @@ class EICalendarFeedEventsManager extends EICalendarFeed
 
     foreach ( $event_results as $event ) 
     {
+      // Prevent getting events from another Blog,
+      // even if the are visible on this Blog.
+      // Otherwise we get the event twice if we query/import
+      // from multiple blogs to one Site
+      // TODO: Make it an Setting in the Events Interface Settings
+      if ( is_multisite() &&
+         $event->blog_id != get_current_blog_id())
+      {
+        continue;
+      }
 	    $post = get_post( $event->post_id );
       $eiEvent = $this->convert_to_eievent($post, $event);
       if( empty( $eiEvent ) )

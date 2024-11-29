@@ -221,7 +221,8 @@ class WPEventsInterfaceModule extends WPAbstractModule
   /** 
    * Retrieve EICalendarEvents from the activated Calendar
    *
-   * @param event_cat String: if this property is not defined, then
+   * @param event_cat String: it should be the 'slug'
+                              if this property is not defined, then
    *                          the 'Event Category to Select' option
    *                          from the admin area will be used. If this 
    *                          option is not filled then all events till
@@ -231,10 +232,13 @@ class WPEventsInterfaceModule extends WPAbstractModule
    *                            the admin area will be used. If this 
    *                            option is not then all events for 30 days
    *                            will be returned.
+   * @param start_date_str String: if this property is not defined, then
+   *                            the current day ('now') is chosen.
    * @return EICalendarEvent[]
    */
   public function get_events_by_cat($event_cat = NULL, 
-                                    $future_in_days = null) 
+    $future_in_days = null,
+    $start_date_str = null) 
   {
     if(empty($future_in_days))
     {
@@ -246,7 +250,14 @@ class WPEventsInterfaceModule extends WPAbstractModule
       $event_cat = $this->get_event_category();
     }
     
-    $start_date = strtotime( current_time( 'Y-m-d' ) . ' 00:00:00' );
+    if(empty($start_date_str))
+    {
+      $start_date = strtotime( current_time( 'Y-m-d' ) . ' 00:00:00' );
+    }
+    else
+    {
+      $start_date = strtotime( $start_date_str );
+    }
     $end_date = $start_date + ( 86400 * ( $future_in_days + 1 ) );
 
     $feed = $this->get_event_calendar_feed();

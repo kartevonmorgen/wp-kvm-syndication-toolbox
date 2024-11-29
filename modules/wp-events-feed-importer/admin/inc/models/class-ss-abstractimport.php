@@ -107,6 +107,20 @@ abstract class SSAbstractImport extends WPAbstractModuleProvider
     return $au->remove_empty_entries($result);
   }
 
+  public function get_feed_filtered_categories_str()
+  {
+    return $this->get_feed_meta('ss_feed_filtered_categories');
+  }
+
+  public function get_feed_filtered_categories()
+  {
+    $au = new PHPArrayUtil();
+
+    $result = explode(',', 
+      $this->get_feed_filtered_categories_str());
+    return $au->remove_empty_entries($result);
+  }
+
   public function get_feed_include_tags()
   {
     $au = new PHPArrayUtil();

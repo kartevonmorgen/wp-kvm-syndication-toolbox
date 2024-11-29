@@ -298,6 +298,9 @@ class WPLocationHelper
   {
     switch ($country) 
     {
+      case 'DE':
+        $wpLocation->set_country_code('DE');
+        break;
       case 'Deutschland':
         $wpLocation->set_country_code('DE');
         break;
@@ -314,6 +317,11 @@ class WPLocationHelper
 
   public function is_location_empty( $wpLocation )
   {
+    if(is_null($wpLocation ))
+    {
+      return true;
+    }
+
     $name = $wpLocation->get_name();
     if(!is_null($name))
     {

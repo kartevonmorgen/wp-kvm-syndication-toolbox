@@ -1,7 +1,7 @@
 <?php
 /**
   * Controller SSMobilizonImport
-  * Control the import of Mobilizon feed
+  * Control the import of GraphQL Feed based on Mobilizon
   *
   * @author     Sjoerd Takken
   * @copyright 	No Copyright.
@@ -19,7 +19,7 @@ class SSMobilizonImport extends SSAbstractImport
     $query = $this->set_up_event_list_query();
     if($this->is_echo_log())
     {
-      echo '<p>Read Mobilizon Feed ' . $url . '</p>';
+      echo '<p>Read GraphQL (Mobilizon format) Feed ' . $url . '</p>';
       echo '<p>GQLQuery: ' . $query . '</p>';
     }
     $this->response = $this->do_query($url, 
@@ -34,6 +34,10 @@ class SSMobilizonImport extends SSAbstractImport
               wp_remote_retrieve_body( 
                 $this->response ), 
               true);
+    if(!array_key_exists('data', $body))
+    {
+      return null;
+    }
     $this->data = $body['data'];
     return $this->data;
 	}
@@ -54,7 +58,8 @@ class SSMobilizonImport extends SSAbstractImport
     $data = $this->get_data();
     if(empty($data))
     {
-      set_error('get error for Mobilizon GraphQL request ' . $this->response);
+      $this->set_error('get error for Mobilizon GraphQL request ' . 
+                       print_r($this->response, true));
       return null;
     }
     return $data['config']['name'];
@@ -125,50 +130,71 @@ class SSMobilizonImport extends SSAbstractImport
    */
   private function set_up_event_list_query() 
   {
+    $cats = $this->get_feed_filtered_categories_str();
+    if(empty($cats))
+    {
+      $searchEvents = 'searchEvents';
+    }
+    else
+    {
+      $searchEvents = 'searchEvents(category: "'.$cats.'")';
+    }
     $group_name = $this->get_feed_id();
     $date_now = date("c");
+
+    $extended1 = '';
+    if($this->is_feed_extended_graphql())
+    {
+      $extended1 = '
+                        excategories {
+                          slug
+                          title
+                        }';
+    }
+
     $query = 'query  
                 {
                   config
                   {
                     name
                   }
-                  searchEvents(beginsOn:"' . $date_now . '")
+                  ' . $searchEvents . '
                   {
                       elements 
                       {
-                        uuid,
-                        local,
-                        updatedAt,
-                        title,
-                        attributedTo {
-                          name,
-                          preferredUsername,
-                          url
+                        uuid
+                        local
+                        updatedAt
+                        title
+                        attributedTo 
+                        {
+                          name
+                          preferredUsername
                         }
                         options
                         {
                           isOnline
                         }
-                        url,
-                        beginsOn,
-                        endsOn,
-                        description,
-                        onlineAddress,
-                        phoneAddress,
-                        status,
-                        visibility,
-                        tags {
-                          slug,
+                        url
+                        beginsOn
+                        endsOn
+                        description
+                        onlineAddress
+                        phoneAddress
+                        status
+                        tags 
+                        {
+                          slug
                           title
-                        },
-                        physicalAddress {
-                          description,
-                          street,
-                          postalCode,
-                          locality,
-                          region,
-                          country,
+                        }' . $extended1 . '
+                        physicalAddress 
+                        {
+                          description
+                          street
+                          postalCode
+                          locality
+                          region
+                          country
                           geom
                         }
                       }
@@ -189,14 +215,17 @@ class SSMobilizonImport extends SSAbstractImport
   {
     // Get API-endpoint from Instance URL
     $baseURL = rtrim($baseURL, '/');
-    $url_array = array($baseURL, "api");
-    $endpoint = implode('/', $url_array);
-    //$endpoint = $this->addhttp($endpoint);
+
+    //$url_array = array($baseURL, "api");
+    //$endpoint = implode('/', $url_array);
+    
+    $endpoint = $baseURL;
 
     // Define default GraphQL headers
-    $headers = ['Content-Type: application/json', 
-                'User-Agent: Wordpress Mobilizon GraphQL client'];
+    $headers = ['Content-Type' => 'application/json']; 
+
     $body = array('query' => $query);
+    $body = wp_json_encode( $body );
     $args = array(
       'body'    => $body,
       'headers' => $headers);
@@ -231,12 +260,27 @@ class SSMobilizonImport extends SSAbstractImport
 
     foreach($event['tags'] as $tag)
     {
-      $eiEvent->add_tag(new WPTag($tag['title']));
+      $eiEvent->add_tag(new WPTag($tag['title'], $tag['slug']));
+    }
+
+    // Extended GraphQL has categories
+    // used in the Wordpress GraphQL Server Module
+    if($this->is_feed_extended_graphql())
+    {
+      foreach($event['excategories'] as $cat)
+      {
+        $eiEvent->add_category(new WPCategory($cat['title'], $cat['slug']));
+      }
     }
 
     if($this->is_feed_include_mobgroup())
     {
-      $eiEvent->add_tag(new WPTag($event['attributedTo']['preferredUsername']));
+      if(!empty($event['attributedTo']['preferredUsername']))
+      {
+        $eiEvent->add_tag(
+          new WPTag(
+            $event['attributedTo']['preferredUsername']));
+      }
     }
 
     $wpLocH = new WPLocationHelper();
@@ -315,6 +359,20 @@ class SSMobilizonImport extends SSAbstractImport
 
   public function is_feed_include_mobgroup()
   {
-    return $this->get_feed_meta('ss_feed_include_mobgroup');
+    if(empty($this->get_feed_meta('ss_feed_include_mobgroup')))
+    {
+      return false;
+    }
+    return $this->get_feed_meta('ss_feed_include_mobgroup') == 'on';
   }
+
+  public function is_feed_extended_graphql()
+  {
+    if(empty($this->get_feed_meta('ss_feed_extended_graphql')))
+    {
+      return false;
+    }
+    return $this->get_feed_meta('ss_feed_extended_graphql') == 'on';
+  }
+
 }

@@ -93,13 +93,19 @@ This Module depends on the "Events Interface" module. Before this module can be 
 
 ### Supported Feeds:
 
-#### ESS Feed 
-ESS-Feeds are like RSS-Feeds, but especially made for events.
+#### Mobilizon GraphQL Feed 
+The GraphQL of Mobilizon is supported for this Feed.
 
-More Information about ESS can be found here: 
+So events are queried and imported from Mobilizon. 
+This Feed type can also be queried from the wp-graphql-event-server
 
-On GitHub: https://github.com/essfeed
-On Youtube: https://www.youtube.com/watch?v=OGi0U3Eqs6E
+More Information about the GraphQL for Mobilizon can be found here: 
+https://docs.joinmobilizon.org/contribute/graphql_api/
+
+The GraphQL schema can be found here:
+https://framagit.org/framasoft/mobilizon/-/blob/main/schema.graphql
+
+only the searchEvents und config queries will be queried by this feed.
 
 
 #### iCal Feed 
@@ -125,13 +131,16 @@ The Import event feeds part takes care of importing events by feeds into wordpre
 
 The event feeds have some more settings pro feed:
 * Feed URL: The Feed URL that need to be imported
-* Feed URL type: Kind of Feed (ESS or ICal)
+* Feed URL type: Kind of Feed (Mobilizon or ICal)
 * Update daily: Import this Feed every day and update the events in the Feed
 * Disable linkurl check: Sometimes the url of the feed does not match with the url of the events that are imported by this feed, if this behaviour is wanted, then set this option, so you do not get an error.
 * Define the location by GEO Coordinates: Sometimes the event in the feed has already GEO Coordinates(Latitude, Longitude). Then we can search the address by this Coordinates. Set this option if you want this. Otherwise the coordinates are determined by the given address in the Feed.
 * Feed location free text format type: In many feeds the location is given in a free text format. To extract the addressdetails out of it, we can use two methods. We can use the local method to find te addressdetails or we can ask OSM Nominatim to find out the addressdetails. (You can just test with it, which method works the best)
 * Filtered tags: Only events with one of these tags will be imported You can give a comma seperated list for multiple tags
+* Filtered categories: Only events with these categories will be imported You can give a comma seperated list for multiple categories
 * Include tags: Include this tags for every event that are imported by this Feed. You can give a comma seperated list for multiple tags. This option make it possible to see from which feed an event is coming from if it is uploaded to the Karte von Morgen.
+* Only GraphQL - Will the GraphQL Query be extended: The GraphQL Query will be extended with excategories, can not be used with Mobilizon, but with the wp-graphl-event-server module.
+* Only GraphQL - Convert group to tag: Only Mobilizon, it will convert groups to tags.
 
 #### Feed informationen
 

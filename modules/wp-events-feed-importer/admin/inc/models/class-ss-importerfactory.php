@@ -26,13 +26,8 @@ final class SSImporterFactory extends WPAbstractModuleProvider
                                  'SSICalImport'));
 
     array_push( $this->_importtypes, 
-                new SSImportType('ess', 
-                                 'ESS Feed', 
-                                 'SSESSImport'));
-
-    array_push( $this->_importtypes, 
-                new SSImportType('mobilizon', 
-                                 'Mobilizon', 
+                new SSImportType('graphql-mobilizon', 
+                                 'GraphQL based on Mobilizon format', 
                                  'SSMobilizonImport'));
     return $this->_importtypes;
   }
