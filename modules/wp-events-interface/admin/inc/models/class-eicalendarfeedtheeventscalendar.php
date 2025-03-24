@@ -121,7 +121,7 @@ class EICalendarFeedTheEventsCalendar extends EICalendarFeed
    *
    * @param $event_id int
    */
-  public function delete_event_by_event_id( $event_id )
+  public function delete_event_by_event_id( $event_id, $delete_permanently)
   {
   }
 

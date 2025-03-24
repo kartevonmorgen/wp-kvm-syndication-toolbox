@@ -25,9 +25,18 @@ class WPRegisterNewsletterListPosttype
   public function start()
   {
     $module = $this->get_current_module();
+    $adapter = $module->get_current_newsletter_adapter();
     if($module->has_newsletter_list())
     {
       $this->create_post_type();
+      if(!empty($adapter))
+      {
+        $adapter->update_newsletter_list(null);
+      }
+    }
+    else
+    {
+      $adapter->remove_newsletter_list();
     }
   }
  
@@ -69,7 +78,7 @@ class WPRegisterNewsletterListPosttype
     $ui_metabox = new UIMetabox('newsletterlist_metabox',
                                 'Form properties',
                                 'newsletterlist');
-    $field = $ui_metabox->add_textfield('newsletterlist_position', 'Position on form'); 
+    $field = $ui_metabox->add_checkbox('newsletterlist_sendto', 'Send Newsletter to this list'); 
     $ui_metabox->register();
 
     register_post_type( 'newsletterlist', $args );  

@@ -127,6 +127,12 @@ class PSR7AdminControl implements WPModuleStarterIF
     $field->set_register(false);
     $section->add_field($field);
 
+    $section = $page->add_section('wplib_section_five', 'Logging');
+    $section->set_description(
+      'Outputs the Logging of the DefaultLogger ');
+    $section->add_textarea('scw_toolbox_log', 
+                            'Log Output');
+
     $page->register();
   }
 }

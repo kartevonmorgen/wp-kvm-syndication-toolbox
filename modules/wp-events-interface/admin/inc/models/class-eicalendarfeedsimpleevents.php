@@ -56,10 +56,10 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
   {
     parent::add_event_deleted_listener($listener);
 
-    if ( !has_filter( 'trashed_post', array( $this, 'event_deleted' ) ))
+    if ( !has_filter( 'trashed_post', array( $this, 'event_trashed' ) ))
     {
       add_action('trashed_post', array( $this, 'event_trashed' ) );
-      add_action('deleted_post', array( $this, 'event_trashed' ) );
+      add_action('delete_post', array( $this, 'event_delete' ) );
     }
   }
 
@@ -75,6 +75,11 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     $this->fire_event_deleted($post_id);
   }
 
+  function event_delete($post_id)
+  {
+    $this->fire_event_deleted($post_id);
+  }
+
   public function get_event_by_event_id( $event_id ) 
   {
     if(empty($event_id))
@@ -84,9 +89,9 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     return $this->convert_to_eievent( get_post($event_id));
   }
 
-  public function delete_event_by_event_id( $event_id )
+  public function delete_event_by_event_id( $event_id, $delete_permanently)
   {
-    wp_delete_post( $event_id, true );
+    wp_delete_post( $event_id, $delete_permanently );
   }
 
   public function get_event_by_uid($uid)

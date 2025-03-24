@@ -34,11 +34,11 @@ class WPMailpoetNewsletterAdapter extends WPNewsletterAdapter
     return is_plugin_active( 'mailpoet3/mailpoet.php' );
   }
 
-  public function trash_newsletter_list($newsletterlist_post_id)
+  public function update_newsletter_list()
   {
   }
 
-  public function update_newsletter_list($newsletterlist_post)
+  public function remove_newsletter_list()
   {
   }
 }

@@ -17,12 +17,6 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
    */
   public function setup($loader)
   {
-    // Add tags in the Email Template for Events
-    $loader->add_filter('noptin_mailer_default_merge_tags', 
-                        $this,
-                        'mailer_default_merge_tags',
-                        10,
-                        2);
 
     $loader->add_filter('noptin_default_newsletter_body',
                         $this,
@@ -30,49 +24,11 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
                         10,
                         1);
 
-    $loader->add_action('add_meta_boxes_noptin_newsletters', 
+    $loader->add_filter('noptin_subscriber_newsletter_recipients',
                         $this, 
-                        'add_newsletter_metaboxes');
-
-    // Save Meta Boxes in Newsletter Caompaign
-    $loader->add_filter('noptin_save_newsletter_campaign_details',
-                        $this, 
-                        'save_campaign', 
+                        'recipients_list', 
                         10, 
                         2);
-
-    $loader->add_filter('noptin_background_mailer_subscriber_query',
-                        $this, 
-                        'query', 
-                        10, 
-                        2);
-
-    $loader->add_filter('manage_noptin_newsletters_sortable_table_columns',
-                        $this,
-                        'sortable_columns',
-                        10,
-                        1);
-
-    $loader->add_action( 'noptin_pre_get_subscribers', 
-                         $this, 
-                         'meta_orderby',
-                         10,
-                         1 );
-
-    $loader->add_filter('noptin_contact_form_7_map_fields',
-                        $this,
-                        'contact_form_7_map_list_fields',
-                        10,
-                        1);
-
-    // Make a CF7 Checkbox mit multiple options
-    // to one Option with true or false
-    $loader->add_filter('noptin_contact_form_7_integration_new_subscriber_fields',
-                        $this,
-                        'change_list_fields',
-                        10,
-                        2);
-
   }
 
   public function default_newsletter_body($body)
@@ -91,17 +47,6 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
     return $body;
   }
 
-  public function mailer_default_merge_tags($default_merge_tags,
-                                            $mailer)
-  {
-    $eventsPart = $this->get_mail_events_part();
-    if(empty($eventsPart))
-    {
-      return $default_merge_tags;
-    }
-    $default_merge_tags['events'] = $eventsPart;
-    return $default_merge_tags;
-  }
 
   private function get_mail_events_part()
   {
@@ -124,17 +69,31 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
     // return EICalendarEvent[]
     $events = $eiModule->get_events_by_cat($cat, $days);
 
-    setlocale(LC_TIME, "de_DE.utf8");
+    $fmt = new IntlDateFormatter(
+      'de-DE',
+      IntlDateFormatter::FULL,
+      IntlDateFormatter::FULL,
+      wp_timezone_string(),
+      IntlDateFormatter::GREGORIAN,
+      'eeee dd MMMM');
+    $fmt2 = new IntlDateFormatter(
+      'de-DE',
+      IntlDateFormatter::FULL,
+      IntlDateFormatter::FULL,
+      wp_timezone_string(),
+      IntlDateFormatter::GREGORIAN,
+      'HH:mm');
+
     $eventsPart = '';
     foreach($events as $event)
     {
-      $startdate = strftime( '%A %e %B', 
+      $startdate = $fmt->format( 
                          strtotime( $event->get_start_date()));
-      $enddate = strftime( '%A %e %B', 
+      $enddate = $fmt->format(  
                        strtotime( $event->get_end_date()));
-      $starttime = strftime( '%R',  
+      $starttime = $fmt2->format(   
                          strtotime( $event->get_start_date()));
-      $endtime = strftime( '%R',  
+      $endtime = $fmt2->format(   
                        strtotime( $event->get_end_date()));
       if($startdate == $enddate)
       {
@@ -190,18 +149,6 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
     return $eventsPart;
   }
 
-  public function add_newsletter_metaboxes($campaign)
-  {
-    add_meta_box(
-      'noptin_newsletter_preview_text',
-      __('List','newsletter-optin-box'),
-      array( $this, 'render_newsletter_metabox' ),
-      'noptin_page_noptin-newsletter',
-      'side',
-      'low',
-      'lists');
-  }
-
   private function get_newsletterlist_fields()
   {
     if($this->_newsletterlist_fields !== null)
@@ -219,82 +166,56 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
 
   }
 
-  public function render_newsletter_metabox( $campaign, 
-                                             $metabox ) 
+  public function get_newsletterlists_to_send_to()
   {
-    foreach($this->get_newsletterlist_fields() as $nl_post)
-    {
-      $id = 'newsletterlist_' . $nl_post->ID;
-      $list = is_object( $campaign ) ? get_post_meta( $campaign->ID, $id, true ) : '';
-      $checked = '';
-	    if($list) 
-      { 
-        $checked = ' checked="checked" '; 
-      }
-      echo '<p>' . $nl_post->post_title . '</p>';
-      echo "<input ".$checked." id='$id' name='$id' type='checkbox' />";
-    }
-  }
-
-  public function save_campaign($post, $data)
-  {
-    if(array_key_exists('campaign_id', $data))
-    {
-      $post['ID'] = $data['campaign_id'];
-    }
-
-    foreach($this->get_newsletterlist_fields() as $nl_post)
-    {
-      $id = 'newsletterlist_' . $nl_post->ID;
-      if(array_key_exists($id, $data))
-      {
-        $post['meta_input'][$id] = 'active';
-      }
-      else
-      {
-        $post['meta_input'][$id] = false;
-      }
-    }
-
-    return $post;
-  }
-
-  public function query($subscriber_query, $item)
-  {
-    $campaign_id = $item['campaign_id'];
-    $list_query = array('relation' => 'OR');
+    $result = array();
     $nl_posts = $this->get_newsletterlist_fields();
-
     foreach($nl_posts as $nl_post)
     {
-      $id = 'newsletterlist_' . $nl_post->ID;
-      $list = get_post_meta( $campaign_id, $id, true );
-      if($list == 'active')
+      $id = $nl_post->ID;
+      $v = get_post_meta($id, 'newsletterlist_sendto', true);
+      if($v === 'on')
       {
-        log_noptin_message(' Campaign ' . $campaign_id . 
-                           ' send to list: ' . $id);
-        if($list)
+        array_push($result, $nl_post);
+      }
+    }
+    return $result;
+  }
+
+  public function recipients_list($unique, $campaign)
+  {
+    $new_unique = array();
+    $lists = $this->get_newsletterlists_to_send_to();
+    log_noptin_message(' Vorbereiten Sendenlist für  ' . $campaign->get_subject()); 
+    foreach($unique as $subscriber_id)
+    {
+      if($this->is_in_lists_to_send_to($lists, $subscriber_id))
+      {
+        $subscriber = noptin_get_subscriber($subscriber_id);
+        log_noptin_message(' Abonnent an Sendlist hinzufügen ' . $subscriber->get_name() . ' (' . $subscriber->get_email() . ')'); 
+        array_push($new_unique, $subscriber_id);
+      }
+    }
+    return $new_unique;
+  }
+
+  private function is_in_lists_to_send_to($lists, $subscriber_id)
+  {
+    // Get the Lists in which the Subscriber is abboniert
+    $lists_for_subscriber = get_metadata('noptin_subscriber', $subscriber_id, 'newsletterlists');
+    foreach($lists_for_subscriber as $id)
+    {
+      foreach($lists as $nl_post)
+      {
+        if($nl_post->ID == $id)
         {
-          $list_query[] = array('key' => $id,
-                                'value' => 0,
-                                'compare' => '>');
+          return true;
         }
       }
     }
-
-    if(count($list_query) < 2)
-    {
-      $list_query[] = array('key' => 'newsletterlist_none',
-                            'value' => 0,
-                            'compare' => '>');
-    }
-    
-    $subscriber_query['meta_query'][] = array($list_query);
-    // log_noptin_message(' ITEM ' . print_r($item, true));
-    // log_noptin_message(' QUERY ' . 
-    //                    print_r($subscriber_query, true));
-    return $subscriber_query;
+    return false;
   }
+
 
   public function get_id()
   {
@@ -317,133 +238,79 @@ class WPNoptinNewsletterAdapter extends WPNewsletterAdapter
     return true;
   }
 
-  public function update_newsletter_list($nl_post)
+  public function remove_newsletter_list()
   {
-    $found_cf = null;
-    $customfields = get_noptin_option( 'custom_fields' );
+        echo '<p>REmove</p>';
     $newcustomfields = array();
-    // echo 'UPDATE' . $nl_post->ID;
-    // echo 'STATE' . $nl_post->post-status;
-    foreach($customfields as $customfield)
+    $customfields = get_noptin_option( 'custom_fields' );
+    if($customfields == null)
     {
-      if('newsletterlist_' . $nl_post->ID == 
-         $customfield['merge_tag'])
-      {
-        $customfield['label'] = $nl_post->post_title;
-        $found_cf = $customfield;
-        if($nl_post->post_status == 'publish')
-        {
-          array_push($newcustomfields, $customfield);
-        }
-      }
-      else
-      {
-        array_push($newcustomfields, $customfield);
-      }
+      return;
     }
 
-    if(empty($found_cf) && 
-       $nl_post->post_status == 'publish')
+    foreach($customfields as $customfield)
     {
-      $customfield = array(
-        'type' => 'checkbox',
-        'merge_tag' => 'newsletterlist_' . $nl_post->ID,
-        'label' => $nl_post->post_title,
-        'visible' => '1',
-        'subs_table' => '1',
-        'predefined' => '1');
-      array_push($newcustomfields, $customfield);
+      if('newsletterlists' !== 
+         $customfield['merge_tag'])
+      {
+        echo '<p>Add</p>';
+        array_push($newcustomfields, $customfield);
+
+      }
     }
     update_noptin_option('custom_fields', $newcustomfields);
   }
 
-  public function contact_form_7_map_list_fields($map_fields)
+  public function update_newsletter_list()
   {
-    $util = new PHPStringUtil();
+    $options = '';
+
+    $nl_posts = $this->get_newsletterlist_fields();
+    foreach($nl_posts as $nl_post)
+    {
+      if($nl_post->post_status == 'publish')
+      {
+        $options .= '' . $nl_post->ID;
+        $options .= '|';
+        $options .= $nl_post->post_title;
+        $options .= PHP_EOL;
+      }
+    }
+    
     $customfields = get_noptin_option( 'custom_fields' );
+    $newcustomfields = array();
+    if($customfields == null)
+    {
+      $customfields = array();
+    }
+
+    $newsletterlists_customfield = null;
     foreach($customfields as $customfield)
     {
-      if ( !$customfield['predefined'] ) 
+      if('newsletterlists' == 
+         $customfield['merge_tag'])
       {
-        continue;
+        $customfield['options'] = $options;
+        $newsletterlists_customfield = $customfield;
       }
-      
-      if(!$util->startsWith($customfield['merge_tag'], 
-                            'newsletterlist_'))
-      {
-        continue;
-      }
-
-      $map_fields[] = array(
-        'name'    => $customfield['merge_tag'],
-        'label'   => $customfield['label'], 
-        'type'  => 'checkbox');
+      array_push($newcustomfields, $customfield);
     }
-    return $map_fields;
+
+    if(empty($newsletterlists_customfield))
+    {
+      $newsletterlists_customfield = array(
+        'type' => 'multi_checkbox',
+        'merge_tag' => 'newsletterlists',
+        'label' => 'Newsletter Lists',
+        'visible' => '1',
+        'subs_table' => '1',
+        'predefined' => '1',
+        'options' => $options);
+      array_push($newcustomfields, $newsletterlists_customfield);
+    }
+
+    update_noptin_option('custom_fields', $newcustomfields);
   }
+
   
-  public function sortable_columns($sortable)
-  {
-    foreach($this->get_newsletterlist_fields() as $nl_post)
-    {
-      $id = 'newsletterlist_' . $nl_post->ID;
-      $sortable[$id] = array($id, false);
-    }
-    return $sortable;
-  }
-
-  public function meta_orderby( $query ) 
-  {
-    if( ! is_admin() )
-    {
-      return;
-    }
-
-    $orderby = $query->get( 'orderby');
-    $util = new PHPStringUtil();
-    if(!$util->startsWith($orderby, 'newsletterlist_'))
-    {
-      return;
-    }
-
-    foreach($this->get_newsletterlist_fields() as $nl_post)
-    {
-      $id = 'newsletterlist_' . $nl_post->ID;
-      if( $id == $orderby ) 
-      {
-        $query->set('meta_key', $id);
-        $query->set('orderby','meta_value');
-        return;
-      }
-    }
-  }
-
-  public function change_list_fields($noptin_fields, $cf)
-  {
-    $new_fields = array();
-    $util = new PHPStringUtil();
-    foreach( $noptin_fields as $id => $value )
-    {
-      if(!$util->startsWith($id, 
-                            'newsletterlist_'))
-      {
-        $new_fields[$id] = $value;
-        continue;
-      }
-
-      $new_fields[$id] = '0';
-      if(is_array($value) && count($value) > 0)
-      {
-        $new_fields[$id] = '1';
-        foreach($value as $item)
-        {
-          if(empty($item))
-          {
-            $new_fields[$id] = '0';
-          }
-        }
-      }
-    }
-    return $new_fields;
-  }
 }

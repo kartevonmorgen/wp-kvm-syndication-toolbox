@@ -32,5 +32,7 @@ abstract class WPNewsletterAdapter extends WPAbstractModuleProvider
     return false;
   }
 
-  public abstract function update_newsletter_list($newsletterlist_post);
+  public abstract function update_newsletter_list();
+
+  public abstract function remove_newsletter_list();
 }

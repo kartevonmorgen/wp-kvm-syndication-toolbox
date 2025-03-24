@@ -3,7 +3,7 @@
 Plugin Name: WP KVM Syndication Toolbox
 Plugin URI: https://github.com/kartevonmorgen/wp-kvm-syndication-toolbox
 Description: Tools for Transition
-Version: 1.5
+Version: 1.6
 Author: Sjoerd Takken
 Author URI: https://www.sjoerdscomputerwelten.de/
 License: GPL2
@@ -114,6 +114,7 @@ class WPSCWToolboxPlugin extends WPAbstractPlugin
     $loader->add_include('/inc/lib/log/class-abstractlogger.php');
     $loader->add_include('/inc/lib/log/class-postmetalogger.php');
     $loader->add_include('/inc/lib/log/class-usermetalogger.php');
+    $loader->add_include('/inc/lib/log/class-defaultlogger.php');
 
     // -- Http Wrapper --
     $loader->add_include('/inc/lib/http/class-message-interface.php');

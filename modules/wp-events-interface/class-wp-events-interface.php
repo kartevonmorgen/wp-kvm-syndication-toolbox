@@ -185,7 +185,8 @@ class WPEventsInterfaceModule extends WPAbstractModule
     {
       return;
     }
-    return $feed->delete_event_by_event_id( $event_id );
+    $delete_permanently = get_option('ei_delete_permanently', false);
+    return $feed->delete_event_by_event_id( $event_id, $delete_permanently );
   }
 
   /** 

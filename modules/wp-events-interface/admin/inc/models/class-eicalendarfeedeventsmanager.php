@@ -258,8 +258,9 @@ class EICalendarFeedEventsManager extends EICalendarFeed
    * for a determinated event_id.
    *
    * @param $event_id int: should be the eiEvent->get_event_id()
+   * @param $delete_permanently: should be deleted for ever, not in trash
    */
-  public function delete_event_by_event_id( $event_id )
+  public function delete_event_by_event_id( $event_id, $delete_permanently)
   {
     if(empty($event_id))
     {
@@ -272,8 +273,7 @@ class EICalendarFeedEventsManager extends EICalendarFeed
       return;
     }
 
-    $force_delete = get_option('ei_delete_permanently', false);
-    $event->delete($force_delete);
+    $event->delete($delete_permanently);
   }
 
   /**
@@ -366,7 +366,7 @@ class EICalendarFeedEventsManager extends EICalendarFeed
       // Otherwise we get the event twice if we query/import
       // from multiple blogs to one Site
       // TODO: Make it an Setting in the Events Interface Settings
-      if ( is_multisite() &&
+      if ( EM_MS_GLOBAL && is_multisite() &&
          $event->blog_id != get_current_blog_id())
       {
         continue;

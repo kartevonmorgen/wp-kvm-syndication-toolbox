@@ -20,11 +20,13 @@ class WPNewsletterInterfaceModule extends WPAbstractModule
 
   public function setup_includes($loader)
   {
+    $loader->add_include("/inc/lib/newsletter/class-wp-newsletter-action.php");
     $loader->add_include("/inc/lib/newsletter/class-wp-newsletter-adapter-factory.php");
     $loader->add_include("/inc/lib/newsletter/class-wp-newsletter-adapter.php");
     $loader->add_include("/inc/lib/newsletter/class-wp-noptin-newsletter-adapter.php");
     $loader->add_include("/inc/lib/newsletter/class-wp-mailpoet-newsletter-adapter.php");
     $loader->add_include("/inc/lib/newsletter/class-wp-register-newsletter-list-posttype.php");
+    $loader->add_include("/inc/lib/newsletter/class-newsletter-list-table-columns.php");
 
     $loader->add_include("/admin/inc/controllers/class-wp-newsletter-interface-admincontrol.php");
   }
@@ -39,6 +41,8 @@ class WPNewsletterInterfaceModule extends WPAbstractModule
     {
       $cposttype = new WPRegisterNewsletterListPosttype($this);
       $cposttype->setup($loader);
+      $tableColumns = new NewsletterListTableColumns($this); 
+      $tableColumns->setup($loader);
     }
     
     $adapter = $this->get_current_newsletter_adapter();
