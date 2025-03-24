@@ -151,7 +151,7 @@ abstract class EICalendarFeed
    * @param $event_id int: should be the eiEvent->get_event_id()
    * @param $delete_permanently: should be deleted for ever, not in trash
    */
-  abstract function delete_event_by_event_id( $event_id, $delete_permanently)
+  abstract function delete_event_by_event_id( $event_id, $delete_permanently);
 
   /**
    * Retrieve the EICalendarEvent object for a determinated
