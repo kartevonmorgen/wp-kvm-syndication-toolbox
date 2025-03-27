@@ -55,9 +55,9 @@ class EICalendarFeedEventsManager extends EICalendarFeed
   {
     parent::add_event_deleted_listener($listener);
 
-    if ( !has_filter( 'em_event_delete', array( $this, 'em_event_deleted' ) ))
+    if ( !has_action( 'trashed_post', array( $this, 'em_event_trashed' ) ))
     {
-      add_filter( 'em_event_delete', array( $this, 'em_event_deleted' ), 10 , 2 );
+      add_action('before_delete_post', array( $this, 'em_event_delete' ), 10,2 );
       add_action('trashed_post', array( $this, 'em_event_trashed' ) );
     }
   }
@@ -70,16 +70,20 @@ class EICalendarFeedEventsManager extends EICalendarFeed
       // It is not an Event
       return;
     }
-    $this->em_event_deleted(true, $event);
+    $event_id = $event->event_id;
+    $this->fire_event_deleted($event_id);
   }
 
-  public function em_event_deleted($result, $event)
+  public function em_event_delete($post_id, $post)
   {
-    if ( $result == true )
+    $event = em_get_event($post_id,'post_id');
+    if(empty($event))
     {
-      $event_id = $event->event_id;
-      $this->fire_event_deleted($event_id);
+      // It is not an Event
+      return;
     }
+    $event_id = $event->event_id;
+    $this->fire_event_deleted($event_id);
   }
 
   public function init()

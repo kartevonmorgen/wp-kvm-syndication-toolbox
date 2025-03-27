@@ -59,7 +59,7 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     if ( !has_filter( 'trashed_post', array( $this, 'event_trashed' ) ))
     {
       add_action('trashed_post', array( $this, 'event_trashed' ) );
-      add_action('delete_post', array( $this, 'event_delete' ) );
+      add_action('before_delete_post', array( $this, 'event_delete' ), 10,2 );
     }
   }
 
@@ -75,7 +75,7 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     $this->fire_event_deleted($post_id);
   }
 
-  function event_delete($post_id)
+  function event_delete($post_id, $post)
   {
     $this->fire_event_deleted($post_id);
   }
@@ -91,25 +91,33 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
 
   public function delete_event_by_event_id( $event_id, $delete_permanently)
   {
-    wp_delete_post( $event_id, $delete_permanently );
+    if($delete_permanently)
+    {
+      wp_delete_post( $event_id, $delete_permanently );
+    }
+    else
+    {
+      wp_trash_post( $event_id );
+    }
   }
 
   public function get_event_by_uid($uid)
   {
-    $module = $this->get_simple_events_module(); 
-
     $args = array(
       'name'        => $uid,
-      'post_type'   => $module->get_posttype(),
+      'post_type'   => $this->get_posttype(),
       'post_status' => array('draft', 'pending', 'publish'),
       'numberposts' => 1);
-    
-    $events = get_posts( $args );
-    if(empty($events))
+    $module = $this->get_simple_events_module(); 
+    $event = $module->get_event_by_slug($uid);
+    if($event == null)
     {
       return null;
     }
-    return reset($posts);
+    
+//    echo '<p> dump em_post for uid ' . $uid . '</p>';
+//    var_dump($event);
+    return $this->convert_to_eievent($event);
   }
 
   /**
@@ -137,6 +145,7 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
   {
     $posttype = $post->post_type;
     $eiEvent = new EICalendarEvent();
+    $eiEvent->set_event_id( $post->ID );
     $eiEvent->set_slug( $post->post_name );
     $eiEvent->set_link( get_permalink( $post ));
 
@@ -251,7 +260,7 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
     $postarr = array();
     if(!empty($post))
     {
-      $post_id =  $post->ID;
+      $post_id = $post->ID;
       $postarr = array('ID' => $post_id,
                        'post_author' => $eiEvent->get_owner_user_id());
     }
@@ -283,6 +292,7 @@ class EICalendarFeedSimpleEvents extends EICalendarFeed
 
     $postarr['post_type'] = $module->get_posttype();
     $postarr['post_title'] = $eiEvent->get_title();
+    $postarr['post_name'] = $eiEvent->get_uid();
     $postarr['post_status'] = $eiEvent->get_post_status();
     $postarr['post_content'] = wp_kses( wp_unslash($eiEvent->get_description()), $allowedposttags);
     $meta = array(

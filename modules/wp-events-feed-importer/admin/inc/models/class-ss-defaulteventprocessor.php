@@ -69,7 +69,13 @@ class SSDefaultEventProcessor extends SSAbstractEventProcessor
         $logger->save();
         return;
       }
-
+      $logger->add_line('save_event (id=' . 
+                            $result->get_event_id() . ')');
+      if($importer->is_echo_log())
+      {
+        $logger->echo_log();
+      }
+      $logger->save();
       if( !empty( $result->get_event_id() ))
       {
         array_push( $updated_event_ids, $result->get_event_id());
