@@ -276,10 +276,17 @@ abstract class SSAbstractImport extends WPAbstractModuleProvider
       $logger->add_date();
       $logger->add_line('Prepare update Event ' . $eiEvent->get_uid());
       $logger->add_prefix('  ');
-      // Do not import events from the past
-      if(strtotime($eiEvent->get_start_date()) < $now)
+      
+      // Get sync range configuration
+      $maxPeriodInDays = $thismodule->get_max_periodindays();
+      $pastDaysToSync = $thismodule->get_past_days_to_sync();
+      
+      // Check if the event is within our sync range (past or future)
+      $startDate = strtotime($eiEvent->get_start_date());
+      if($startDate < ($now - ($pastDaysToSync * 24 * 60 * 60)) || 
+         $startDate > ($now + ($maxPeriodInDays * 24 * 60 * 60)))
       {
-        $logger->add_line('Event is too old (' .
+        $logger->add_line('Event is outside sync range (' .
           $eiEvent->get_start_date() . '), no update');
         continue;
       }

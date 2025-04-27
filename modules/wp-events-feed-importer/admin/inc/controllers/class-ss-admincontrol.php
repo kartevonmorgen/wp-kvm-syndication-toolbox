@@ -31,6 +31,10 @@ class SSAdminControl extends UIAbstractAdminControl
                                     'Add link from source');
     $field->set_description('Add at the bottom of the events description a link to the website where the event is coming from');
 
+    $field = $section->add_checkbox('ei_disable_auto_delete', 
+                                    'Automatische Terminlöschung deaktivieren');
+    $field->set_description('Wenn aktiviert, werden Termine nicht automatisch gelöscht.');
+
     $field = $section->add_textfield($thismodule->get_category_prefix_id(), 
                                     'Strip prefix from category');
     $field->set_description('Strip this prefix from imported categories');
@@ -61,6 +65,13 @@ class SSAdminControl extends UIAbstractAdminControl
                               'pro feed (saves waiting time), default -1, ' .
                               'imports all events ');
     $field->set_defaultvalue(-1);
+
+    $field = $section->add_textfield($thismodule->get_past_days_to_sync_id(),
+                                       'Past days to sync');
+    $field->set_description('Number of past days that should be synced. ' . 
+                              'For example, set to 90 to sync events from the last 90 days. ' .
+                              'Default is 0 (only future events).');
+    $field->set_defaultvalue(0);
 
     $page->register();
   }

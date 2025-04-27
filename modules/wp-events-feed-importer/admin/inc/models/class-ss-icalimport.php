@@ -94,6 +94,7 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
     $now = time();
     $thismodule = $this->get_current_module();
     $maxPeriodInDays = $thismodule->get_max_periodindays();
+    $pastDaysToSync = $thismodule->get_past_days_to_sync();
     $vCal = $this->get_vcalendar();
     if(empty($vCal))
     {
@@ -106,8 +107,23 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
       //$this->add_log('SUM: ' . $vEvent->get_summary() . '<br>');
       if($vEvent->is_recurring())
       {
-        // For RECURRENCE-ID the recurring_dates 
-        // are filled directly
+        // Check if this is a recurrence instance (has RECURRENCE-ID)
+        $recurrenceId = $vEvent->get_recurrence_id();
+        if(!empty($recurrenceId)) {
+          // This is a modified instance of a recurring event
+          // Use the recurrence ID date directly
+          $date = $recurrenceId;
+          // Check if the date is within our sync range (past or future)
+          if($date >= ($now - ($pastDaysToSync * 24 * 60 * 60)) && 
+             $date <= ($now + ($maxPeriodInDays * 24 * 60 * 60)))
+          {
+            array_push($eiEvents, 
+                       $this->read_event($vEvent, $date, ''));
+          }
+          continue;
+        }
+
+        // For normal recurring events, generate the dates
         if(empty($vEvent->get_recurring_dates()))
         {
           $recurring = new ICalVEventRecurringDate(
@@ -129,14 +145,9 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
             continue;
           }
 
-          // If Event is in the past
-          if($date < $now)
-          {
-            continue;
-          }
-
-          // If Event is to far in the future
-          if($date > ($now + ($maxPeriodInDays * 24 * 60 * 60)))
+          // Check if the date is within our sync range (past or future)
+          if($date < ($now - ($pastDaysToSync * 24 * 60 * 60)) || 
+             $date > ($now + ($maxPeriodInDays * 24 * 60 * 60)))
           {
             continue;
           }
@@ -159,7 +170,9 @@ class SSICalImport extends SSAbstractImport implements ICalLogger
       else
       {
         $date = $vEvent->get_dt_startdate();
-        if($date > $now && $date < ($now + ($maxPeriodInDays * 24 * 60 * 60)))
+        // Check if the date is within our sync range (past or future)
+        if($date >= ($now - ($pastDaysToSync * 24 * 60 * 60)) && 
+           $date <= ($now + ($maxPeriodInDays * 24 * 60 * 60)))
         {
           //$this->add_log('STARTDATE: ' . date("Y-m-d | h:i:sa", $vEvent->get_dt_startdate()) . '<br>');
           array_push($eiEvents, 

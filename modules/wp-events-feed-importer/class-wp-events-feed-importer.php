@@ -229,4 +229,14 @@ class WPEventsFeedImporterModule extends WPAbstractModule
   {
     return get_option($this->get_max_events_pro_feed_id(), -1);
   }
+
+  public function get_past_days_to_sync_id()
+  {
+    return 'ss_past_days_to_sync';
+  }
+
+  public function get_past_days_to_sync()
+  {
+    return get_option($this->get_past_days_to_sync_id(), 0);
+  }
 }

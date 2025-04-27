@@ -29,6 +29,7 @@ class ICalVEvent
   private $recurring_exdates = array();
   private $recurring_rule;
   private $categories = array();
+  private $recurrence_id = null;
 
   function __construct($logger)
   {
@@ -43,6 +44,16 @@ class ICalVEvent
   function log($log)
   {
     $this->get_logger()->add_log($log);
+  }
+
+  function get_recurrence_id()
+  {
+    return $this->recurrence_id;
+  }
+
+  function set_recurrence_id($recurrence_id)
+  {
+    $this->recurrence_id = $recurrence_id;
   }
 
   function set_dt_startdate($startdate)
@@ -293,7 +304,7 @@ class ICalVEvent
                                          $vLine);
         $vEventDate->parse();
         $this->set_recurring(true);
-        $this->set_recurring_dates($vEventDate->getTimestamps());
+        $this->set_recurrence_id($vEventDate->getTimestamp());
         break;
       case 'EXDATE':
         $vEventDate = new ICalVEventDate($this->get_logger(), $vLine);

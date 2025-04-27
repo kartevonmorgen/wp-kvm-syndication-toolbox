@@ -118,6 +118,18 @@ class SSDefaultEventProcessor extends SSAbstractEventProcessor
     $logger->add_line('delete no longer updated events ');
     $logger->add_prefix('  ');
 
+    // Check if auto-deletion is disabled
+    if (get_option('ei_disable_auto_delete', 0)) {
+      $logger->add_line('Automatic event deletion is disabled, skipping deletion of old events');
+      $logger->remove_prefix();
+      $logger->add_line('-- update feed finished ---');
+      if($importer->is_echo_log()) {
+        $logger->echo_log();
+      }
+      $logger->save();
+      return;
+    }
+
     foreach($last_event_ids as $last_event_id)
     {
       if(empty($last_event_id))
