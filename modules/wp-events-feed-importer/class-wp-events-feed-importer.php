@@ -190,6 +190,16 @@ class WPEventsFeedImporterModule extends WPAbstractModule
     return get_option($this->get_backlink_enabled_id(), false);
   }
 
+  public function get_disable_auto_delete_id()
+  {
+    return 'ei_disable_auto_delete';
+  }
+
+  public function is_disable_auto_delete()
+  {
+    return get_option($this->get_disable_auto_delete_id(), false);
+  }
+
   public function get_category_prefix_id()
   {
     return 'ss_category_prefix';

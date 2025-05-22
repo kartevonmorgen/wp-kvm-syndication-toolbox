@@ -3,7 +3,7 @@
 Plugin Name: WP KVM Syndication Toolbox
 Plugin URI: https://github.com/kartevonmorgen/wp-kvm-syndication-toolbox
 Description: Tools for Transition
-Version: 1.6
+Version: 1.7
 Author: Sjoerd Takken
 Author URI: https://www.sjoerdscomputerwelten.de/
 License: GPL2

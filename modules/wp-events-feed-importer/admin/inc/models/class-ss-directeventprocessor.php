@@ -111,7 +111,10 @@ class SSDirectEventProcessor extends SSAbstractEventProcessor
     $logger->add_prefix('  ');
 
     // Check if auto-deletion is disabled
-    if (get_option('ei_disable_auto_delete', 0)) {
+    $importer = $this->get_importer();
+    $thismodule = $importer->get_current_module();
+    if ($thismodule->is_disable_auto_delete()) 
+    {
       $logger->add_line('Automatic event deletion is disabled, skipping deletion of old events');
       $logger->remove_prefix();
       $logger->add_line('-- update feed finished ---');

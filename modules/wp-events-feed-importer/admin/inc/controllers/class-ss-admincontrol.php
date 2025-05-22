@@ -31,7 +31,7 @@ class SSAdminControl extends UIAbstractAdminControl
                                     'Add link from source');
     $field->set_description('Add at the bottom of the events description a link to the website where the event is coming from');
 
-    $field = $section->add_checkbox('ei_disable_auto_delete', 
+    $field = $section->add_checkbox($thismodule->get_disable_auto_delete_id(), 
                                     'Automatische Terminlöschung deaktivieren');
     $field->set_description('Wenn aktiviert, werden Termine nicht automatisch gelöscht.');
 
